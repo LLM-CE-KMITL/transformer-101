@@ -149,7 +149,7 @@ $$
 
 | สถาปัตยกรรม | เทรนขนานตามแกนเวลาได้ไหม | เหตุผล |
 |---|---|---|
-| RNN decoder | ไม่ได้ | $\mathbf{s}_t$ ต้องรอ $\mathbf{s}_{t-1}$ — เป็นการพึ่งพาเชิง**คำนวณ** |
+| RNN decoder | ไม่ได้ | $\mathbf{s}\_t$ ต้องรอ $\mathbf{s}\_{t-1}$ — เป็นการพึ่งพาเชิง**คำนวณ** |
 | Transformer decoder | **ได้** | การพึ่งพาเป็นแค่การ**มองเห็น** ซึ่ง mask จัดการได้ในครั้งเดียว |
 
 > **จุดสำคัญ:** teacher forcing + causal mask คือเหตุผลที่ Transformer เทรนเร็วกว่า RNN มหาศาล — เปลี่ยน $m$ ขั้นตามลำดับ ให้เหลือ matmul ก้อนเดียว
@@ -160,7 +160,7 @@ $$
 
 | วิธีบรรเทา | ไอเดียสั้น ๆ |
 |---|---|
-| **Scheduled sampling** | ตอนเทรน สุ่มสลับป้อน $\hat{y}_{t-1}$ แทน $y^*_{t-1}$ ด้วยความน่าจะเป็นที่เพิ่มขึ้นตามเวลา |
+| **Scheduled sampling** | ตอนเทรน สุ่มสลับป้อน $\hat{y}\_{t-1}$ แทน $y^*\_{t-1}$ ด้วยความน่าจะเป็นที่เพิ่มขึ้นตามเวลา |
 | **Label smoothing** (§1.3) | ทำให้โมเดลไม่มั่นใจเกิน → ทนคำผิดได้ดีขึ้น |
 | **Beam search** | เก็บหลายเส้นทาง ลดโอกาสหลุดจากพลาดครั้งเดียว |
 | **Minimum Risk Training / RL** | ปรับด้วยตัวชี้วัดระดับประโยค เช่น BLEU โดยตรง |
@@ -630,7 +630,7 @@ for name, peak, util in [("V100 fp32", 15.7e12, 0.30), ("A100 bf16", 312e12, 0.4
 
 | สิ่งที่ได้ | สมการหลัก |
 |---|---|
-| Objective | $\mathcal{L} = -\frac{1}{m}\sum_t \log p(y^*_t \mid y^*_{{<}t}, \mathbf{x})$ |
+| Objective | $\mathcal{L} = -\frac{1}{m}\sum\_t \log p(y^\*\_t \mid y^\*\_{{<}t}, \mathbf{x})$ |
 | Perplexity | $\text{PPL} = \exp(\mathcal{L})$ |
 | Label smoothing | $\mathbf{q} = (1-\varepsilon)\mathbf{y}^{\text{onehot}} + \varepsilon/V$, $\ \varepsilon = 0.1$ |
 | Gradient ที่ output | $\partial\mathcal{L}/\partial\mathbf{z} = \mathbf{p} - \mathbf{y}^{\text{onehot}}$ |

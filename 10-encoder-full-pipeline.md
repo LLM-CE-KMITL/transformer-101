@@ -71,8 +71,8 @@ $$
 
 | มุมมอง | สมการ | ต้นทุน |
 |---|---|---|
-| พีชคณิต | $\mathbf{e}_i = \mathbf{o}_i E$ เมื่อ $\mathbf{o}_i \in \\{0,1\\}^{1 \times V}$ เป็น one-hot | $O(V \cdot d_{\text{model}})$ ต่อโทเคน |
-| ปฏิบัติ | $\mathbf{e}_i = E[\text{id}_i,\ :]$ (index เข้าไปตรง ๆ) | $O(d_{\text{model}})$ |
+| พีชคณิต | $\mathbf{e}\_i = \mathbf{o}\_i E$ เมื่อ $\mathbf{o}\_i \in \\{0,1\\}^{1 \times V}$ เป็น one-hot | $O(V \cdot d\_{\text{model}})$ ต่อโทเคน |
+| ปฏิบัติ | $\mathbf{e}\_i = E[\text{id}\_i,\ :]$ (index เข้าไปตรง ๆ) | $O(d\_{\text{model}})$ |
 
 $$
 \boxed{\ \mathbf{o}_i E = E[\text{id}_i, :]\ }
@@ -192,7 +192,7 @@ $$
 | $W_h^Q, W_h^K$ | $\mathbb{R}^{d_{\text{model}} \times d_k}$ |
 | $W_h^V$ | $\mathbb{R}^{d_{\text{model}} \times d_v}$ |
 | $\text{head}_h$ | $\mathbb{R}^{n \times d_v}$ |
-| $[\text{head}_1;\dots;\text{head}_H]$ | $\mathbb{R}^{n \times H d_v} = \mathbb{R}^{n \times d_{\text{model}}}$ |
+| $[\text{head}\_1;\dots;\text{head}\_H]$ | $\mathbb{R}^{n \times H d\_v} = \mathbb{R}^{n \times d\_{\text{model}}}$ |
 | $W^O$ | $\mathbb{R}^{d_{\text{model}} \times d_{\text{model}}}$ |
 | $Z$ | $\mathbb{R}^{n \times d_{\text{model}}}$ |
 
@@ -209,9 +209,9 @@ $$
 | ตัวแปร | มิติ |
 |---|---|
 | $W_1$ | $\mathbb{R}^{d_{\text{model}} \times d_{\text{ff}}}$ |
-| $\mathbf{b}_1$ | $\mathbb{R}^{1 \times d_{\text{ff}}}$ |
+| $\mathbf{b}\_1$ | $\mathbb{R}^{1 \times d\_{\text{ff}}}$ |
 | $W_2$ | $\mathbb{R}^{d_{\text{ff}} \times d_{\text{model}}}$ |
-| $\mathbf{b}_2$ | $\mathbb{R}^{1 \times d_{\text{model}}}$ |
+| $\mathbf{b}\_2$ | $\mathbb{R}^{1 \times d\_{\text{model}}}$ |
 | $Y$ | $\mathbb{R}^{n \times d_{\text{model}}}$ |
 
 **หน้าที่:** ประมวลผล *ภายในตำแหน่ง* — ใช้น้ำหนักชุดเดียวกันกับทุกแถวอย่างอิสระ (จึงเรียก *position-wise*) ไม่มีการผสมข้ามตำแหน่งเลย (ไฟล์ [08](08-feedforward-and-residual.md))
@@ -294,8 +294,8 @@ flowchart TD
 | 9 | concat | $[\text{head}_1;\dots;\text{head}_8]$ | $n \times 512$ | 0 |
 | 10 | ฉายออก | $(9)\\,W^O$ | $n \times 512$ | $d^2 = 262{,}144$ |
 | 11 | residual + LN | $Z = \text{LN}(X + (10))$ | $n \times 512$ | $2d = 1{,}024$ |
-| 12 | FFN ชั้นใน | $\max(0, ZW_1 + \mathbf{b}_1)$ | $n \times 2048$ | $d\\,d_{\text{ff}} + d_{\text{ff}} = 1{,}050{,}624$ |
-| 13 | FFN ชั้นนอก | $(12)W_2 + \mathbf{b}_2$ | $n \times 512$ | $d_{\text{ff}}d + d = 1{,}049{,}088$ |
+| 12 | FFN ชั้นใน | $\max(0, ZW\_1 + \mathbf{b}\_1)$ | $n \times 2048$ | $d\\,d\_{\text{ff}} + d\_{\text{ff}} = 1{,}050{,}624$ |
+| 13 | FFN ชั้นนอก | $(12)W\_2 + \mathbf{b}\_2$ | $n \times 512$ | $d\_{\text{ff}}d + d = 1{,}049{,}088$ |
 | 14 | residual + LN | $X^{(l)} = \text{LN}(Z + (13))$ | $n \times 512$ | $2d = 1{,}024$ |
 | — | **รวม 1 เลเยอร์** | ขั้น 4–14 | $n \times 512$ | **3,150,336** |
 | 15 | ซ้อน $N=6$ | ทำขั้น 4–14 หกรอบ | $n \times 512$ | $6 \times 3{,}150{,}336 = 18{,}902{,}016$ |
@@ -741,8 +741,8 @@ print(sum(p.numel() for p in enc.layers.parameters()))      # 18902016  ← ต�
 | ส่วนประกอบ | สูตร | จำนวน |
 |---|---|---|
 | $W^Q, W^K, W^V, W^O$ | $4d_{\text{model}}^2$ | 1,048,576 |
-| $W_1, \mathbf{b}_1$ | $d_{\text{model}}d_{\text{ff}} + d_{\text{ff}}$ | 1,050,624 |
-| $W_2, \mathbf{b}_2$ | $d_{\text{ff}}d_{\text{model}} + d_{\text{model}}$ | 1,049,088 |
+| $W\_1, \mathbf{b}\_1$ | $d\_{\text{model}}d\_{\text{ff}} + d\_{\text{ff}}$ | 1,050,624 |
+| $W\_2, \mathbf{b}\_2$ | $d\_{\text{ff}}d\_{\text{model}} + d\_{\text{model}}$ | 1,049,088 |
 | LN สองตัว | $2 \times 2d_{\text{model}}$ | 2,048 |
 | **รวม 1 เลเยอร์** | | **3,150,336** |
 | **encoder $N=6$** | $\times 6$ | **18,902,016** |

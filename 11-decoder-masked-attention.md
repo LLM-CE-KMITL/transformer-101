@@ -276,10 +276,10 @@ $A_{\text{cross}} = \text{softmax}(S_{\text{cross}})$ — **normalize ตาม�
 
 | | Bahdanau (2015) | Cross-Attention (2017) |
 |---|---|---|
-| คะแนน | $e_{tj} = \mathbf{v}^\top\tanh(\mathbf{s}_{t-1}W_s + \mathbf{h}_jW_h)$ | $s_{tj} = \dfrac{(\mathbf{z}_tW^Q)(\mathbf{h}_jW^K)^\top}{\sqrt{d_k}}$ |
+| คะแนน | $e\_{tj} = \mathbf{v}^\top\tanh(\mathbf{s}\_{t-1}W\_s + \mathbf{h}\_jW\_h)$ | $s\_{tj} = \dfrac{(\mathbf{z}\_tW^Q)(\mathbf{h}\_jW^K)^\top}{\sqrt{d\_k}}$ |
 | ประเภทคะแนน | additive (MLP 1 ชั้น) | scaled dot-product |
-| น้ำหนัก | $\alpha_{tj} = \text{softmax}_j(e_{tj})$ | $\alpha_{tj} = \text{softmax}_j(s_{tj})$ **เหมือนกันเป๊ะ** |
-| context | $\mathbf{c}_t = \sum_j \alpha_{tj}\mathbf{h}_j$ | $\mathbf{c}_t = \sum_j \alpha_{tj}(\mathbf{h}_jW^V)$ |
+| น้ำหนัก | $\alpha\_{tj} = \text{softmax}\_j(e\_{tj})$ | $\alpha\_{tj} = \text{softmax}\_j(s\_{tj})$ **เหมือนกันเป๊ะ** |
+| context | $\mathbf{c}\_t = \sum\_j \alpha\_{tj}\mathbf{h}\_j$ | $\mathbf{c}\_t = \sum\_j \alpha\_{tj}(\mathbf{h}\_jW^V)$ |
 | "query" | $\mathbf{s}_{t-1}$ (RNN state) | $\mathbf{z}_t$ (decoder residual stream) |
 | "key" กับ "value" | เป็น $\mathbf{h}_j$ **ตัวเดียวกัน** | **แยกกัน** ผ่าน $W^K$ และ $W^V$ |
 | จำนวนหัว | 1 | $H = 8$ |
@@ -379,7 +379,7 @@ $$
 
 | ตัวแปร | มิติ |
 |---|---|
-| $X^{(N)}_{\text{dec}}$ | $\mathbb{R}^{m \times d_{\text{model}}}$ |
+| $X^{(N)}\_{\text{dec}}$ | $\mathbb{R}^{m \times d\_{\text{model}}}$ |
 | $W_{\text{out}}$ | $\mathbb{R}^{d_{\text{model}} \times V}$ |
 | $Z$ (logits) | $\mathbb{R}^{m \times V}$ |
 | $p$ | $\mathbb{R}^{m \times V}$, แต่ละแถวรวมได้ 1 |

@@ -12,7 +12,7 @@
 
 | ส่วนประกอบ | หน้าที่ | ทำงานอย่างไร |
 |---|---|---|
-| RNN encoder | สร้าง $\mathbf{h}_1 \dots \mathbf{h}_n$ | วนซ้ำตามเวลา — $\mathbf{h}_t$ ต้องรอ $\mathbf{h}_{t-1}$ |
+| RNN encoder | สร้าง $\mathbf{h}\_1 \dots \mathbf{h}\_n$ | วนซ้ำตามเวลา — $\mathbf{h}\_t$ ต้องรอ $\mathbf{h}\_{t-1}$ |
 | Attention | เลือกว่าจะดู $\mathbf{h}_j$ ตัวไหน | คำนวณ $n$ คะแนนพร้อมกัน — ขนานได้เต็มที่ |
 
 คำถามที่ Vaswani et al. ตั้งคือ:
@@ -108,7 +108,7 @@ $$
 
 | การดำเนินการ | มิติ | ต้นทุน |
 |---|---|---|
-| $\mathbf{h}_{t-1}W_{hh}$ ต่อ 1 timestep | $\mathbb{R}^{1\times d} \times \mathbb{R}^{d\times d}$ | $d^2$ |
+| $\mathbf{h}\_{t-1}W\_{hh}$ ต่อ 1 timestep | $\mathbb{R}^{1\times d} \times \mathbb{R}^{d\times d}$ | $d^2$ |
 | รวม $n$ timesteps | — | $n d^2$ |
 
 $$

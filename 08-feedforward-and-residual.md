@@ -28,9 +28,9 @@ $$
 |---|---|---|
 | $\mathbf{x}$ | $\mathbb{R}^{1 \times d_{\text{model}}}$ | เวกเตอร์ของ token **หนึ่งตำแหน่ง** |
 | $W_1$ | $\mathbb{R}^{d_{\text{model}} \times d_{\text{ff}}}$ | น้ำหนักชั้นขยาย (expand) |
-| $\mathbf{b}_1$ | $\mathbb{R}^{1 \times d_{\text{ff}}}$ | bias ชั้นขยาย |
+| $\mathbf{b}\_1$ | $\mathbb{R}^{1 \times d\_{\text{ff}}}$ | bias ชั้นขยาย |
 | $W_2$ | $\mathbb{R}^{d_{\text{ff}} \times d_{\text{model}}}$ | น้ำหนักชั้นบีบ (contract) |
-| $\mathbf{b}_2$ | $\mathbb{R}^{1 \times d_{\text{model}}}$ | bias ชั้นบีบ |
+| $\mathbf{b}\_2$ | $\mathbb{R}^{1 \times d\_{\text{model}}}$ | bias ชั้นบีบ |
 | $\text{FFN}(\mathbf{x})$ | $\mathbb{R}^{1 \times d_{\text{model}}}$ | output — **มิติเท่า input เสมอ** |
 
 เขียนแบบทั้งลำดับพร้อมกัน (row-major ตามข้อตกลงในไฟล์ [00](00-overview.md)) ก็แค่เปลี่ยน $\mathbf{x}$ เป็น $X$
@@ -599,11 +599,11 @@ print(N*enc_layer, N*dec_layer, V*d_model)        # 18902016 25199616 18944000
 | Position-wise FFN | $\text{FFN}(\mathbf{x}) = \max(0, \mathbf{x}W_1 + \mathbf{b}_1)W_2 + \mathbf{b}_2$ |
 | การแบ่งงาน | attention = ผสมข้าม token; FFN = คิดในแต่ละ token (ไม่มีเทอมข้ามตำแหน่ง) |
 | อัตราส่วนขยาย | $d_{\text{ff}} = 4d_{\text{model}}$ → FFN กิน 66.67% ของน้ำหนักต่อเลเยอร์ |
-| มุมมอง key-value | $\text{FFN}(\mathbf{x}) = \sum_u \max(0, \mathbf{x}\cdot\mathbf{k}_u + b_{1u})\\,\mathbf{v}_u + \mathbf{b}_2$ |
+| มุมมอง key-value | $\text{FFN}(\mathbf{x}) = \sum\_u \max(0, \mathbf{x}\cdot\mathbf{k}\_u + b\_{1u})\\,\mathbf{v}\_u + \mathbf{b}\_2$ |
 | Activation ยุคใหม่ | $\text{GELU}(z) = \tfrac{z}{2}[1+\text{erf}(z/\sqrt{2})]$, $\ \text{SwiGLU} = \text{Swish}(\mathbf{x}W_1)\odot(\mathbf{x}W_g)$ |
 | Residual | $\mathbf{y} = \mathbf{x} + \text{Sublayer}(\mathbf{x})$ |
 | ทำไม gradient ไม่หาย | $\frac{\partial \mathbf{y}_N}{\partial \mathbf{x}_0} = \prod_l (I + J_l)$ — มีพจน์ $I$ เสมอ |
-| Residual stream | $\mathbf{x}_N = \mathbf{x}_0 + \sum_l \text{Sublayer}_l(\mathbf{x}_{l-1})$ — ทุก sublayer อ่านจากท่อ เขียนบวกกลับลงท่อ |
+| Residual stream | $\mathbf{x}\_N = \mathbf{x}\_0 + \sum\_l \text{Sublayer}\_l(\mathbf{x}\_{l-1})$ — ทุก sublayer อ่านจากท่อ เขียนบวกกลับลงท่อ |
 | ข้อบังคับมิติ | ทุก sublayer ต้อง output $\mathbb{R}^{d_{\text{model}}}$ เพราะต้องบวกกลับได้ |
 | Inverted dropout | train: $\tilde{x} = \frac{m}{1-p}x$ ; inference: $\tilde{x} = x$ |
 

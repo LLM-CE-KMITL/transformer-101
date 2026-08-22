@@ -308,7 +308,7 @@ $$
 |---|---|
 | ยังหดเมื่อ $T$ ใหญ่มาก | $\prod \mathbf{f}_t {<} 1$ เสมอ |
 | ต้องแลกกับความสามารถในการลืม | ถ้าบังคับ $\mathbf{f}_t \to 1$ ทุกก้าว โมเดลก็ลืมอะไรไม่ได้เลย |
-| เส้นทางผ่าน $\mathbf{h}_t$ ยังมี $W_{hh}$ | gate ทั้ง 4 ตัวคำนวณจาก $\mathbf{h}_{t-1}$ ซึ่งยังมีปัญหาเดิม |
+| เส้นทางผ่าน $\mathbf{h}\_t$ ยังมี $W\_{hh}$ | gate ทั้ง 4 ตัวคำนวณจาก $\mathbf{h}\_{t-1}$ ซึ่งยังมีปัญหาเดิม |
 | ไม่แก้ข้อจำกัด 3 และ 4 เลย | ยังเป็น recurrence อยู่ |
 
 ---
@@ -472,7 +472,7 @@ $$
 |---|---|---|---|---|
 | 1 | $\mathbf{c} = \mathbf{h}_n$ มิติคงที่ → คอขวด | context ต้องโตตาม $n$ และ **เปลี่ยนได้ตามขั้น** | ไม่บีบเลย — เก็บ $K, V$ ทุกตำแหน่ง แล้วคำนวณ $\mathbf{c}_i$ ใหม่ทุก query | [03](03-attention-mechanism-origin.md), [05](05-self-attention-math.md) |
 | 2 | $\prod J_t$ ทำ gradient หาย/ระเบิด | ตัดความยาวของผลคูณ Jacobian ให้ไม่ขึ้นกับ $n$ | attention ตรง ๆ + **residual connection** เปิดทางลัด $\partial/\partial \mathbf{x} = I + \dots$ | [08 §2](08-feedforward-and-residual.md), [12](12-training-objective-backprop.md) |
-| 3 | $\mathbf{h}_t \leftarrow \mathbf{h}_{t-1}$ → ขนานไม่ได้ | sequential ops ต้องเป็น $O(1)$ | ทิ้ง recurrence ทั้งหมด → ทุกตำแหน่งคำนวณพร้อมกันเป็น GEMM ก้อนเดียว | [04](04-transformer-motivation.md), [05](05-self-attention-math.md) |
+| 3 | $\mathbf{h}\_t \leftarrow \mathbf{h}\_{t-1}$ → ขนานไม่ได้ | sequential ops ต้องเป็น $O(1)$ | ทิ้ง recurrence ทั้งหมด → ทุกตำแหน่งคำนวณพร้อมกันเป็น GEMM ก้อนเดียว | [04](04-transformer-motivation.md), [05](05-self-attention-math.md) |
 | 4 | path length $O(n)$ | path length ต้องเป็น $O(1)$ | $QK^\top$ เชื่อมทุกคู่ $(i,j)$ ในก้าวเดียว | [05](05-self-attention-math.md) |
 
 **และเงื่อนไขที่ *เกิดใหม่* จากการทิ้ง recurrence** (หนี้ที่ต้องจ่าย)
@@ -512,10 +512,10 @@ flowchart LR
 | สิ่งที่ได้ | สมการหลัก / ตัวเลขหลัก |
 |---|---|
 | คอขวด context vector | $H \in \mathbb{R}^{n\times d_h} \to \mathbf{c} \in \mathbb{R}^{1\times d_h}$ — บีบ $n$:1 |
-| BPTT | $\dfrac{\partial \mathcal{L}}{\partial \mathbf{h}_1} = \dfrac{\partial \mathcal{L}}{\partial \mathbf{h}_T}\prod_{t=2}^{T} J_t$, $\ J_t = W_{hh}\text{diag}(1-\mathbf{h}_t^2)$ |
+| BPTT | $\dfrac{\partial \mathcal{L}}{\partial \mathbf{h}\_1} = \dfrac{\partial \mathcal{L}}{\partial \mathbf{h}\_T}\prod\_{t=2}^{T} J\_t$, $\ J\_t = W\_{hh}\text{diag}(1-\mathbf{h}\_t^2)$ |
 | กฎเลขชี้กำลัง | $\left\\|\prod J_t\right\\| \approx \rho^{T-1}$ — ที่ $T=50$: $\rho{=}0.9 \to 5.1538\text{e-}03$, $\rho{=}1.1 \to 1.1739\text{e+}02$ |
 | $\tanh$ ซ้ำเติมเสมอ | $\tanh'(a) = 1-\tanh^2(a) \in (0,1]$ → ผลคูณ $\le 1$ เสมอ |
-| LSTM ช่วยแต่ไม่หมด | $\partial\mathbf{c}_t/\partial\mathbf{c}_{t-1} = \text{diag}(\mathbf{f}_t)$ แต่ $\mathbf{f}_t {<} 1$ เข้มงวด |
+| LSTM ช่วยแต่ไม่หมด | $\partial\mathbf{c}\_t/\partial\mathbf{c}\_{t-1} = \text{diag}(\mathbf{f}\_t)$ แต่ $\mathbf{f}\_t {<} 1$ เข้มงวด |
 | ขนานไม่ได้ | sequential ops $= O(n)$ → GPU utilization ~34% ต่อก้าว |
 | path length | RNN $O(n)$, CNN $O(\log_k n)$, **Self-Attention $O(1)$** |
 | เช็กลิสต์ 4 ข้อ | ตาราง §5 — จับคู่ข้อจำกัด → กลไกของ Transformer |

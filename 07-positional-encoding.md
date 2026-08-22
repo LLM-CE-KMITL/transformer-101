@@ -500,9 +500,9 @@ print("ต่ำสุดที่ k =", int(d.argmin()), round(d.min(), 4))    
 | วิธี | สมการย่อ | ใส่ที่ไหน | จุดขาย |
 |---|---|---|---|
 | **Sinusoidal** (2017) | $PE_{(pos,2i)} = \sin(pos\\,\omega_i)$ | บวกที่ input ครั้งเดียว | ไม่มีพารามิเตอร์, relative โดยปริยาย |
-| **Learned absolute** (BERT, GPT-2) | $\mathbf{p}_{pos} = E_{pos}[pos,:]$ เทรนได้ | บวกที่ input ครั้งเดียว | ยืดหยุ่นสุด แต่จำกัดที่ $n_{\max}$ ตายตัว |
-| **Relative bias** (T5) | $\text{score}_{ij} \mathrel{+}= b_{\text{bucket}(i-j)}$ | ทุกเลเยอร์ ใน attention score | เรียน bias ตามระยะโดยตรง, ทนความยาว |
-| **RoPE** (RoFormer, LLaMA) | หมุน $\mathbf{q}_i, \mathbf{k}_j$ ด้วย $R_{\Theta,i}$ → $\mathbf{q}_i^\top\mathbf{k}_j$ ขึ้นกับ $i-j$ | ทุกเลเยอร์ กับ $Q,K$ (ไม่แตะ $V$) | relative แท้ ๆ, ไม่มีพารามิเตอร์, ยืด context ได้ด้วยการปรับฐาน |
+| **Learned absolute** (BERT, GPT-2) | $\mathbf{p}\_{pos} = E\_{pos}[pos,:]$ เทรนได้ | บวกที่ input ครั้งเดียว | ยืดหยุ่นสุด แต่จำกัดที่ $n\_{\max}$ ตายตัว |
+| **Relative bias** (T5) | $\text{score}\_{ij} \mathrel{+}= b\_{\text{bucket}(i-j)}$ | ทุกเลเยอร์ ใน attention score | เรียน bias ตามระยะโดยตรง, ทนความยาว |
+| **RoPE** (RoFormer, LLaMA) | หมุน $\mathbf{q}\_i, \mathbf{k}\_j$ ด้วย $R\_{\Theta,i}$ → $\mathbf{q}\_i^\top\mathbf{k}\_j$ ขึ้นกับ $i-j$ | ทุกเลเยอร์ กับ $Q,K$ (ไม่แตะ $V$) | relative แท้ ๆ, ไม่มีพารามิเตอร์, ยืด context ได้ด้วยการปรับฐาน |
 | **ALiBi** (2021) | $\text{score}_{ij} \mathrel{+}= -m_h\lvert i-j\rvert$ | ทุกเลเยอร์ ($m_h$ ต่างกันรายหัว) | ไม่มีเวกเตอร์ PE เลย, extrapolate ได้ดีเยี่ยม |
 
 > **เส้นเรื่องร่วมกัน:** ทุกวิธีหลังปี 2017 เดินไปทางเดียวกัน — **เลิกฉีดตำแหน่งที่ input แล้วย้ายไปฉีดที่ attention score โดยตรง** เพราะสิ่งที่ attention ต้องการจริง ๆ คือ *ระยะห่าง $i-j$* ไม่ใช่ *ตำแหน่งสัมบูรณ์*

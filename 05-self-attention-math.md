@@ -898,7 +898,7 @@ for d_k in [16, 64, 256]:
 | เมทริกซ์คะแนน | $S_{ij} = \mathbf{q}_i\cdot\mathbf{k}_j$, $S \in \mathbb{R}^{n\times n}$ |
 | เหตุผลของ $\sqrt{d_k}$ | $\text{Var}(\mathbf{q}\cdot\mathbf{k}) = d_k$ → sd $=\sqrt{d_k}$ → ต้อง normalize ไม่งั้น softmax saturate |
 | softmax รายแถว | $\sum_j A_{ij} = 1$, ลบ max เพื่อความเสถียร |
-| output | $\mathbf{o}_i = \sum_j A_{ij}\mathbf{v}_j \in \text{conv}\\{\mathbf{v}_j\\}$ |
+| output | $\mathbf{o}\_i = \sum\_j A\_{ij}\mathbf{v}\_j \in \text{conv}\\{\mathbf{v}\_j\\}$ |
 | Permutation equivariance | $\text{Attention}(PX) = P\\,\text{Attention}(X)$ → ต้องมี PE |
 | Path length | 1 ก้าวระหว่างทุกคู่ตำแหน่ง |
 | Jacobian ของ softmax | $J = \text{diag}(\mathbf{p}) - \mathbf{p}^\top\mathbf{p}$ |

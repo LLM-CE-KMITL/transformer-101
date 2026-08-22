@@ -494,10 +494,10 @@ print("p_1 =", np.round(p, 4))           # [0.2893 0.2685 0.2333 0.2088]
 | สิ่งที่ได้ | สมการหลัก |
 |---|---|
 | การแตกปัญหา seq2seq | $p(\mathbf{y}\mid\mathbf{x}) = \prod_t p(y_t \mid y_{{<}t}, \mathbf{x})$ |
-| RNN | $\mathbf{h}_t = \tanh(\mathbf{h}_{t-1}W_{hh} + \mathbf{x}_tW_{xh} + \mathbf{b})$ |
-| LSTM | $\mathbf{c}_t = \mathbf{f}_t \odot \mathbf{c}_{t-1} + \mathbf{i}_t \odot \tilde{\mathbf{c}}_t$ |
-| GRU | $\mathbf{h}_t = (1-\mathbf{z}_t)\odot\mathbf{h}_{t-1} + \mathbf{z}_t\odot\tilde{\mathbf{h}}_t$ |
-| Encoder–Decoder | $\mathbf{c} = \mathbf{h}_n$, $\ \mathbf{s}_t = f(\mathbf{s}_{t-1}, \mathbf{y}_{t-1}, \mathbf{c})$ |
+| RNN | $\mathbf{h}\_t = \tanh(\mathbf{h}\_{t-1}W\_{hh} + \mathbf{x}\_tW\_{xh} + \mathbf{b})$ |
+| LSTM | $\mathbf{c}\_t = \mathbf{f}\_t \odot \mathbf{c}\_{t-1} + \mathbf{i}\_t \odot \tilde{\mathbf{c}}\_t$ |
+| GRU | $\mathbf{h}\_t = (1-\mathbf{z}\_t)\odot\mathbf{h}\_{t-1} + \mathbf{z}\_t\odot\tilde{\mathbf{h}}\_t$ |
+| Encoder–Decoder | $\mathbf{c} = \mathbf{h}\_n$, $\ \mathbf{s}\_t = f(\mathbf{s}\_{t-1}, \mathbf{y}\_{t-1}, \mathbf{c})$ |
 
 **สิ่งที่ต้องจำไปไฟล์ถัดไป — จุดอ่อน 2 อย่างที่เห็นแล้วในไฟล์นี้:**
 

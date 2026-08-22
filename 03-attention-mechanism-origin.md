@@ -204,7 +204,7 @@ $H W_h$ คำนวณ **ครั้งเดียวต่อประโย
 
 $\mathbf{s}_{t-1} W_s$ คำนวณ **ครั้งเดียวต่อขั้น decoder**
 
-| $t$ | $\mathbf{s}_{t-1}$ | $\mathbf{s}_{t-1}W_s$ |
+| $t$ | $\mathbf{s}\_{t-1}$ | $\mathbf{s}\_{t-1}W\_s$ |
 |---|---|---|
 | 1 | $[0.3250, 0.1997]$ | $[-0.2996,\ \ 0.3877]$ |
 | 2 | $[0.0, -0.5]$ | $[\ \ 0.7500,\ \ 0.2500]$ |
@@ -580,8 +580,8 @@ flowchart LR
 |---|---|
 | แนวคิด attention | เปลี่ยน $\mathbf{c}$ คงที่ → $\mathbf{c}_t$ ที่คำนวณใหม่ทุกขั้น |
 | คะแนน Bahdanau (additive) | $e_{tj} = \mathbf{v}^\top\tanh(\mathbf{s}_{t-1}W_s + \mathbf{h}_jW_h)$ |
-| น้ำหนัก | $\alpha_{tj} = \text{softmax}_j(e_{tj})$, $\ \sum_j\alpha_{tj}=1$ |
-| บริบท | $\mathbf{c}_t = \sum_j \alpha_{tj}\mathbf{h}_j = \boldsymbol{\alpha}_t H$ |
+| น้ำหนัก | $\alpha\_{tj} = \text{softmax}\_j(e\_{tj})$, $\ \sum\_j\alpha\_{tj}=1$ |
+| บริบท | $\mathbf{c}\_t = \sum\_j \alpha\_{tj}\mathbf{h}\_j = \boldsymbol{\alpha}\_t H$ |
 | Alignment ที่คำนวณได้ | ทแยงมุมเด่น 0.8804 / 0.7434 / 0.7446 (ฉัน↔I, กิน↔eat, ข้าว↔rice) |
 | คะแนน Luong | dot $\mathbf{s}\mathbf{h}^\top$ / general $\mathbf{s}W_a\mathbf{h}^\top$ / concat |
 | ต้นทุน | additive 287,744 vs dot 25,600 การคูณต่อขั้น ($d{=}512, n{=}50$) → **11.24×** |

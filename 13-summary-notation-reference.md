@@ -43,7 +43,7 @@
 | สัญลักษณ์ | มิติ | ความหมาย | ไฟล์ |
 |---|---|---|---|
 | $X$ | $\mathbb{R}^{n \times d_{\text{model}}}$ | input ของบล็อก (แถว = โทเคน) | 05, 10 |
-| $\mathbf{x}_i$ | $\mathbb{R}^{1 \times d_{\text{model}}}$ | row vector ของโทเคนที่ $i$ | 00 |
+| $\mathbf{x}\_i$ | $\mathbb{R}^{1 \times d\_{\text{model}}}$ | row vector ของโทเคนที่ $i$ | 00 |
 | $E$ | $\mathbb{R}^{V \times d_{\text{model}}}$ | embedding table (tied กับ output head) | 10, 12 |
 | $PE$ | $\mathbb{R}^{n \times d_{\text{model}}}$ | positional encoding | 07 |
 | $Q, K$ | $\mathbb{R}^{n \times d_k}$ | query / key | 05 |
@@ -360,7 +360,7 @@ for d, ff, H in [(512, 2048, 8), (1024, 4096, 16)]:
 |---|---|---|---|
 | คอขวด context vector เดียว | $\mathbf{c} = \mathbf{h}_n \in \mathbb{R}^{d_h}$ ขนาดคงที่ไม่ว่า $n$ เท่าไร | ให้ทุกตำแหน่งเข้าถึง representation ของทุกตำแหน่ง | [02](02-seq2seq-limitations.md) → [03](03-attention-mechanism-origin.md), [05](05-self-attention-math.md) |
 | ข้อมูลระยะไกลจางหาย | เส้นทาง gradient ยาว $O(n)$ ก้าว คูณกันจนหด | ระยะทางระหว่างสองตำแหน่งเหลือ $O(1)$ | [02](02-seq2seq-limitations.md) → [04](04-transformer-motivation.md), [05](05-self-attention-math.md) |
-| ขนานไม่ได้ตามแกนเวลา | $\mathbf{h}_t$ ต้องรอ $\mathbf{h}_{t-1}$ | ทิ้ง recurrence ทั้งหมด → เหลือ matmul ก้อนเดียว | [04](04-transformer-motivation.md), [12 §2.2](12-training-objective-backprop.md) |
+| ขนานไม่ได้ตามแกนเวลา | $\mathbf{h}\_t$ ต้องรอ $\mathbf{h}\_{t-1}$ | ทิ้ง recurrence ทั้งหมด → เหลือ matmul ก้อนเดียว | [04](04-transformer-motivation.md), [12 §2.2](12-training-objective-backprop.md) |
 | จับความสัมพันธ์ได้แบบเดียวต่อชั้น | attention เดี่ยวให้ subspace เดียว | แยกเป็น $H$ หัวใน subspace ต่าง ๆ | [06](06-multi-head-attention.md) |
 | (ผลข้างเคียงใหม่) attention ไม่รู้ลำดับ | $\text{softmax}(QK^\top)$ ไม่แปรตามการสลับแถว (permutation-equivariant) | บวก positional encoding เข้าไปที่ input | [07](07-positional-encoding.md) |
 | (ผลข้างเคียงใหม่) attention เป็นเชิงเส้นล้วน | $AV$ คือ convex combination → ไม่มี nonlinearity ต่อตำแหน่ง | ใส่ FFN 2 ชั้นหลัง attention ทุกบล็อก | [08](08-feedforward-and-residual.md) |
