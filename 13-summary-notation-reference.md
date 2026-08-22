@@ -79,7 +79,7 @@
 | $[X; Y]$ | concatenation ตามแกน feature | 06 |
 | $X^\top$ | transpose | ทุกไฟล์ |
 | $\langle \mathbf{a}, \mathbf{b}\rangle$ | inner product | 05, 12 |
-| $\|\mathbf{g}\|_2$ | Euclidean norm | 12 |
+| $\\|\mathbf{g}\\|_2$ | Euclidean norm | 12 |
 | $\varepsilon$ | ค่า label smoothing (0.1) | 12 |
 | $\epsilon$ | ค่ากันหารศูนย์ ($10^{-6}$ ใน LN, $10^{-9}$ ใน Adam) | 09, 12 |
 
@@ -94,22 +94,26 @@
 $$
 p(\mathbf{y}\mid\mathbf{x}) = \prod_{t=1}^{m} p(y_t \mid y_{{<}t}, \mathbf{x})
 $$
+
 *[01 §1.2]*
 
 $$
 \mathbf{h}_t = \tanh(\mathbf{h}_{t-1}W_{hh} + \mathbf{x}_t W_{xh} + \mathbf{b}), \qquad \mathbf{c} = \mathbf{h}_n
 $$
+
 *[01 §2.1, §5.1]*
 
 $$
 \mathbf{c}_t = \mathbf{f}_t \odot \mathbf{c}_{t-1} + \mathbf{i}_t\odot\tilde{\mathbf{c}}_t,\qquad
 \mathbf{h}_t = \mathbf{o}_t\odot\tanh(\mathbf{c}_t)
 $$
+
 *[01 §3.1]*
 
 $$
 \mathbf{h}_t = (1-\mathbf{z}_t)\odot\mathbf{h}_{t-1} + \mathbf{z}_t\odot\tilde{\mathbf{h}}_t
 $$
+
 *[01 §4.1 — GRU]*
 
 ### ข้อจำกัด — [ไฟล์ 02](02-seq2seq-limitations.md)
@@ -117,6 +121,7 @@ $$
 $$
 \frac{\partial \mathcal{L}_T}{\partial \mathbf{h}_1} = \frac{\partial\mathcal{L}_T}{\partial\mathbf{h}_T}\prod_{t=2}^{T}\frac{\partial \mathbf{h}_t}{\partial\mathbf{h}_{t-1}}
 $$
+
 *[02 — vanishing/exploding gradient]*
 
 ### Attention ยุคแรก — [ไฟล์ 03](03-attention-mechanism-origin.md)
@@ -126,11 +131,13 @@ e_{tj} = \mathbf{v}^\top\tanh(\mathbf{s}_{t-1}W_s + \mathbf{h}_jW_h),\quad
 \alpha_{tj} = \frac{e^{e_{tj}}}{\sum_{j'}e^{e_{tj'}}},\quad
 \mathbf{c}_t = \sum_j \alpha_{tj}\mathbf{h}_j
 $$
+
 *[03 — Bahdanau]*
 
 $$
 e_{tj} = \mathbf{s}_t\cdot\mathbf{h}_j \quad\text{หรือ}\quad \mathbf{s}_tW_a\mathbf{h}_j^\top
 $$
+
 *[03 — Luong]*
 
 ### Self-Attention — [ไฟล์ 05](05-self-attention-math.md)
@@ -138,11 +145,13 @@ $$
 $$
 \boxed{\ \text{Attention}(Q,K,V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V\ }
 $$
+
 *[05 §2]*
 
 $$
 \text{Var}(\mathbf{q}\cdot\mathbf{k}) = d_k \ \Rightarrow\ \text{หารด้วย}\ \sqrt{d_k}\ \text{เพื่อให้ variance กลับเป็น 1}
 $$
+
 *[05 §3]*
 
 ### Multi-Head — [ไฟล์ 06](06-multi-head-attention.md)
@@ -151,11 +160,13 @@ $$
 \text{MultiHead}(X) = [\text{head}_1;\dots;\text{head}_H]W^O,\quad
 \text{head}_h = \text{Attention}(XW_h^Q, XW_h^K, XW_h^V)
 $$
+
 *[06 §1]*
 
 $$
 d_k = d_v = d_{\text{model}}/H \ \Rightarrow\ \text{ต้นทุนรวมเท่าเดิมกับ single-head}
 $$
+
 *[06 §2]*
 
 ### Positional Encoding — [ไฟล์ 07](07-positional-encoding.md)
@@ -164,6 +175,7 @@ $$
 PE_{(pos,2i)} = \sin\!\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right),\qquad
 PE_{(pos,2i+1)} = \cos\!\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right)
 $$
+
 *[07 §2]*
 
 ### FFN + Residual — [ไฟล์ 08](08-feedforward-and-residual.md)
@@ -172,11 +184,13 @@ $$
 \text{FFN}(\mathbf{x}) = \max(0,\ \mathbf{x}W_1+\mathbf{b}_1)W_2+\mathbf{b}_2,\qquad
 \mathbf{y} = \mathbf{x} + \text{Sublayer}(\mathbf{x})
 $$
+
 *[08 §1, §2]*
 
 $$
 \frac{\partial\mathbf{y}}{\partial\mathbf{x}} = I + \frac{\partial F}{\partial\mathbf{x}}
 $$
+
 *[08 §2.2 — เส้นทางลัดของ gradient]*
 
 ### LayerNorm — [ไฟล์ 09](09-layernorm-math.md)
@@ -185,6 +199,7 @@ $$
 \text{LN}(\mathbf{x}) = \boldsymbol{\gamma}\odot\frac{\mathbf{x}-\mu}{\sqrt{\sigma^2+\epsilon}}+\boldsymbol{\beta},
 \qquad \mu = \frac1d\sum_k x_k,\quad \sigma^2 = \frac1d\sum_k (x_k-\mu)^2
 $$
+
 *[09 §1]*
 
 ### Encoder — [ไฟล์ 10](10-encoder-full-pipeline.md)
@@ -193,6 +208,7 @@ $$
 Z^{(l)} = \text{LN}\!\left(X^{(l-1)} + \text{MultiHead}(X^{(l-1)})\right),\qquad
 X^{(l)} = \text{LN}\!\left(Z^{(l)} + \text{FFN}(Z^{(l)})\right)
 $$
+
 *[10 §2 — Post-LN]*
 
 ### Decoder + Masking — [ไฟล์ 11](11-decoder-masked-attention.md)
@@ -201,11 +217,13 @@ $$
 M_{ij} = \begin{cases}0 & j\le i\\ -\infty & j{>}i\end{cases},\qquad
 \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}+M\right)V
 $$
+
 *[11 §2]*
 
 $$
 \text{CrossAttn} = \text{Attention}(X_{\text{dec}}W^Q,\ X_{\text{enc}}W^K,\ X_{\text{enc}}W^V)
 $$
+
 *[11 §3]*
 
 ### Training — [ไฟล์ 12](12-training-objective-backprop.md)
@@ -214,21 +232,25 @@ $$
 \boxed{\ \mathcal{L} = -\frac1m\sum_{t=1}^{m}\log p(y_t^*\mid y^*_{{<}t},\mathbf{x})\ },\qquad
 \text{PPL} = \exp(\mathcal{L})
 $$
+
 *[12 §1]*
 
 $$
 \frac{\partial\mathcal{L}}{\partial\mathbf{z}} = \mathbf{p}-\mathbf{y}^{\text{onehot}}
 $$
+
 *[12 §3.1]*
 
 $$
 \eta_t = d_{\text{model}}^{-0.5}\cdot\min\!\left(t^{-0.5},\ t\cdot\text{warmup}^{-1.5}\right)
 $$
+
 *[12 §4.2]*
 
 $$
 \text{FLOPs} \approx 6\,N_{\text{params}}\times\#\text{tokens}
 $$
+
 *[12 §5]*
 
 ---
@@ -263,9 +285,9 @@ $$
 
 | ส่วนประกอบ | สูตร | **base** (512/8/6/2048) | **big** (1024/16/6/4096) |
 |---|---|---|---|
-| Embedding (shared + tied) | $V\!\cdot\! d$ | 18,944,000 | 37,888,000 |
+| Embedding (shared + tied) | $V\\!\cdot\\! d$ | 18,944,000 | 37,888,000 |
 | Attention 1 บล็อก | $4d^2$ | 1,048,576 | 4,194,304 |
-| FFN 1 บล็อก | $2d\,d_{\text{ff}} + d_{\text{ff}} + d$ | 2,099,712 | 8,393,728 |
+| FFN 1 บล็อก | $2d\\,d_{\text{ff}} + d_{\text{ff}} + d$ | 2,099,712 | 8,393,728 |
 | LayerNorm ต่อ encoder layer | $2\times 2d$ | 2,048 | 4,096 |
 | LayerNorm ต่อ decoder layer | $3\times 2d$ | 3,072 | 6,144 |
 | **1 encoder layer** | attn + ffn + 2 LN | **3,150,336** | **12,592,128** |

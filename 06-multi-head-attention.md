@@ -172,11 +172,11 @@ flowchart LR
 
 | ขั้นตอน | สูตร MAC | ขึ้นกับ $H$ ไหม |
 |---|---|---|
-| $Q,K,V$ projection (รวมทุกหัว) | $3 \cdot n \cdot d_{\text{model}} \cdot (H d_k) = 3n\,d_{\text{model}}^2$ | **ไม่** (เพราะ $Hd_k = d_{\text{model}}$) |
+| $Q,K,V$ projection (รวมทุกหัว) | $3 \cdot n \cdot d_{\text{model}} \cdot (H d_k) = 3n\\,d_{\text{model}}^2$ | **ไม่** (เพราะ $Hd_k = d_{\text{model}}$) |
 | คะแนน $Q_hK_h^\top$ ทุกหัว | $H \cdot n^2 d_k = n^2 d_{\text{model}}$ | **ไม่** |
 | $A_h V_h$ ทุกหัว | $H \cdot n^2 d_v = n^2 d_{\text{model}}$ | **ไม่** |
-| $W^O$ | $n \cdot (Hd_v) \cdot d_{\text{model}} = n\,d_{\text{model}}^2$ | **ไม่** |
-| **รวม** | $4n\,d_{\text{model}}^2 + 2n^2 d_{\text{model}}$ | **ไม่** |
+| $W^O$ | $n \cdot (Hd_v) \cdot d_{\text{model}} = n\\,d_{\text{model}}^2$ | **ไม่** |
+| **รวม** | $4n\\,d_{\text{model}}^2 + 2n^2 d_{\text{model}}$ | **ไม่** |
 
 หัวใจอยู่ที่พีชคณิตบรรทัดเดียว
 
@@ -233,7 +233,7 @@ $$
 | $W^K$ (รวมทุกหัว) | $d_{\text{model}} \times H d_k$ | $d_{\text{model}}^2$ |
 | $W^V$ (รวมทุกหัว) | $d_{\text{model}} \times H d_v$ | $d_{\text{model}}^2$ |
 | $W^O$ | $H d_v \times d_{\text{model}}$ | $d_{\text{model}}^2$ |
-| **รวม** | | $\boxed{4\,d_{\text{model}}^2}$ |
+| **รวม** | | $\boxed{4\\,d_{\text{model}}^2}$ |
 
 ที่ $d_{\text{model}} = 512$: $4 \times 512^2 = 1{,}048{,}576 \approx 1.05$M ต่อหนึ่ง multi-head block (ยังไม่รวม bias ซึ่งเพิ่มอีก $4 d_{\text{model}} = 2048$ ตัว)
 
@@ -581,8 +581,8 @@ print(o)     # tensor([[-2.4242,  1.2732, -2.3913,  1.3061], ...])  ← ตร�
 | การรวมหัว | $\text{MultiHead}(X) = [\text{head}_1; \dots; \text{head}_H]W^O$ |
 | รูปผลรวมเทียบเท่า | $\text{MultiHead}(X) = \sum_h \text{head}_h W_h^O$ |
 | การเลือกมิติ | $d_k = d_v = d_{\text{model}}/H$ → $H \cdot n^2 d_k = n^2 d_{\text{model}}$ (ต้นทุนคงที่) |
-| ต้นทุนคำนวณ | $4n\,d_{\text{model}}^2 + 2n^2 d_{\text{model}}$ MAC — ไม่ขึ้นกับ $H$ |
-| จำนวนพารามิเตอร์ | $4\,d_{\text{model}}^2$ = 1,048,576 ที่ $d_{\text{model}}=512$ |
+| ต้นทุนคำนวณ | $4n\\,d_{\text{model}}^2 + 2n^2 d_{\text{model}}$ MAC — ไม่ขึ้นกับ $H$ |
+| จำนวนพารามิเตอร์ | $4\\,d_{\text{model}}^2$ = 1,048,576 ที่ $d_{\text{model}}=512$ |
 | การมองเป็นเทนเซอร์ | $(n, d_{\text{model}}) \to (n,H,d_k) \to (H,n,d_k) \to$ batched matmul |
 
 **สิ่งที่ยังขาดอยู่:** สังเกตว่าตลอดไฟล์นี้ ไม่มีจุดไหนเลยที่ใช้ข้อมูล *ลำดับ* ของโทเคน — ถ้าสลับแถวของ $X$ ผลลัพธ์ก็แค่สลับแถวตาม multi-head จึงมองประโยคเป็น **ถุงของโทเคน** ไม่ใช่ลำดับ

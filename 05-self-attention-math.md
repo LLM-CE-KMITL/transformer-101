@@ -239,8 +239,8 @@ $$
 | sd ของคะแนน | 8.7016 | 1.0877 | — |
 | น้ำหนักสูงสุด $\max_j A_j$ | **0.9776** | **0.4401** | uniform = 0.125 |
 | entropy ของการแจกแจง | 0.1074 | 1.5376 | uniform = $\ln 8$ = 2.0794 |
-| $\|J_{\text{softmax}}\|_F$ | **0.0438** | **0.3939** | — |
-| $\max_{ij}\|J_{ij}\|$ | 0.0219 | 0.2464 | — |
+| $\\|J_{\text{softmax}}\\|_F$ | **0.0438** | **0.3939** | — |
+| $\max_{ij}\\|J_{ij}\\|$ | 0.0219 | 0.2464 | — |
 
 $$
 \frac{\|J\|_F \text{ ที่หาร}}{\|J\|_F \text{ ที่ไม่หาร}} = \frac{0.3939}{0.0438} \approx 8.99
@@ -626,7 +626,7 @@ $$
 
 **$O(PX)$ เทียบกับ $PO$**
 
-| แถว | $O(PX)$ | $P\,O$ | ตรงกัน |
+| แถว | $O(PX)$ | $P\\,O$ | ตรงกัน |
 |---|---|---|---|
 | 1 | $[0.5812,\ 0.9092]$ | $[0.5812,\ 0.9092]$ | ✅ |
 | 2 | $[-0.5093,\ 0.6728]$ | $[-0.5093,\ 0.6728]$ | ✅ |
@@ -719,7 +719,7 @@ $$
 
 | ผล | อธิบาย |
 |---|---|
-| **เสถียรเชิงตัวเลข** | $\|\mathbf{o}_i\| \le \max_j\|\mathbf{v}_j\|$ — output ไม่มีวันระเบิด ไม่ต้องมี gate แบบ LSTM |
+| **เสถียรเชิงตัวเลข** | $\\|\mathbf{o}_i\\| \le \max_j\\|\mathbf{v}_j\\|$ — output ไม่มีวันระเบิด ไม่ต้องมี gate แบบ LSTM |
 | **attention เป็น linear ในตัว $V$** | ความไม่เชิงเส้นทั้งหมดอยู่ใน softmax ซึ่งกระทำกับ *น้ำหนัก* ไม่ใช่ *เนื้อหา* |
 | **ต้องมี FFN ต่อท้าย** | ถ้ามีแต่ attention ซ้อนกัน โมเดลจะแทน "การผสม" ได้เก่งขึ้นแต่แปลงเนื้อหาไม่เป็น → [ไฟล์ 08](08-feedforward-and-residual.md) |
 
@@ -770,9 +770,9 @@ $$
 |---|---|---|---|
 | $V$ | $\dfrac{\partial\mathcal{L}}{\partial V} = A^\top G$ | $n\times d_v$ | ตรงจาก $O = AV$ |
 | $A$ | $\dfrac{\partial\mathcal{L}}{\partial A} = G V^\top$ | $n\times n$ | ตรงจาก $O = AV$ |
-| $\tilde{S}$ | $\dfrac{\partial\mathcal{L}}{\partial \tilde{S}} = A \odot \left(\dfrac{\partial\mathcal{L}}{\partial A} - \text{rowsum}\!\left(\dfrac{\partial\mathcal{L}}{\partial A}\odot A\right)\right)$ | $n\times n$ | Jacobian ของ softmax (§5.1) รายแถว |
-| $Q$ | $\dfrac{\partial\mathcal{L}}{\partial Q} = \dfrac{1}{\sqrt{d_k}}\,\dfrac{\partial\mathcal{L}}{\partial \tilde{S}}\,K$ | $n\times d_k$ | ตรงจาก $\tilde{S} = QK^\top/\sqrt{d_k}$ |
-| $K$ | $\dfrac{\partial\mathcal{L}}{\partial K} = \dfrac{1}{\sqrt{d_k}}\left(\dfrac{\partial\mathcal{L}}{\partial \tilde{S}}\right)^{\!\top} Q$ | $n\times d_k$ | ตรงจาก $\tilde{S} = QK^\top/\sqrt{d_k}$ |
+| $\tilde{S}$ | $\dfrac{\partial\mathcal{L}}{\partial \tilde{S}} = A \odot \left(\dfrac{\partial\mathcal{L}}{\partial A} - \text{rowsum}\\!\left(\dfrac{\partial\mathcal{L}}{\partial A}\odot A\right)\right)$ | $n\times n$ | Jacobian ของ softmax (§5.1) รายแถว |
+| $Q$ | $\dfrac{\partial\mathcal{L}}{\partial Q} = \dfrac{1}{\sqrt{d_k}}\\,\dfrac{\partial\mathcal{L}}{\partial \tilde{S}}\\,K$ | $n\times d_k$ | ตรงจาก $\tilde{S} = QK^\top/\sqrt{d_k}$ |
+| $K$ | $\dfrac{\partial\mathcal{L}}{\partial K} = \dfrac{1}{\sqrt{d_k}}\left(\dfrac{\partial\mathcal{L}}{\partial \tilde{S}}\right)^{\\!\top} Q$ | $n\times d_k$ | ตรงจาก $\tilde{S} = QK^\top/\sqrt{d_k}$ |
 
 แถว $\tilde{S}$ คือรูปย่อของ $\left(\frac{\partial\mathcal{L}}{\partial\tilde{\mathbf{s}}_i}\right) = \left(\frac{\partial\mathcal{L}}{\partial \mathbf{a}_i}\right) J_i$ โดย $J_i = \text{diag}(\mathbf{a}_i) - \mathbf{a}_i^\top\mathbf{a}_i$ — เขียนแบบ element-wise เพื่อไม่ต้องสร้าง Jacobian ขนาด $n\times n$ ต่อแถวจริง ๆ
 
@@ -841,7 +841,7 @@ $$
 
 นี่คือ **เหตุผลทางคณิตศาสตร์เต็มรูปแบบว่าทำไม §2.3 สำคัญ** — ย้อนกลับไปดูตัวเลขจากการทดลอง:
 
-| กรณี | $\max_j A_j$ | $\|J\|_F$ | เกิดอะไรขึ้นตอนเทรน |
+| กรณี | $\max_j A_j$ | $\\|J\\|_F$ | เกิดอะไรขึ้นตอนเทรน |
 |---|---:|---:|---|
 | ไม่หาร $\sqrt{d_k}$ | 0.9776 | 0.0438 | gradient เล็กมาก → $W^Q, W^K$ แทบไม่ขยับ |
 | หาร $\sqrt{d_k}$ | 0.4401 | 0.3939 | gradient ปกติ → เรียนได้ |
@@ -852,7 +852,7 @@ $$
 
 ตัวอย่างเดียวอาจเป็นความบังเอิญ จึงวัดซ้ำ 2,000 ครั้งที่ $d_k$ ต่าง ๆ (รายงานเป็นมัธยฐานของอัตราส่วน $\|J\|_F$ ระหว่าง "หาร" กับ "ไม่หาร")
 
-| $d_k$ | $\sqrt{d_k}$ | อัตราส่วน $\|J\|_F$ (มัธยฐาน 2,000 ครั้ง) |
+| $d_k$ | $\sqrt{d_k}$ | อัตราส่วน $\\|J\\|_F$ (มัธยฐาน 2,000 ครั้ง) |
 |---:|---:|---:|
 | 16 | 4.0 | **1.29** |
 | 64 | 8.0 | **5.96** |
@@ -893,13 +893,13 @@ for d_k in [16, 64, 256]:
 
 | สิ่งที่ได้ | สมการหลัก |
 |---|---|
-| **สมการแกนกลาง** | $\text{Attention}(Q,K,V) = \text{softmax}\!\left(\dfrac{QK^\top}{\sqrt{d_k}}\right)V$ |
+| **สมการแกนกลาง** | $\text{Attention}(Q,K,V) = \text{softmax}\\!\left(\dfrac{QK^\top}{\sqrt{d_k}}\right)V$ |
 | การฉาย 3 บทบาท | $Q = XW^Q$, $K = XW^K$, $V = XW^V$ |
 | เมทริกซ์คะแนน | $S_{ij} = \mathbf{q}_i\cdot\mathbf{k}_j$, $S \in \mathbb{R}^{n\times n}$ |
 | เหตุผลของ $\sqrt{d_k}$ | $\text{Var}(\mathbf{q}\cdot\mathbf{k}) = d_k$ → sd $=\sqrt{d_k}$ → ต้อง normalize ไม่งั้น softmax saturate |
 | softmax รายแถว | $\sum_j A_{ij} = 1$, ลบ max เพื่อความเสถียร |
-| output | $\mathbf{o}_i = \sum_j A_{ij}\mathbf{v}_j \in \text{conv}\{\mathbf{v}_j\}$ |
-| Permutation equivariance | $\text{Attention}(PX) = P\,\text{Attention}(X)$ → ต้องมี PE |
+| output | $\mathbf{o}_i = \sum_j A_{ij}\mathbf{v}_j \in \text{conv}\\{\mathbf{v}_j\\}$ |
+| Permutation equivariance | $\text{Attention}(PX) = P\\,\text{Attention}(X)$ → ต้องมี PE |
 | Path length | 1 ก้าวระหว่างทุกคู่ตำแหน่ง |
 | Jacobian ของ softmax | $J = \text{diag}(\mathbf{p}) - \mathbf{p}^\top\mathbf{p}$ |
 | Gradient ของบล็อก | $\partial_V = A^\top G$, $\partial_Q = \tilde{S}'K/\sqrt{d_k}$, $\partial_K = \tilde{S}'^\top Q/\sqrt{d_k}$ |

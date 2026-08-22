@@ -161,7 +161,7 @@ $$
 | ปริมาณ | นิยาม | บอกอะไร |
 |---|---|---|
 | **spectral radius** $\rho(W)$ | $\max_i |\lambda_i(W)|$ | อัตราการโต/หด **ในระยะยาว** ($T$ ใหญ่) |
-| **largest singular value** $\sigma_{\max}(W)$ | $\|W\|_2$ | ขอบเขตบนของการขยาย **ในหนึ่งก้าว** |
+| **largest singular value** $\sigma_{\max}(W)$ | $\\|W\\|_2$ | ขอบเขตบนของการขยาย **ในหนึ่งก้าว** |
 
 ความสัมพันธ์คือ $\rho(W) \le \sigma_{\max}(W)$ เสมอ และผลลัพธ์ที่ต้องจำคือ
 
@@ -513,7 +513,7 @@ flowchart LR
 |---|---|
 | คอขวด context vector | $H \in \mathbb{R}^{n\times d_h} \to \mathbf{c} \in \mathbb{R}^{1\times d_h}$ — บีบ $n$:1 |
 | BPTT | $\dfrac{\partial \mathcal{L}}{\partial \mathbf{h}_1} = \dfrac{\partial \mathcal{L}}{\partial \mathbf{h}_T}\prod_{t=2}^{T} J_t$, $\ J_t = W_{hh}\text{diag}(1-\mathbf{h}_t^2)$ |
-| กฎเลขชี้กำลัง | $\left\|\prod J_t\right\| \approx \rho^{T-1}$ — ที่ $T=50$: $\rho{=}0.9 \to 5.1538\text{e-}03$, $\rho{=}1.1 \to 1.1739\text{e+}02$ |
+| กฎเลขชี้กำลัง | $\left\\|\prod J_t\right\\| \approx \rho^{T-1}$ — ที่ $T=50$: $\rho{=}0.9 \to 5.1538\text{e-}03$, $\rho{=}1.1 \to 1.1739\text{e+}02$ |
 | $\tanh$ ซ้ำเติมเสมอ | $\tanh'(a) = 1-\tanh^2(a) \in (0,1]$ → ผลคูณ $\le 1$ เสมอ |
 | LSTM ช่วยแต่ไม่หมด | $\partial\mathbf{c}_t/\partial\mathbf{c}_{t-1} = \text{diag}(\mathbf{f}_t)$ แต่ $\mathbf{f}_t {<} 1$ เข้มงวด |
 | ขนานไม่ได้ | sequential ops $= O(n)$ → GPU utilization ~34% ต่อก้าว |

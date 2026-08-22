@@ -813,7 +813,7 @@ def greedy_decode(model, memory, src_pad, bos, eos, max_len=50):
 | สิ่งที่ได้ | สมการหลัก |
 |---|---|
 | Causal mask | $M_{ij} = 0$ ถ้า $j \le i$, $-\infty$ ถ้า $j {>} i$ |
-| Masked self-attention | $\text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}} + M\right)V$ |
+| Masked self-attention | $\text{softmax}\\!\left(\frac{QK^\top}{\sqrt{d_k}} + M\right)V$ |
 | ทำไม $-\infty$ ไม่ใช่คูณศูนย์ | แถวต้องรวมได้ 1 (มิฉะนั้นได้ 0.4184 / 0.7714 / 0.7281 ไม่เท่ากัน) |
 | ขนานตอนเทรน | teacher forcing + causal mask $\Rightarrow$ $m$ ตัวอย่างใน 1 forward pass |
 | Cross-attention | $Q$ จาก decoder, $K,V$ จาก encoder $\Rightarrow$ $A \in \mathbb{R}^{m\times n}$ |

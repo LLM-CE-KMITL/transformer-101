@@ -71,7 +71,7 @@ $$
 
 | มุมมอง | สมการ | ต้นทุน |
 |---|---|---|
-| พีชคณิต | $\mathbf{e}_i = \mathbf{o}_i E$ เมื่อ $\mathbf{o}_i \in \{0,1\}^{1 \times V}$ เป็น one-hot | $O(V \cdot d_{\text{model}})$ ต่อโทเคน |
+| พีชคณิต | $\mathbf{e}_i = \mathbf{o}_i E$ เมื่อ $\mathbf{o}_i \in \\{0,1\\}^{1 \times V}$ เป็น one-hot | $O(V \cdot d_{\text{model}})$ ต่อโทเคน |
 | ปฏิบัติ | $\mathbf{e}_i = E[\text{id}_i,\ :]$ (index เข้าไปตรง ๆ) | $O(d_{\text{model}})$ |
 
 $$
@@ -113,12 +113,12 @@ $$
 | ปริมาณ | ค่า | หมายเหตุ |
 |---|---|---|
 | std ของ $E$ ตอน init | 0.0442 | $= 1/\sqrt{512}$ |
-| $\|\mathbf{e}\|$ เฉลี่ย (ก่อนสเกล) | 1.0007 | $\approx 1$ ตามการออกแบบ |
+| $\\|\mathbf{e}\\|$ เฉลี่ย (ก่อนสเกล) | 1.0007 | $\approx 1$ ตามการออกแบบ |
 | std ของ $PE$ | 0.5864 | ค่าระดับ $O(1)$ เพราะ sin/cos อยู่ในช่วง $[-1,1]$ เสมอ |
-| $\|PE_{pos}\|$ | **16.0000** | $= \sqrt{d_{\text{model}}/2} = \sqrt{256}$ **เป๊ะทุกตำแหน่ง** |
-| อัตราส่วน $\|\mathbf{e}\| / \|PE\|$ **ก่อน** สเกล | **0.0625** | $= 1/16$ → embedding เบากว่า PE 16 เท่า |
-| std ของ $\sqrt{d}\,E$ | 1.0012 | $\approx 1$ |
-| $\|\sqrt{d}\,\mathbf{e}\|$ เฉลี่ย | 22.6440 | $\approx \sqrt{512} = 22.6274$ |
+| $\\|PE_{pos}\\|$ | **16.0000** | $= \sqrt{d_{\text{model}}/2} = \sqrt{256}$ **เป๊ะทุกตำแหน่ง** |
+| อัตราส่วน $\\|\mathbf{e}\\| / \\|PE\\|$ **ก่อน** สเกล | **0.0625** | $= 1/16$ → embedding เบากว่า PE 16 เท่า |
+| std ของ $\sqrt{d}\\,E$ | 1.0012 | $\approx 1$ |
+| $\\|\sqrt{d}\\,\mathbf{e}\\|$ เฉลี่ย | 22.6440 | $\approx \sqrt{512} = 22.6274$ |
 | อัตราส่วน **หลัง** สเกล | **1.4153** | $\approx \sqrt{2}$ → ทั้งสองสัญญาณมีน้ำหนักพอ ๆ กัน |
 
 > **สัญชาตญาณ:** $\|PE_{pos}\|^2 = \sum_{i}(\sin^2\theta_i + \cos^2\theta_i) = d_{\text{model}}/2$ — คงที่เป๊ะ ๆ ทุกตำแหน่ง
@@ -284,7 +284,7 @@ flowchart TD
 |---|---|---|---|---|
 | 0 | token ids | $\text{ids} = \text{tok}(\text{text})$ | $(n,)$ จำนวนเต็ม | 0 |
 | 1 | embedding lookup | $E[\text{ids}]$ | $n \times 512$ | $V d = 18{,}944{,}000$ |
-| 2 | สเกล | $\sqrt{d_{\text{model}}}\,E[\text{ids}]$ | $n \times 512$ | 0 |
+| 2 | สเกล | $\sqrt{d_{\text{model}}}\\,E[\text{ids}]$ | $n \times 512$ | 0 |
 | 3 | บวก PE | $X^{(0)} = (2) + PE$ | $n \times 512$ | 0 *(sinusoidal คงที่)* |
 | 4 | ฉาย Q, K, V ทุกหัว | $XW^Q, XW^K, XW^V$ | $3 \times (n \times 512)$ | $3 d^2 = 786{,}432$ |
 | 5 | แยกหัว | reshape $\to (H, n, d_k)$ | $8 \times n \times 64$ | 0 |
@@ -292,9 +292,9 @@ flowchart TD
 | 7 | มาสก์ + softmax | $A_h = \text{softmax}(S_h + M)$ | $8 \times n \times n$ | 0 |
 | 8 | ถ่วงน้ำหนัก value | $A_hV_h$ | $8 \times n \times 64$ | 0 |
 | 9 | concat | $[\text{head}_1;\dots;\text{head}_8]$ | $n \times 512$ | 0 |
-| 10 | ฉายออก | $(9)\,W^O$ | $n \times 512$ | $d^2 = 262{,}144$ |
+| 10 | ฉายออก | $(9)\\,W^O$ | $n \times 512$ | $d^2 = 262{,}144$ |
 | 11 | residual + LN | $Z = \text{LN}(X + (10))$ | $n \times 512$ | $2d = 1{,}024$ |
-| 12 | FFN ชั้นใน | $\max(0, ZW_1 + \mathbf{b}_1)$ | $n \times 2048$ | $d\,d_{\text{ff}} + d_{\text{ff}} = 1{,}050{,}624$ |
+| 12 | FFN ชั้นใน | $\max(0, ZW_1 + \mathbf{b}_1)$ | $n \times 2048$ | $d\\,d_{\text{ff}} + d_{\text{ff}} = 1{,}050{,}624$ |
 | 13 | FFN ชั้นนอก | $(12)W_2 + \mathbf{b}_2$ | $n \times 512$ | $d_{\text{ff}}d + d = 1{,}049{,}088$ |
 | 14 | residual + LN | $X^{(l)} = \text{LN}(Z + (13))$ | $n \times 512$ | $2d = 1{,}024$ |
 | — | **รวม 1 เลเยอร์** | ขั้น 4–14 | $n \times 512$ | **3,150,336** |
@@ -792,8 +792,8 @@ for n in [10, 100, 512, 1000]:
 
 | สิ่งที่ได้ | สมการหลัก |
 |---|---|
-| Input pipeline | $X^{(0)} = \sqrt{d_{\text{model}}}\,E[\text{ids}] + PE$ |
-| ทำไมต้อง $\sqrt{d_{\text{model}}}$ | $\|\mathbf{e}\| \approx 1$ แต่ $\|PE\| = \sqrt{d_{\text{model}}/2} = 16$ → อัตราส่วน $0.0625 \to 1.4153$ |
+| Input pipeline | $X^{(0)} = \sqrt{d_{\text{model}}}\\,E[\text{ids}] + PE$ |
+| ทำไมต้อง $\sqrt{d_{\text{model}}}$ | $\\|\mathbf{e}\\| \approx 1$ แต่ $\\|PE\\| = \sqrt{d_{\text{model}}/2} = 16$ → อัตราส่วน $0.0625 \to 1.4153$ |
 | Sublayer 1 | $Z = \text{LN}(X + \text{MultiHead}(X))$ |
 | Sublayer 2 | $Y = \text{LN}(Z + \text{FFN}(Z))$ |
 | ซ้อน $N$ เลเยอร์ | $X^{(l)} = \text{LN}_2(Z^{(l)} + \text{FFN}(Z^{(l)}))$, $l=1..N$ |

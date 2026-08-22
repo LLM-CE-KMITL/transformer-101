@@ -402,7 +402,7 @@ flowchart LR
 | Convolutional complexity | $O(k n d^2)$ ต่อเลเยอร์, sequential $O(1)$, path $O(\log_k n)$ |
 | จุดคุ้มทุน | $n^2 d {<} n d^2 \iff n {<} d_{\text{model}}$ → ที่ $d=512$ คุ้มเมื่อ $n {<} 512$ |
 | ราคาที่จ่าย 1 | attention matrix $H n^2$ ค่า → ที่ $n=8192$, $H=8$, fp32 = 2 GiB ต่อ layer |
-| ราคาที่จ่าย 2 | $\text{Attention}(PX) = P\,\text{Attention}(X)$ → ไม่รู้ลำดับ ต้องใส่ PE |
+| ราคาที่จ่าย 2 | $\text{Attention}(PX) = P\\,\text{Attention}(X)$ → ไม่รู้ลำดับ ต้องใส่ PE |
 
 **สิ่งที่ต้องจำไปไฟล์ถัดไป:**
 

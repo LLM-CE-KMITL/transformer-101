@@ -26,7 +26,7 @@ RNN ในไฟล์ [01](01-seq2seq-rnn-basics.md) รู้ลำดับ "
 |---|---|
 | $Q = (PX)W^Q = P(XW^Q)$ | แถวของ $Q$ สลับตาม |
 | $QK^\top \to (PQ)(PK)^\top = P(QK^\top)P^\top$ | ทั้งแถวและคอลัมน์ของ score matrix สลับตาม |
-| softmax ทีละแถว | ไม่สนใจว่าแถวอยู่ลำดับไหน → $\text{softmax}(PSP^\top) = P\,\text{softmax}(S)\,P^\top$ |
+| softmax ทีละแถว | ไม่สนใจว่าแถวอยู่ลำดับไหน → $\text{softmax}(PSP^\top) = P\\,\text{softmax}(S)\\,P^\top$ |
 | $AV \to (PAP^\top)(PV) = P(AV)$ | $P^\top P = I$ ตัดกันพอดี |
 
 พูดสั้น ๆ: **ไม่มีที่ไหนในสมการที่ดัชนี $i$ กับ $j$ ปรากฏในฐานะ "ตัวเลข"** มันปรากฏแค่ในฐานะ "ป้ายชื่อของแถว" เท่านั้น
@@ -297,7 +297,7 @@ Sinusoidal PE คือสิ่งเดียวกันแต่เป็น
 
 | | binary counter | sinusoidal PE |
 |---|---|---|
-| ค่าแต่ละหลัก | $\{0, 1\}$ | $[-1, 1]$ ต่อเนื่อง |
+| ค่าแต่ละหลัก | $\\{0, 1\\}$ | $[-1, 1]$ ต่อเนื่อง |
 | คาบของหลักที่ $i$ | $2^{i+1}$ | $\lambda_i = 2\pi \cdot 10000^{2i/d_{\text{model}}}$ |
 | อัตราส่วนคาบ | 2 | $10000^{2/d_{\text{model}}} \approx 1.0366$ ที่ $d=512$ |
 | จำนวนตำแหน่งที่แทนได้ | $2^{d}$ (แต่ต้องกำหนดล่วงหน้า) | ไม่จำกัด (นิยามได้ทุก $pos$ จริง) |
@@ -349,12 +349,12 @@ $$
 
 > **ผลลัพธ์:** สำหรับ offset $k$ ที่คงที่ มีเมทริกซ์ $M_k^{(i)} \in \mathbb{R}^{2\times 2}$ **ที่ไม่ขึ้นกับ $pos$** ซึ่งทำให้
 > $$
-{>} \left[PE_{(pos+k,\,2i)},\ PE_{(pos+k,\,2i+1)}\right] = \left[PE_{(pos,\,2i)},\ PE_{(pos,\,2i+1)}\right] M_k^{(i)}
-{>} $$
+> \left[PE_{(pos+k,\,2i)},\ PE_{(pos+k,\,2i+1)}\right] = \left[PE_{(pos,\,2i)},\ PE_{(pos,\,2i+1)}\right] M_k^{(i)}
+> $$
 > โดย
 > $$
-{>} M_k^{(i)} = \begin{bmatrix} \cos(\omega_i k) & -\sin(\omega_i k) \\ \sin(\omega_i k) & \cos(\omega_i k) \end{bmatrix}
-{>} $$
+> M_k^{(i)} = \begin{bmatrix} \cos(\omega_i k) & -\sin(\omega_i k) \\ \sin(\omega_i k) & \cos(\omega_i k) \end{bmatrix}
+> $$
 
 นี่คือ **เมทริกซ์หมุน** มุม $\omega_i k$ พอดี
 
@@ -499,7 +499,7 @@ print("ต่ำสุดที่ k =", int(d.argmin()), round(d.min(), 4))    
 
 | วิธี | สมการย่อ | ใส่ที่ไหน | จุดขาย |
 |---|---|---|---|
-| **Sinusoidal** (2017) | $PE_{(pos,2i)} = \sin(pos\,\omega_i)$ | บวกที่ input ครั้งเดียว | ไม่มีพารามิเตอร์, relative โดยปริยาย |
+| **Sinusoidal** (2017) | $PE_{(pos,2i)} = \sin(pos\\,\omega_i)$ | บวกที่ input ครั้งเดียว | ไม่มีพารามิเตอร์, relative โดยปริยาย |
 | **Learned absolute** (BERT, GPT-2) | $\mathbf{p}_{pos} = E_{pos}[pos,:]$ เทรนได้ | บวกที่ input ครั้งเดียว | ยืดหยุ่นสุด แต่จำกัดที่ $n_{\max}$ ตายตัว |
 | **Relative bias** (T5) | $\text{score}_{ij} \mathrel{+}= b_{\text{bucket}(i-j)}$ | ทุกเลเยอร์ ใน attention score | เรียน bias ตามระยะโดยตรง, ทนความยาว |
 | **RoPE** (RoFormer, LLaMA) | หมุน $\mathbf{q}_i, \mathbf{k}_j$ ด้วย $R_{\Theta,i}$ → $\mathbf{q}_i^\top\mathbf{k}_j$ ขึ้นกับ $i-j$ | ทุกเลเยอร์ กับ $Q,K$ (ไม่แตะ $V$) | relative แท้ ๆ, ไม่มีพารามิเตอร์, ยืด context ได้ด้วยการปรับฐาน |

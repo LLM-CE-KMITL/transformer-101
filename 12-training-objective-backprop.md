@@ -36,7 +36,7 @@ $$
 |---|---|---|
 | $\mathbf{z}_t$ | $\mathbb{R}^{1 \times V}$ | logits ที่ตำแหน่ง $t$ (ก่อน softmax) |
 | $\mathbf{p}_t = \text{softmax}(\mathbf{z}_t)$ | $\mathbb{R}^{1 \times V}$ | การแจกแจงที่โมเดลทำนาย |
-| $y_t^*$ | scalar $\in \{1..V\}$ | ดัชนีโทเคนเฉลย |
+| $y_t^*$ | scalar $\in \\{1..V\\}$ | ดัชนีโทเคนเฉลย |
 | $\mathbf{y}_t^{\text{onehot}}$ | $\mathbb{R}^{1 \times V}$ | one-hot ของ $y_t^*$ |
 | $m$ | scalar | ความยาว target |
 | $V$ | scalar | ขนาด vocabulary |
@@ -240,7 +240,7 @@ print(np.max(np.abs(fd - g_analytic)))                 # 7.33e-11  ← ตรง
 
 **เทียบกับ label smoothing** ($\varepsilon = 0.1$) — สมการกลายเป็น $\partial\mathcal{L}^{\text{LS}}/\partial\mathbf{z} = \mathbf{p} - \mathbf{q}$
 
-| | $\mathcal{L}$ | PPL | gradient | $\|\text{grad}\|_2$ |
+| | $\mathcal{L}$ | PPL | gradient | $\\|\text{grad}\\|_2$ |
 |---|---|---|---|---|
 | ธรรมดา | **1.4697** | 4.3479 | $[0.6252,\ -0.7700,\ 0.0935,\ 0.0513]$ | 0.9976 |
 | label smoothing | 1.5047 | 4.5028 | $[0.6002,\ -0.6950,\ 0.0685,\ 0.0263]$ | 0.9212 |
@@ -325,11 +325,11 @@ $$
 
 | อนุพันธ์ | สูตร | มิติ |
 |---|---|---|
-| $\partial\mathcal{L}/\partial V$ | $A^\top\, G_O$ | $\mathbb{R}^{n \times d_v}$ |
-| $\partial\mathcal{L}/\partial A$ | $G_O\, V^\top$ | $\mathbb{R}^{n \times n}$ |
-| $\partial\mathcal{L}/\partial S$ | $A \odot \left(G_A - \text{rowsum}(G_A \odot A)\,\mathbf{1}^\top\right)$ | $\mathbb{R}^{n \times n}$ |
-| $\partial\mathcal{L}/\partial Q$ | $\dfrac{1}{\sqrt{d_k}}\, G_S\, K$ | $\mathbb{R}^{n \times d_k}$ |
-| $\partial\mathcal{L}/\partial K$ | $\dfrac{1}{\sqrt{d_k}}\, G_S^\top\, Q$ | $\mathbb{R}^{n \times d_k}$ |
+| $\partial\mathcal{L}/\partial V$ | $A^\top\\, G_O$ | $\mathbb{R}^{n \times d_v}$ |
+| $\partial\mathcal{L}/\partial A$ | $G_O\\, V^\top$ | $\mathbb{R}^{n \times n}$ |
+| $\partial\mathcal{L}/\partial S$ | $A \odot \left(G_A - \text{rowsum}(G_A \odot A)\\,\mathbf{1}^\top\right)$ | $\mathbb{R}^{n \times n}$ |
+| $\partial\mathcal{L}/\partial Q$ | $\dfrac{1}{\sqrt{d_k}}\\, G_S\\, K$ | $\mathbb{R}^{n \times d_k}$ |
+| $\partial\mathcal{L}/\partial K$ | $\dfrac{1}{\sqrt{d_k}}\\, G_S^\top\\, Q$ | $\mathbb{R}^{n \times d_k}$ |
 
 โดย $G_X \equiv \partial\mathcal{L}/\partial X$ และ $\text{rowsum}$ ทำแล้ว broadcast กลับทุกคอลัมน์
 
@@ -355,11 +355,11 @@ $$
 
 | gradient | ค่า |
 |---|---|
-| $\partial\mathcal{L}/\partial V$ | $\begin{bmatrix} 0.6698 & 0.5000 \\ 0.3302 & 0.5000\end{bmatrix}$ |
-| $\partial\mathcal{L}/\partial A$ | $\begin{bmatrix} 1 & 3 \\ 2 & 4 \end{bmatrix}$ |
-| $\partial\mathcal{L}/\partial S$ | $\begin{bmatrix} -0.4424 & 0.4424 \\ -0.5000 & 0.5000\end{bmatrix}$ ← แต่ละแถวรวมได้ 0 |
-| $\partial\mathcal{L}/\partial Q$ | $\begin{bmatrix} -0.3128 & 0 \\ -0.3536 & 0\end{bmatrix}$ |
-| $\partial\mathcal{L}/\partial K$ | $\begin{bmatrix} -0.3128 & -0.3536 \\ 0.3128 & 0.3536\end{bmatrix}$ |
+| $\partial\mathcal{L}/\partial V$ | $\begin{bmatrix} 0.6698 & 0.5000 \\\ 0.3302 & 0.5000\end{bmatrix}$ |
+| $\partial\mathcal{L}/\partial A$ | $\begin{bmatrix} 1 & 3 \\\ 2 & 4 \end{bmatrix}$ |
+| $\partial\mathcal{L}/\partial S$ | $\begin{bmatrix} -0.4424 & 0.4424 \\\ -0.5000 & 0.5000\end{bmatrix}$ ← แต่ละแถวรวมได้ 0 |
+| $\partial\mathcal{L}/\partial Q$ | $\begin{bmatrix} -0.3128 & 0 \\\ -0.3536 & 0\end{bmatrix}$ |
+| $\partial\mathcal{L}/\partial K$ | $\begin{bmatrix} -0.3128 & -0.3536 \\\ 0.3128 & 0.3536\end{bmatrix}$ |
 
 ```python
 import torch, numpy as np
@@ -552,8 +552,8 @@ $$
 
 | กรณี | ผล |
 |---|---|
-| $\|\mathbf{g}\| \le c$ | ตัวคูณ $=1$ → ไม่แตะต้องเลย |
-| $\|\mathbf{g}\| {>} c$ | หดให้ norm เท่ากับ $c$ พอดี **โดยรักษาทิศเดิม** |
+| $\\|\mathbf{g}\\| \le c$ | ตัวคูณ $=1$ → ไม่แตะต้องเลย |
+| $\\|\mathbf{g}\\| {>} c$ | หดให้ norm เท่ากับ $c$ พอดี **โดยรักษาทิศเดิม** |
 
 > **สัญชาตญาณ:** clipping ไม่ได้บอกว่า "อย่าไปทางนั้น" แต่บอกว่า "ไปทางนั้นได้ แต่อย่าก้าวไกลเกิน" — ต่างจากการ clip ทีละ element ซึ่งจะ**บิดทิศ**ของ gradient
 
@@ -639,8 +639,8 @@ for name, peak, util in [("V100 fp32", 15.7e12, 0.30), ("A100 bf16", 312e12, 0.4
 | Gradient ผ่าน attention | $G_V = A^\top G_O$, $\ G_Q = G_S K/\sqrt{d_k}$, $\ G_K = G_S^\top Q/\sqrt{d_k}$ |
 | Adam | $\theta \leftarrow \theta - \eta_t \hat{\mathbf{m}}_t/(\sqrt{\hat{\mathbf{v}}_t}+\epsilon)$, $\ \beta=(0.9, 0.98)$ |
 | LR schedule | $\eta_t = d_{\text{model}}^{-0.5}\min(t^{-0.5},\ t\cdot w^{-1.5})$, สูงสุด $6.99\times10^{-4}$ ที่ $t=4000$ |
-| Gradient clipping | $\mathbf{g} \leftarrow \mathbf{g}\min(1, c/\|\mathbf{g}\|)$ |
-| ต้นทุน | $\text{FLOPs} \approx 6 N_{\text{params}} \times \#\text{tokens}$ |
+| Gradient clipping | $\mathbf{g} \leftarrow \mathbf{g}\min(1, c/\\|\mathbf{g}\\|)$ |
+| ต้นทุน | $\text{FLOPs} \approx 6 N_{\text{params}} \times \\#\text{tokens}$ |
 
 **สามข้อที่ควรติดตัวไปจากไฟล์นี้:**
 

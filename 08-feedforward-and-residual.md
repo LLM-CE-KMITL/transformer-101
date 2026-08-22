@@ -158,7 +158,7 @@ ffn_conv   = nn.Sequential(nn.Conv1d(512, 2048, kernel_size=1), nn.ReLU(),
 | ชื่อ | สมการ | ใช้ใน |
 |---|---|---|
 | **ReLU** | $\text{ReLU}(z) = \max(0, z)$ | Transformer ต้นฉบับ (2017) |
-| **GELU** | $\text{GELU}(z) = z\,\Phi(z) = \tfrac{z}{2}\left[1 + \text{erf}\!\left(\tfrac{z}{\sqrt{2}}\right)\right]$ | BERT, GPT-2, GPT-3 |
+| **GELU** | $\text{GELU}(z) = z\\,\Phi(z) = \tfrac{z}{2}\left[1 + \text{erf}\\!\left(\tfrac{z}{\sqrt{2}}\right)\right]$ | BERT, GPT-2, GPT-3 |
 | **SwiGLU** | $\text{SwiGLU}(\mathbf{x}) = \left[\text{Swish}(\mathbf{x}W_1 + \mathbf{b}_1)\right] \odot \left(\mathbf{x}W_g + \mathbf{b}_g\right)$ | LLaMA, PaLM, Mistral |
 
 โดย $\Phi$ คือ CDF ของ normal มาตรฐาน และ $\text{Swish}(z) = z\,\sigma(z) = \dfrac{z}{1+e^{-z}}$
@@ -599,7 +599,7 @@ print(N*enc_layer, N*dec_layer, V*d_model)        # 18902016 25199616 18944000
 | Position-wise FFN | $\text{FFN}(\mathbf{x}) = \max(0, \mathbf{x}W_1 + \mathbf{b}_1)W_2 + \mathbf{b}_2$ |
 | การแบ่งงาน | attention = ผสมข้าม token; FFN = คิดในแต่ละ token (ไม่มีเทอมข้ามตำแหน่ง) |
 | อัตราส่วนขยาย | $d_{\text{ff}} = 4d_{\text{model}}$ → FFN กิน 66.67% ของน้ำหนักต่อเลเยอร์ |
-| มุมมอง key-value | $\text{FFN}(\mathbf{x}) = \sum_u \max(0, \mathbf{x}\cdot\mathbf{k}_u + b_{1u})\,\mathbf{v}_u + \mathbf{b}_2$ |
+| มุมมอง key-value | $\text{FFN}(\mathbf{x}) = \sum_u \max(0, \mathbf{x}\cdot\mathbf{k}_u + b_{1u})\\,\mathbf{v}_u + \mathbf{b}_2$ |
 | Activation ยุคใหม่ | $\text{GELU}(z) = \tfrac{z}{2}[1+\text{erf}(z/\sqrt{2})]$, $\ \text{SwiGLU} = \text{Swish}(\mathbf{x}W_1)\odot(\mathbf{x}W_g)$ |
 | Residual | $\mathbf{y} = \mathbf{x} + \text{Sublayer}(\mathbf{x})$ |
 | ทำไม gradient ไม่หาย | $\frac{\partial \mathbf{y}_N}{\partial \mathbf{x}_0} = \prod_l (I + J_l)$ — มีพจน์ $I$ เสมอ |
