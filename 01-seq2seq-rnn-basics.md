@@ -26,7 +26,7 @@ $$
 การแจกแจงร่วมข้างบนมีขนาดใหญ่มหาศาล (ถ้า vocabulary $V$ ตัว และยาว $m$ → มี $V^m$ ความเป็นไปได้) จึงต้องแตกด้วย **chain rule ของความน่าจะเป็น**
 
 $$
-p(\mathbf{y} \mid \mathbf{x}) = \prod_{t=1}^{m} p(y_t \mid y_1, \dots, y_{t-1}, \mathbf{x}) = \prod_{t=1}^{m} p(y_t \mid y_{\lt{}t}, \mathbf{x})
+p(\mathbf{y} \mid \mathbf{x}) = \prod_{t=1}^{m} p(y_t \mid y_1, \dots, y_{t-1}, \mathbf{x}) = \prod_{t=1}^{m} p(y_t \mid y_{{<}t}, \mathbf{x})
 $$
 
 **สัญชาตญาณ:** แทนที่จะทายทั้งประโยคทีเดียว เราทายทีละคำ โดยแต่ละคำมองย้อนคำที่ทายไปแล้วบวกกับ input ทั้งหมด
@@ -45,7 +45,7 @@ flowchart LR
     M3 --> Y3["p(y₃|y₁y₂,x)"]
 ```
 
-> **จุดสำคัญ:** การแตกแบบนี้ใช้กับ **ทุก** สถาปัตยกรรมในเอกสารชุดนี้ — RNN seq2seq, attention seq2seq และ Transformer decoder ต่างก็ประมาณค่าพจน์ $p(y_t \mid y_{\lt{}t}, \mathbf{x})$ เหมือนกัน ต่างกันแค่ *วิธีคำนวณ* เท่านั้น
+> **จุดสำคัญ:** การแตกแบบนี้ใช้กับ **ทุก** สถาปัตยกรรมในเอกสารชุดนี้ — RNN seq2seq, attention seq2seq และ Transformer decoder ต่างก็ประมาณค่าพจน์ $p(y_t \mid y_{{<}t}, \mathbf{x})$ เหมือนกัน ต่างกันแค่ *วิธีคำนวณ* เท่านั้น
 
 ---
 
@@ -321,7 +321,7 @@ decoder รับ 3 อย่าง: state ก่อนหน้า, คำท�
 
 $$
 \mathbf{z}_t = \mathbf{s}_t W_o + \mathbf{b}_o \in \mathbb{R}^{1 \times V}, \qquad
-p(y_t \mid y_{\lt{}t}, \mathbf{x}) = \text{softmax}(\mathbf{z}_t)
+p(y_t \mid y_{{<}t}, \mathbf{x}) = \text{softmax}(\mathbf{z}_t)
 $$
 
 $W_o \in \mathbb{R}^{d_h \times V}$ มักเป็นเลเยอร์ที่ใหญ่ที่สุดในโมเดล (เช่น $512 \times 37000 \approx 19$M พารามิเตอร์)
@@ -333,7 +333,7 @@ $W_o \in \mathbb{R}^{d_h \times V}$ มักเป็นเลเยอร์�
 **Greedy** — เลือกตัวที่ดีที่สุดทีละก้าว
 
 $$
-\hat{y}_t = \arg\max_{y} p(y \mid \hat{y}_{\lt{}t}, \mathbf{x})
+\hat{y}_t = \arg\max_{y} p(y \mid \hat{y}_{{<}t}, \mathbf{x})
 $$
 
 เร็วแต่ผิดพลาดแล้วแก้ไม่ได้
@@ -341,7 +341,7 @@ $$
 **Beam Search** — เก็บผู้สมัคร $B$ อันดับแรกไว้ตลอด ให้คะแนนด้วย log-probability สะสม
 
 $$
-\text{score}(\mathbf{y}_{\le t}) = \sum_{t'=1}^{t} \log p(y_{t'} \mid y_{\lt{}t'}, \mathbf{x})
+\text{score}(\mathbf{y}_{\le t}) = \sum_{t'=1}^{t} \log p(y_{t'} \mid y_{{<}t'}, \mathbf{x})
 $$
 
 > **ทำไมใช้ log:** ผลคูณของความน่าจะเป็นเล็ก ๆ จะ underflow ส่วน log เปลี่ยนคูณเป็นบวก เสถียรกว่ามาก
@@ -349,7 +349,7 @@ $$
 ปัญหา: score นี้เอนเอียงไปทางประโยค **สั้น** (บวก log ที่เป็นลบน้อยครั้งกว่า) จึงมักหารด้วยความยาว
 
 $$
-\text{score}_{\text{norm}} = \frac{1}{t^\alpha}\sum_{t'=1}^{t} \log p(y_{t'} \mid y_{\lt{}t'}, \mathbf{x}), \qquad \alpha \approx 0.6\text{–}1.0
+\text{score}_{\text{norm}} = \frac{1}{t^\alpha}\sum_{t'=1}^{t} \log p(y_{t'} \mid y_{{<}t'}, \mathbf{x}), \qquad \alpha \approx 0.6\text{–}1.0
 $$
 
 ```mermaid
@@ -493,7 +493,7 @@ print("p_1 =", np.round(p, 4))           # [0.2893 0.2685 0.2333 0.2088]
 
 | สิ่งที่ได้ | สมการหลัก |
 |---|---|
-| การแตกปัญหา seq2seq | $p(\mathbf{y}\mid\mathbf{x}) = \prod_t p(y_t \mid y_{\lt{}t}, \mathbf{x})$ |
+| การแตกปัญหา seq2seq | $p(\mathbf{y}\mid\mathbf{x}) = \prod_t p(y_t \mid y_{{<}t}, \mathbf{x})$ |
 | RNN | $\mathbf{h}_t = \tanh(\mathbf{h}_{t-1}W_{hh} + \mathbf{x}_tW_{xh} + \mathbf{b})$ |
 | LSTM | $\mathbf{c}_t = \mathbf{f}_t \odot \mathbf{c}_{t-1} + \mathbf{i}_t \odot \tilde{\mathbf{c}}_t$ |
 | GRU | $\mathbf{h}_t = (1-\mathbf{z}_t)\odot\mathbf{h}_{t-1} + \mathbf{z}_t\odot\tilde{\mathbf{h}}_t$ |

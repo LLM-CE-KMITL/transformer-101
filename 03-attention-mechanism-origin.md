@@ -120,7 +120,7 @@ $$
 คะแนนดิบเป็นเลขอะไรก็ได้ ต้องแปลงเป็นน้ำหนักที่รวมกันได้ 1
 
 $$
-\boxed{\ \alpha_{tj} = \frac{\exp(e_{tj})}{\sum_{j'=1}^{n} \exp(e_{tj'})}, \qquad \sum_{j=1}^{n}\alpha_{tj} = 1,\ \ \alpha_{tj} \gt{} 0\ }
+\boxed{\ \alpha_{tj} = \frac{\exp(e_{tj})}{\sum_{j'=1}^{n} \exp(e_{tj'})}, \qquad \sum_{j=1}^{n}\alpha_{tj} = 1,\ \ \alpha_{tj} {>} 0\ }
 $$
 
 **ทำไมต้อง softmax ไม่ใช่ argmax:**

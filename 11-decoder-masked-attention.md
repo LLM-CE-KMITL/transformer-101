@@ -15,10 +15,10 @@ Decoder ทำแบบนั้น**ไม่ได้** และข้อจ�
 กลับไปที่ chain rule ในไฟล์ [01 §1.2](01-seq2seq-rnn-basics.md)
 
 $$
-p(\mathbf{y} \mid \mathbf{x}) = \prod_{t=1}^{m} p(y_t \mid y_{\lt{}t},\ \mathbf{x})
+p(\mathbf{y} \mid \mathbf{x}) = \prod_{t=1}^{m} p(y_t \mid y_{{<}t},\ \mathbf{x})
 $$
 
-พจน์ที่ $t$ เขียนไว้ชัดว่าเงื่อนไขคือ $y_{\lt{}t}$ — **คำที่มาก่อนเท่านั้น** ไม่ใช่ $y_{\le m}$
+พจน์ที่ $t$ เขียนไว้ชัดว่าเงื่อนไขคือ $y_{{<}t}$ — **คำที่มาก่อนเท่านั้น** ไม่ใช่ $y_{\le m}$
 
 > **จุดสำคัญ:** ถ้าตอนเทรนเราปล่อยให้ตำแหน่ง $t$ มองเห็น $y_t$ หรือ $y_{t+1}$ ได้ โมเดลจะเรียนทางลัดที่ง่ายที่สุด คือ "ก๊อป $y_t$ มาตอบ" → loss ลงสวยงาม แต่ตอน inference จริง $y_t$ **ยังไม่มีอยู่** → พังทันที
 > เราเรียกข้อจำกัดนี้ว่า **autoregressive constraint** และเรียกความผิดพลาดแบบนั้นว่า *label leakage*
@@ -38,7 +38,7 @@ $$
 ### 2.1 นิยามมาสก์
 
 $$
-\boxed{\ M_{ij} = \begin{cases} 0 & j \le i \\[2pt] -\infty & j \gt{} i \end{cases}
+\boxed{\ M_{ij} = \begin{cases} 0 & j \le i \\[2pt] -\infty & j {>} i \end{cases}
 \qquad\qquad
 \text{MaskedAttn}(Q,K,V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}} + M\right)V\ }
 $$
@@ -191,7 +191,7 @@ print(torch.round(A, decimals=4))
 2. **Causal mask** — รับประกันว่าแถว $t$ คำนวณโดยใช้แค่คอลัมน์ $\le t$ เท่านั้น
 
 $$
-\boxed{\ \underbrace{\text{teacher forcing}}_{\text{รู้ } y_{\lt{}t} \text{ ทุก } t \text{ ล่วงหน้า}} + \underbrace{\text{causal mask}}_{\text{กันไม่ให้เห็น } y_{\ge t}} = \underbrace{m \text{ ตัวอย่างเทรนใน 1 forward pass}}_{O(1) \text{ ก้าวเรียงลำดับ}}\ }
+\boxed{\ \underbrace{\text{teacher forcing}}_{\text{รู้ } y_{{<}t} \text{ ทุก } t \text{ ล่วงหน้า}} + \underbrace{\text{causal mask}}_{\text{กันไม่ให้เห็น } y_{\ge t}} = \underbrace{m \text{ ตัวอย่างเทรนใน 1 forward pass}}_{O(1) \text{ ก้าวเรียงลำดับ}}\ }
 $$
 
 แถวที่ $t$ ของ output คือการทำนาย $p(y_{t+1} \mid y_{\le t}, \mathbf{x})$ พอดี — **ทุกแถวคือหนึ่งตัวอย่างเทรน** และทั้ง $m$ แถวคำนวณพร้อมกันในการคูณเมทริกซ์ครั้งเดียว
@@ -374,7 +374,7 @@ flowchart TD
 $$
 \boxed{\ Z = X^{(N)}_{\text{dec}}W_{\text{out}} + \mathbf{b}_{\text{out}} \in \mathbb{R}^{m \times V},
 \qquad
-p(y_t \mid y_{\lt{}t}, \mathbf{x}) = \text{softmax}(\mathbf{z}_t)\ }
+p(y_t \mid y_{{<}t}, \mathbf{x}) = \text{softmax}(\mathbf{z}_t)\ }
 $$
 
 | ตัวแปร | มิติ |
@@ -580,7 +580,7 @@ $$
 **Beam Search** (จากไฟล์ [01 §5.4](01-seq2seq-rnn-basics.md)) — เก็บ $B$ เส้นทางที่ดีที่สุด ให้คะแนนด้วย log-prob สะสมหารด้วยความยาว
 
 $$
-\text{score}(\mathbf{y}_{\le t}) = \frac{1}{t^\alpha}\sum_{t'=1}^{t}\log p(y_{t'} \mid y_{\lt{}t'}, \mathbf{x}), \qquad \alpha \approx 0.6
+\text{score}(\mathbf{y}_{\le t}) = \frac{1}{t^\alpha}\sum_{t'=1}^{t}\log p(y_{t'} \mid y_{{<}t'}, \mathbf{x}), \qquad \alpha \approx 0.6
 $$
 
 **Top-$k$ sampling** — เก็บเฉพาะ $k$ ตัวที่น่าจะเป็นที่สุด แล้ว normalize ใหม่
@@ -812,7 +812,7 @@ def greedy_decode(model, memory, src_pad, bos, eos, max_len=50):
 
 | สิ่งที่ได้ | สมการหลัก |
 |---|---|
-| Causal mask | $M_{ij} = 0$ ถ้า $j \le i$, $-\infty$ ถ้า $j \gt{} i$ |
+| Causal mask | $M_{ij} = 0$ ถ้า $j \le i$, $-\infty$ ถ้า $j {>} i$ |
 | Masked self-attention | $\text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}} + M\right)V$ |
 | ทำไม $-\infty$ ไม่ใช่คูณศูนย์ | แถวต้องรวมได้ 1 (มิฉะนั้นได้ 0.4184 / 0.7714 / 0.7281 ไม่เท่ากัน) |
 | ขนานตอนเทรน | teacher forcing + causal mask $\Rightarrow$ $m$ ตัวอย่างใน 1 forward pass |
@@ -825,7 +825,7 @@ def greedy_decode(model, memory, src_pad, bos, eos, max_len=50):
 
 **สิ่งที่ต้องจำไปไฟล์ถัดไป:**
 
-1. output ของโมเดลคือ $p(y_t \mid y_{\lt{}t}, \mathbf{x})$ ครบทั้ง $m$ ตำแหน่งในหนึ่ง forward pass — ไฟล์ 12 จะเอาไปคิด cross-entropy loss ทีเดียวทั้งก้อน
+1. output ของโมเดลคือ $p(y_t \mid y_{{<}t}, \mathbf{x})$ ครบทั้ง $m$ ตำแหน่งในหนึ่ง forward pass — ไฟล์ 12 จะเอาไปคิด cross-entropy loss ทีเดียวทั้งก้อน
 2. causal mask ทำให้ gradient ของตำแหน่ง $t$ ไม่ไหลไปหาโทเคนที่มาทีหลัง — โครงสร้างสามเหลี่ยมนี้จะปรากฏใน backward pass ด้วย
 3. ตำแหน่ง `<pad>` ต้องถูกตัดออกจากทั้ง attention **และ** loss
 

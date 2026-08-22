@@ -323,7 +323,7 @@ flowchart TD
 นิยาม mask จากเวกเตอร์บอกความยาวจริง
 
 $$
-\boxed{\ M^{\text{pad}}_{ij} = \begin{cases} 0 & \text{ถ้าตำแหน่ง } j \text{ เป็นโทเคนจริง} \\ -\infty & \text{ถ้าตำแหน่ง } j \text{ เป็น } \texttt{\lt{}pad\gt{}} \end{cases}\ }
+\boxed{\ M^{\text{pad}}_{ij} = \begin{cases} 0 & \text{ถ้าตำแหน่ง } j \text{ เป็นโทเคนจริง} \\ -\infty & \text{ถ้าตำแหน่ง } j \text{ เป็น } \texttt{{<}pad{>}} \end{cases}\ }
 $$
 
 สังเกตว่ามาสก์นี้ขึ้นกับ **คอลัมน์ $j$ อย่างเดียว** — ทุกแถวโดนมาสก์ชุดเดียวกัน (ต่างจาก causal mask ในไฟล์ 11 ที่ขึ้นกับทั้ง $i$ และ $j$)

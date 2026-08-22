@@ -164,7 +164,7 @@ flowchart LR
     style sN fill:#d5e8d4,stroke:#82b366
 ```
 
-### 3.4 จุดคุ้มทุน: เมื่อ $n \lt{} d$ การ attention ถูกกว่า
+### 3.4 จุดคุ้มทุน: เมื่อ $n {<} d$ การ attention ถูกกว่า
 
 เทียบพจน์นำของสองวิธีตรง ๆ:
 
@@ -175,7 +175,7 @@ $$
 $$
 
 $$
-\boxed{\ \text{self-attention ถูกกว่า} \iff n \lt{} d_{\text{model}}\ }
+\boxed{\ \text{self-attention ถูกกว่า} \iff n {<} d_{\text{model}}\ }
 $$
 
 **คำนวณจริงที่ $d_{\text{model}} = 512$** (นับเป็นจำนวนการคูณ-บวก ไม่รวมค่าคงที่)
@@ -314,7 +314,7 @@ $$
 |---|---|---|
 | Sequential ops | $O(n)$ ❌ | $O(1)$ ✅ |
 | Max path length | $O(n)$ ❌ | $O(1)$ ✅ |
-| Compute ต่อเลเยอร์ | $O(nd^2)$ | $O(n^2 d)$ — ดีกว่าเมื่อ $n\lt{}d$ ⚠️ |
+| Compute ต่อเลเยอร์ | $O(nd^2)$ | $O(n^2 d)$ — ดีกว่าเมื่อ $n{<}d$ ⚠️ |
 | Memory | $O(nd)$ ✅ | $O(n^2 H)$ ❌ |
 | ข้อมูลลำดับ | มีในตัว ✅ | ต้องใส่เพิ่ม ⚠️ |
 
@@ -400,7 +400,7 @@ flowchart LR
 | Self-Attention complexity | $O(n^2 d)$ ต่อเลเยอร์, sequential $O(1)$, path $O(1)$ |
 | Recurrent complexity | $O(n d^2)$ ต่อเลเยอร์, sequential $O(n)$, path $O(n)$ |
 | Convolutional complexity | $O(k n d^2)$ ต่อเลเยอร์, sequential $O(1)$, path $O(\log_k n)$ |
-| จุดคุ้มทุน | $n^2 d \lt{} n d^2 \iff n \lt{} d_{\text{model}}$ → ที่ $d=512$ คุ้มเมื่อ $n \lt{} 512$ |
+| จุดคุ้มทุน | $n^2 d {<} n d^2 \iff n {<} d_{\text{model}}$ → ที่ $d=512$ คุ้มเมื่อ $n {<} 512$ |
 | ราคาที่จ่าย 1 | attention matrix $H n^2$ ค่า → ที่ $n=8192$, $H=8$, fp32 = 2 GiB ต่อ layer |
 | ราคาที่จ่าย 2 | $\text{Attention}(PX) = P\,\text{Attention}(X)$ → ไม่รู้ลำดับ ต้องใส่ PE |
 

@@ -24,7 +24,7 @@ $$
 
 $$
 \boldsymbol{\alpha}_i = \text{softmax}\!\left(\frac{\mathbf{q}_i K^\top}{\sqrt{d_k}}\right) \in \mathbb{R}^{1 \times n},
-\qquad \sum_{j=1}^{n} \alpha_{ij} = 1,\quad \alpha_{ij} \gt{} 0
+\qquad \sum_{j=1}^{n} \alpha_{ij} = 1,\quad \alpha_{ij} {>} 0
 $$
 
 เงื่อนไข "รวมกันได้ 1" ทำให้ $\boldsymbol{\alpha}_i$ เป็น **งบประมาณความสนใจก้อนเดียว** ที่ต้องแบ่งกันใช้ ถ้าโทเคนหนึ่งได้ 0.9 ที่เหลือทั้งหมดต้องแชร์กัน 0.1
