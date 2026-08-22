@@ -370,7 +370,7 @@ $$
 | เวลาคำนวณล้วน (สมมติ 19.5 TFLOP/s) | **1.721 µs** | FLOP / peak |
 | overhead ต่อ kernel launch (ทั่วไป) | ~5 µs | คงที่ ไม่ขึ้นกับขนาดงาน |
 | **utilization** | **≈ 34%** | $1.721/5.0$ |
-| เวลารวม 50 ก้าว (ติด launch overhead) | ~0.25 ms | $50 \times 5\ µs$ |
+| เวลารวม 50 ก้าว (ติด launch overhead) | ~0.25 ms | $50 \times 5\ \mu\text{s}$ |
 
 เทียบกับการยิง 50 โทเคนพร้อมกันเป็น GEMM ก้อนเดียว $(64\cdot 50 \times 512)\times(512\times512)$
 
