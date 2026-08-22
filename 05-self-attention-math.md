@@ -288,7 +288,7 @@ $$
 
 | คุณสมบัติ | สมการ | ใช้ที่ไหน |
 |---|---|---|
-| เป็นบวกเสมอ | $A_{ij} > 0$ | §4.3 convex combination |
+| เป็นบวกเสมอ | $A_{ij} \gt{} 0$ | §4.3 convex combination |
 | รวมกันได้ 1 ต่อแถว | $\sum_j A_{ij} = 1$ | §4.3 |
 | ไม่แปรตามการบวกค่าคงที่ | $\text{softmax}(\mathbf{z}+c) = \text{softmax}(\mathbf{z})$ | เสถียรภาพเชิงตัวเลข |
 | แปรตามการคูณสเกล | $\text{softmax}(\beta\mathbf{z})$ คมขึ้นเมื่อ $\beta$ โต | §2.3 เหตุผลของ $\sqrt{d_k}$ |
@@ -325,7 +325,7 @@ O = AV \in \mathbb{R}^{n\times d_v}, \qquad
 \mathbf{o}_i = \sum_{j=1}^{n} A_{ij}\,\mathbf{v}_j
 $$
 
-เพราะ $A_{ij} > 0$ และ $\sum_j A_{ij} = 1$ แถวที่ $i$ ของ output จึงเป็น **convex combination ของแถวใน $V$**
+เพราะ $A_{ij} \gt{} 0$ และ $\sum_j A_{ij} = 1$ แถวที่ $i$ ของ output จึงเป็น **convex combination ของแถวใน $V$**
 
 $$
 \boxed{\ \mathbf{o}_i \in \text{conv}\{\mathbf{v}_1, \dots, \mathbf{v}_n\}\ }
@@ -668,7 +668,7 @@ $$
 \frac{\partial \mathbf{o}_i}{\partial \mathbf{v}_j} = A_{ij} I \ne 0 \qquad \text{สำหรับทุกคู่ } (i,j)
 $$
 
-เพราะ $A_{ij} > 0$ เสมอ (softmax ไม่เคยให้ศูนย์แท้) **ทุกตำแหน่งมีอิทธิพลต่อทุกตำแหน่งโดยตรง**
+เพราะ $A_{ij} \gt{} 0$ เสมอ (softmax ไม่เคยให้ศูนย์แท้) **ทุกตำแหน่งมีอิทธิพลต่อทุกตำแหน่งโดยตรง**
 
 | สถาปัตยกรรม | จำนวนก้าวจากตำแหน่ง 1 ถึงตำแหน่ง $n$ | จำนวนการคูณที่ gradient ต้องผ่าน |
 |---|---|---|
@@ -710,7 +710,7 @@ flowchart TD
 ### 4.3 แต่ละแถวของ $A$ รวมกันได้ 1 → output อยู่ใน convex hull
 
 $$
-\sum_{j} A_{ij} = 1,\quad A_{ij} > 0
+\sum_{j} A_{ij} = 1,\quad A_{ij} \gt{} 0
 \qquad\Longrightarrow\qquad
 \mathbf{o}_i = \sum_j A_{ij}\mathbf{v}_j \in \text{conv}\{\mathbf{v}_1,\dots,\mathbf{v}_n\}
 $$

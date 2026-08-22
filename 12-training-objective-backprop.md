@@ -17,19 +17,19 @@
 จากไฟล์ [01 §1.2](01-seq2seq-rnn-basics.md) เรารู้ว่าโมเดลประมาณค่า
 
 $$
-p(\mathbf{y} \mid \mathbf{x}) = \prod_{t=1}^{m} p(y_t \mid y_{<t}, \mathbf{x})
+p(\mathbf{y} \mid \mathbf{x}) = \prod_{t=1}^{m} p(y_t \mid y_{\lt{}t}, \mathbf{x})
 $$
 
 การเทรนคือการหาพารามิเตอร์ $\theta$ ที่ทำให้ประโยคเฉลย $\mathbf{y}^*$ **มีโอกาสเกิดสูงที่สุด** (maximum likelihood)
 
 $$
-\theta^\star = \arg\max_\theta \prod_{t=1}^{m} p_\theta(y_t^* \mid y^*_{<t}, \mathbf{x})
+\theta^\star = \arg\max_\theta \prod_{t=1}^{m} p_\theta(y_t^* \mid y^*_{\lt{}t}, \mathbf{x})
 $$
 
 ผลคูณของเลข $\in (0,1)$ หลายร้อยตัวจะ underflow ทันที จึงใส่ $\log$ (ฟังก์ชันเพิ่มแบบเข้ม → argmax ไม่เปลี่ยน) แล้วกลับเครื่องหมายให้กลายเป็นปัญหา **minimize**
 
 $$
-\boxed{\ \mathcal{L} = -\frac{1}{m}\sum_{t=1}^{m} \log p_\theta\!\left(y_t^* \mid y^*_{<t},\ \mathbf{x}\right)\ }
+\boxed{\ \mathcal{L} = -\frac{1}{m}\sum_{t=1}^{m} \log p_\theta\!\left(y_t^* \mid y^*_{\lt{}t},\ \mathbf{x}\right)\ }
 $$
 
 | สัญลักษณ์ | มิติ | ความหมาย |
@@ -112,8 +112,8 @@ $$
 
 | โหมด | input ของ decoder ที่ขั้น $t$ | สมการ |
 |---|---|---|
-| **Training** (teacher forcing) | โทเคน**เฉลย**ก่อนหน้า | $p_t = f_\theta(y^*_{<t},\ \mathbf{x})$ |
-| **Inference** (autoregressive) | โทเคนที่**โมเดลสร้างเอง** | $p_t = f_\theta(\hat{y}_{<t},\ \mathbf{x})$, $\ \hat{y}_t \sim p_t$ |
+| **Training** (teacher forcing) | โทเคน**เฉลย**ก่อนหน้า | $p_t = f_\theta(y^*_{\lt{}t},\ \mathbf{x})$ |
+| **Inference** (autoregressive) | โทเคนที่**โมเดลสร้างเอง** | $p_t = f_\theta(\hat{y}_{\lt{}t},\ \mathbf{x})$, $\ \hat{y}_t \sim p_t$ |
 
 ```mermaid
 flowchart LR
@@ -140,11 +140,11 @@ flowchart LR
 
 ### 2.2 ทำไมมันทำให้เทรนขนานได้
 
-เพราะทั้งลำดับ $y^*_1 \dots y^*_m$ **รู้ล่วงหน้าตั้งแต่ต้น** เราจึงป้อนทั้งแถวเข้า decoder ได้พร้อมกัน แล้วให้ **causal mask** (ไฟล์ [11 §2.4](11-decoder-masked-attention.md)) เป็นตัวรับประกันว่าตำแหน่ง $t$ มองไม่เห็นตำแหน่ง $>t$
+เพราะทั้งลำดับ $y^*_1 \dots y^*_m$ **รู้ล่วงหน้าตั้งแต่ต้น** เราจึงป้อนทั้งแถวเข้า decoder ได้พร้อมกัน แล้วให้ **causal mask** (ไฟล์ [11 §2.4](11-decoder-masked-attention.md)) เป็นตัวรับประกันว่าตำแหน่ง $t$ มองไม่เห็นตำแหน่ง $\gt{}t$
 
 $$
 \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}} + M\right)V, \qquad
-M_{ij} = \begin{cases} 0 & j \le i \\ -\infty & j > i\end{cases}
+M_{ij} = \begin{cases} 0 & j \le i \\ -\infty & j \gt{} i\end{cases}
 $$
 
 | สถาปัตยกรรม | เทรนขนานตามแกนเวลาได้ไหม | เหตุผล |
@@ -478,8 +478,8 @@ $$
 
 | ระบอบ | เงื่อนไข | สูตรที่ชนะ | พฤติกรรม |
 |---|---|---|---|
-| Warmup | $t < 4000$ | $t \cdot \text{warmup}^{-1.5}$ | **โตเชิงเส้น** จาก ~0 |
-| Decay | $t > 4000$ | $t^{-0.5}$ | **ลดแบบ inverse square-root** |
+| Warmup | $t \lt{} 4000$ | $t \cdot \text{warmup}^{-1.5}$ | **โตเชิงเส้น** จาก ~0 |
+| Decay | $t \gt{} 4000$ | $t^{-0.5}$ | **ลดแบบ inverse square-root** |
 
 จุดสลับอยู่ที่ $t = \text{warmup}$ พอดี (แก้สมการ $t^{-0.5} = t\cdot w^{-1.5}$ ได้ $t = w$) ดังนั้น
 
@@ -553,7 +553,7 @@ $$
 | กรณี | ผล |
 |---|---|
 | $\|\mathbf{g}\| \le c$ | ตัวคูณ $=1$ → ไม่แตะต้องเลย |
-| $\|\mathbf{g}\| > c$ | หดให้ norm เท่ากับ $c$ พอดี **โดยรักษาทิศเดิม** |
+| $\|\mathbf{g}\| \gt{} c$ | หดให้ norm เท่ากับ $c$ พอดี **โดยรักษาทิศเดิม** |
 
 > **สัญชาตญาณ:** clipping ไม่ได้บอกว่า "อย่าไปทางนั้น" แต่บอกว่า "ไปทางนั้นได้ แต่อย่าก้าวไกลเกิน" — ต่างจากการ clip ทีละ element ซึ่งจะ**บิดทิศ**ของ gradient
 
@@ -630,7 +630,7 @@ for name, peak, util in [("V100 fp32", 15.7e12, 0.30), ("A100 bf16", 312e12, 0.4
 
 | สิ่งที่ได้ | สมการหลัก |
 |---|---|
-| Objective | $\mathcal{L} = -\frac{1}{m}\sum_t \log p(y^*_t \mid y^*_{<t}, \mathbf{x})$ |
+| Objective | $\mathcal{L} = -\frac{1}{m}\sum_t \log p(y^*_t \mid y^*_{\lt{}t}, \mathbf{x})$ |
 | Perplexity | $\text{PPL} = \exp(\mathcal{L})$ |
 | Label smoothing | $\mathbf{q} = (1-\varepsilon)\mathbf{y}^{\text{onehot}} + \varepsilon/V$, $\ \varepsilon = 0.1$ |
 | Gradient ที่ output | $\partial\mathcal{L}/\partial\mathbf{z} = \mathbf{p} - \mathbf{y}^{\text{onehot}}$ |

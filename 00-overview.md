@@ -152,7 +152,7 @@ $$
 $$
 
 คุณสมบัติที่จะใช้บ่อย:
-- ผลลัพธ์ทุกตัว $> 0$ และรวมกันได้ 1
+- ผลลัพธ์ทุกตัว $\gt{} 0$ และรวมกันได้ 1
 - **ไม่แปรตามการบวกค่าคงที่:** $\text{softmax}(\mathbf{z} + c) = \text{softmax}(\mathbf{z})$ → ใช้ลบ max เพื่อความเสถียรเชิงตัวเลข
 - **แปรตามการคูณสเกล:** คูณ $\mathbf{z}$ ด้วยเลขมาก ๆ ทำให้ผลลัพธ์เข้าใกล้ one-hot (นี่คือเหตุผลของ $\sqrt{d_k}$ ในไฟล์ 05)
 
@@ -223,7 +223,7 @@ $$
 **Causal Mask (ไฟล์ 11)**
 
 $$
-M_{ij} = \begin{cases} 0 & j \le i \\ -\infty & j > i \end{cases}
+M_{ij} = \begin{cases} 0 & j \le i \\ -\infty & j \gt{} i \end{cases}
 \qquad
 \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}} + M\right)V
 $$
@@ -231,7 +231,7 @@ $$
 **Training Objective (ไฟล์ 12)**
 
 $$
-\mathcal{L} = -\frac{1}{m}\sum_{t=1}^{m} \log p(y_t^* \mid y^*_{<t}, \mathbf{x})
+\mathcal{L} = -\frac{1}{m}\sum_{t=1}^{m} \log p(y_t^* \mid y^*_{\lt{}t}, \mathbf{x})
 $$
 
 ---

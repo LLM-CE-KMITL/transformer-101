@@ -92,7 +92,7 @@
 ### RNN / Seq2Seq — [ไฟล์ 01](01-seq2seq-rnn-basics.md)
 
 $$
-p(\mathbf{y}\mid\mathbf{x}) = \prod_{t=1}^{m} p(y_t \mid y_{<t}, \mathbf{x})
+p(\mathbf{y}\mid\mathbf{x}) = \prod_{t=1}^{m} p(y_t \mid y_{\lt{}t}, \mathbf{x})
 $$
 *[01 §1.2]*
 
@@ -198,7 +198,7 @@ $$
 ### Decoder + Masking — [ไฟล์ 11](11-decoder-masked-attention.md)
 
 $$
-M_{ij} = \begin{cases}0 & j\le i\\ -\infty & j>i\end{cases},\qquad
+M_{ij} = \begin{cases}0 & j\le i\\ -\infty & j\gt{}i\end{cases},\qquad
 \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}+M\right)V
 $$
 *[11 §2]*
@@ -211,7 +211,7 @@ $$
 ### Training — [ไฟล์ 12](12-training-objective-backprop.md)
 
 $$
-\boxed{\ \mathcal{L} = -\frac1m\sum_{t=1}^{m}\log p(y_t^*\mid y^*_{<t},\mathbf{x})\ },\qquad
+\boxed{\ \mathcal{L} = -\frac1m\sum_{t=1}^{m}\log p(y_t^*\mid y^*_{\lt{}t},\mathbf{x})\ },\qquad
 \text{PPL} = \exp(\mathcal{L})
 $$
 *[12 §1]*
