@@ -12,15 +12,15 @@ Decoder ทำแบบนั้น**ไม่ได้** และข้อจ�
 
 ## 1. ทำไม Decoder ต่างจาก Encoder
 
-กลับไปที่ chain rule ในไฟล์ [01 §1.2](01-seq2seq-rnn-basics.md)
+กลับไปที่ chain rule ในไฟล์ [01-1.2](01-seq2seq-rnn-basics.md)
 
 $$
-p(\mathbf{y} \mid \mathbf{x}) = \prod_{t=1}^{m} p(y_t \mid y_{{<}t},\ \mathbf{x})
+p(\mathbf{y} \mid \mathbf{x}) = \prod\_{t=1}^{m} p(y\_t \mid y\_{{<}t},\ \mathbf{x})
 $$
 
-พจน์ที่ $t$ เขียนไว้ชัดว่าเงื่อนไขคือ $y_{{<}t}$ — **คำที่มาก่อนเท่านั้น** ไม่ใช่ $y_{\le m}$
+พจน์ที่ $t$ เขียนไว้ชัดว่าเงื่อนไขคือ $y\_{{<}t}$ — **คำที่มาก่อนเท่านั้น** ไม่ใช่ $y\_{\le m}$
 
-> **จุดสำคัญ:** ถ้าตอนเทรนเราปล่อยให้ตำแหน่ง $t$ มองเห็น $y_t$ หรือ $y_{t+1}$ ได้ โมเดลจะเรียนทางลัดที่ง่ายที่สุด คือ "ก๊อป $y_t$ มาตอบ" → loss ลงสวยงาม แต่ตอน inference จริง $y_t$ **ยังไม่มีอยู่** → พังทันที
+> **จุดสำคัญ:** ถ้าตอนเทรนเราปล่อยให้ตำแหน่ง $t$ มองเห็น $y\_t$ หรือ $y\_{t+1}$ ได้ โมเดลจะเรียนทางลัดที่ง่ายที่สุด คือ "ก๊อป $y\_t$ มาตอบ" → loss ลงสวยงาม แต่ตอน inference จริง $y\_t$ **ยังไม่มีอยู่** → พังทันที
 > เราเรียกข้อจำกัดนี้ว่า **autoregressive constraint** และเรียกความผิดพลาดแบบนั้นว่า *label leakage*
 
 | | Encoder | Decoder |
@@ -38,18 +38,18 @@ $$
 ### 2.1 นิยามมาสก์
 
 $$
-\boxed{\ M_{ij} = \begin{cases} 0 & j \le i \\[2pt] -\infty & j {>} i \end{cases}
+\boxed{\ M\_{ij} = \begin{cases} 0 & j \le i \\\\[2pt] -\infty & j {>} i \end{cases}
 \qquad\qquad
-\text{MaskedAttn}(Q,K,V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}} + M\right)V\ }
+\text{MaskedAttn}(Q,K,V) = \text{softmax}\\!\left(\frac{QK^\top}{\sqrt{d\_k}} + M\right)V\ }
 $$
 
 | ตัวแปร | มิติ | หมายเหตุ |
 |---|---|---|
-| $Q, K, V$ | $\mathbb{R}^{m \times d_k}$ | มาจาก decoder ทั้งหมด |
-| $S = QK^\top/\sqrt{d_k}$ | $\mathbb{R}^{m \times m}$ | |
+| $Q, K, V$ | $\mathbb{R}^{m \times d\_k}$ | มาจาก decoder ทั้งหมด |
+| $S = QK^\top/\sqrt{d\_k}$ | $\mathbb{R}^{m \times m}$ | |
 | $M$ | $\mathbb{R}^{m \times m}$ | **สามเหลี่ยมล่างเป็น 0, บนเป็น $-\infty$** |
 | $A = \text{softmax}(S+M)$ | $\mathbb{R}^{m \times m}$ | สามเหลี่ยมบนเป็น 0 พอดี |
-| ผลลัพธ์ | $\mathbb{R}^{m \times d_v}$ | |
+| ผลลัพธ์ | $\mathbb{R}^{m \times d\_v}$ | |
 
 ```mermaid
 flowchart LR
@@ -72,7 +72,7 @@ flowchart LR
 
 ใช้ target `<s> I eat rice` ($m=4$) สมมติได้คะแนนดิบ
 
-**$S = QK^\top/\sqrt{d_k}$**
+**$S = QK^\top/\sqrt{d\_k}$**
 
 | | \<s\> | I | eat | rice |
 |---|---|---|---|---|
@@ -129,7 +129,7 @@ flowchart LR
 **แถวไม่รวมเป็น 1 อีกต่อไป** — และผลรวมยัง *ต่างกันในแต่ละแถว* ด้วย (0.4184 vs 0.7714 vs 0.7281) ผลลัพธ์ $AV$ จึงกลายเป็น "ค่าเฉลี่ยที่ถูกหรี่ลงไม่เท่ากัน" แทนที่จะเป็น convex combination ของ value
 
 $$
-\text{ต้องการ:}\quad \mathbf{o}_i = \sum_{j \le i} \alpha_{ij}\mathbf{v}_j \quad\text{โดย}\quad \sum_{j\le i}\alpha_{ij} = 1
+\text{ต้องการ:}\quad \mathbf{o}\_i = \sum\_{j \le i} \alpha\_{ij}\mathbf{v}\_j \quad\text{โดย}\quad \sum\_{j\le i}\alpha\_{ij} = 1
 $$
 
 | เหตุผล | รายละเอียด |
@@ -139,7 +139,7 @@ $$
 | **หนึ่งครั้งจบ** | บวก $-\infty$ แล้ว softmax normalize ให้เองอัตโนมัติ ไม่ต้อง normalize ซ้ำ |
 | **ตัวเลขเสถียร** | ทำใน log-space ก่อน exp — ตรงกับเคล็ดลบ max ของ softmax พอดี |
 
-> **หมายเหตุที่ซื่อสัตย์:** ถ้าคุณ *normalize ใหม่* หลังคูณศูนย์ ($\alpha_{ij} / \sum_{j'} \alpha_{ij'}$) จะได้ผลเท่ากันเป๊ะ — ลองแถว `I`: $0.1926/0.7714 = 0.2497$ ✓ และ $0.5788/0.7714 = 0.7503$ ✓
+> **หมายเหตุที่ซื่อสัตย์:** ถ้าคุณ *normalize ใหม่* หลังคูณศูนย์ ($\alpha\_{ij} / \sum\_{j'} \alpha\_{ij'}$) จะได้ผลเท่ากันเป๊ะ — ลองแถว `I`: $0.1926/0.7714 = 0.2497$ ✓ และ $0.5788/0.7714 = 0.7503$ ✓
 > แต่นั่นคือทำสองขั้นเพื่อผลลัพธ์เดียวกัน แถมยังต้อง exp ค่าที่จะถูกทิ้งอยู่ดี วิธี $-\infty$ จึงชนะทั้งความเรียบง่ายและความเร็ว
 
 **ทำไมโค้ดจริงใช้ $-10^9$ แทน $-\infty$:** ค่า $-\infty$ จริงทำให้เกิด `NaN` ทันทีถ้าทั้งแถวถูกมาสก์ ($-\infty - (-\infty)$) และ mixed-precision (fp16) มี $-\infty$ ที่จัดการยาก ค่า $-10^9$ ให้ $e^{-10^9} = 0$ ในทางปฏิบัติอยู่แล้ว (ใน fp16 ใช้ $-10^4$ เพราะ $-10^9$ ล้นช่วง)
@@ -183,7 +183,7 @@ print(torch.round(A, decimals=4))
 
 นี่คือเหตุผลที่ Transformer เอาชนะ RNN ในเชิงวิศวกรรม
 
-**RNN decoder ตอนเทรน:** ต้องคำนวณ $\mathbf{s}_1 \to \mathbf{s}_2 \to \dots \to \mathbf{s}_m$ ตามลำดับ เพราะ $\mathbf{s}_t$ ต้องรอ $\mathbf{s}_{t-1}$ → **$O(m)$ ก้าวเรียงลำดับ** แม้จะรู้คำตอบทั้งประโยคอยู่แล้ว
+**RNN decoder ตอนเทรน:** ต้องคำนวณ $\mathbf{s}\_1 \to \mathbf{s}\_2 \to \dots \to \mathbf{s}\_m$ ตามลำดับ เพราะ $\mathbf{s}\_t$ ต้องรอ $\mathbf{s}\_{t-1}$ → **$O(m)$ ก้าวเรียงลำดับ** แม้จะรู้คำตอบทั้งประโยคอยู่แล้ว
 
 **Transformer decoder ตอนเทรน:** ใช้สองอย่างร่วมกัน
 
@@ -191,10 +191,10 @@ print(torch.round(A, decimals=4))
 2. **Causal mask** — รับประกันว่าแถว $t$ คำนวณโดยใช้แค่คอลัมน์ $\le t$ เท่านั้น
 
 $$
-\boxed{\ \underbrace{\text{teacher forcing}}_{\text{รู้ } y_{{<}t} \text{ ทุก } t \text{ ล่วงหน้า}} + \underbrace{\text{causal mask}}_{\text{กันไม่ให้เห็น } y_{\ge t}} = \underbrace{m \text{ ตัวอย่างเทรนใน 1 forward pass}}_{O(1) \text{ ก้าวเรียงลำดับ}}\ }
+\boxed{\ \underbrace{\text{teacher forcing}}\_{\text{รู้ } y\_{{<}t} \text{ ทุก } t \text{ ล่วงหน้า}} + \underbrace{\text{causal mask}}\_{\text{กันไม่ให้เห็น } y\_{\ge t}} = \underbrace{m \text{ ตัวอย่างเทรนใน 1 forward pass}}\_{O(1) \text{ ก้าวเรียงลำดับ}}\ }
 $$
 
-แถวที่ $t$ ของ output คือการทำนาย $p(y_{t+1} \mid y_{\le t}, \mathbf{x})$ พอดี — **ทุกแถวคือหนึ่งตัวอย่างเทรน** และทั้ง $m$ แถวคำนวณพร้อมกันในการคูณเมทริกซ์ครั้งเดียว
+แถวที่ $t$ ของ output คือการทำนาย $p(y\_{t+1} \mid y\_{\le t}, \mathbf{x})$ พอดี — **ทุกแถวคือหนึ่งตัวอย่างเทรน** และทั้ง $m$ แถวคำนวณพร้อมกันในการคูณเมทริกซ์ครั้งเดียว
 
 | input ตำแหน่ง | โมเดลเห็น | ต้องทำนาย | เป็นตัวอย่างที่ |
 |---|---|---|---|
@@ -233,26 +233,26 @@ flowchart TD
 ### 3.1 $Q$ จาก decoder, $K$ กับ $V$ จาก encoder
 
 $$
-\boxed{\ \text{CrossAttn}(Z, \mathcal{M}) = \text{softmax}\!\left(\frac{(ZW^Q)(\mathcal{M}W^K)^\top}{\sqrt{d_k}} + M^{\text{pad}}_{\text{src}}\right)(\mathcal{M}W^V)\ }
+\boxed{\ \text{CrossAttn}(Z, \mathcal{M}) = \text{softmax}\\!\left(\frac{(ZW^Q)(\mathcal{M}W^K)^\top}{\sqrt{d\_k}} + M^{\text{pad}}\_{\text{src}}\right)(\mathcal{M}W^V)\ }
 $$
 
-โดย $\mathcal{M} = X^{(N)}_{\text{enc}}$ คือ encoder output (เรียกว่า *memory*)
+โดย $\mathcal{M} = X^{(N)}\_{\text{enc}}$ คือ encoder output (เรียกว่า *memory*)
 
 | ตัวแปร | มิติ | มาจากไหน |
 |---|---|---|
-| $Z$ | $\mathbb{R}^{m \times d_{\text{model}}}$ | decoder (หลัง sublayer 1) |
-| $\mathcal{M}$ | $\mathbb{R}^{n \times d_{\text{model}}}$ | **encoder output** |
-| $Q = ZW^Q$ | $\mathbb{R}^{m \times d_k}$ | decoder |
-| $K = \mathcal{M}W^K$ | $\mathbb{R}^{n \times d_k}$ | encoder |
-| $V = \mathcal{M}W^V$ | $\mathbb{R}^{n \times d_v}$ | encoder |
+| $Z$ | $\mathbb{R}^{m \times d\_{\text{model}}}$ | decoder (หลัง sublayer 1) |
+| $\mathcal{M}$ | $\mathbb{R}^{n \times d\_{\text{model}}}$ | **encoder output** |
+| $Q = ZW^Q$ | $\mathbb{R}^{m \times d\_k}$ | decoder |
+| $K = \mathcal{M}W^K$ | $\mathbb{R}^{n \times d\_k}$ | encoder |
+| $V = \mathcal{M}W^V$ | $\mathbb{R}^{n \times d\_v}$ | encoder |
 | $QK^\top$ | $\mathbb{R}^{m \times n}$ ← **ไม่ใช่จัตุรัส** | |
-| output | $\mathbb{R}^{m \times d_v}$ | |
+| output | $\mathbb{R}^{m \times d\_v}$ | |
 
 **สัญชาตญาณ:** decoder ถามคำถาม ("ตอนนี้ฉันกำลังจะแปลคำอะไร?") แล้วไปค้นในคลังของ encoder — $Q$ คือคำถาม, $K$ คือดัชนีของคลัง, $V$ คือเนื้อหาที่ดึงกลับมา
 
 **เดินตัวเลข:** decoder $m=3$ (`<s>, I, eat`) กับ encoder $n=3$ (`ฉัน, กิน, ข้าว`)
 
-$S_{\text{cross}} = QK^\top/\sqrt{d_k}$ ขนาด $3\times3$ (บังเอิญจัตุรัสเพราะ $m=n$ แต่โดยทั่วไปไม่ใช่)
+$S\_{\text{cross}} = QK^\top/\sqrt{d\_k}$ ขนาด $3\times3$ (บังเอิญจัตุรัสเพราะ $m=n$ แต่โดยทั่วไปไม่ใช่)
 
 | | ฉัน | กิน | ข้าว |
 |---|---|---|---|
@@ -260,7 +260,7 @@ $S_{\text{cross}} = QK^\top/\sqrt{d_k}$ ขนาด $3\times3$ (บังเอ
 | **I** | 0.0849 | 0.4101 | 0.2263 |
 | **eat** | 0.2333 | -0.0212 | 0.4455 |
 
-$A_{\text{cross}} = \text{softmax}(S_{\text{cross}})$ — **normalize ตามแกน source ($n$)**
+$A\_{\text{cross}} = \text{softmax}(S\_{\text{cross}})$ — **normalize ตามแกน source ($n$)**
 
 | | ฉัน | กิน | ข้าว | รวม |
 |---|---|---|---|---|
@@ -276,19 +276,19 @@ $A_{\text{cross}} = \text{softmax}(S_{\text{cross}})$ — **normalize ตาม�
 
 | | Bahdanau (2015) | Cross-Attention (2017) |
 |---|---|---|
-| คะแนน | $e_{tj} = \mathbf{v}^\top\tanh(\mathbf{s}_{t-1}W_s + \mathbf{h}_jW_h)$ | $s_{tj} = \dfrac{(\mathbf{z}_tW^Q)(\mathbf{h}_jW^K)^\top}{\sqrt{d_k}}$ |
+| คะแนน | $e\_{tj} = \mathbf{v}^\top\tanh(\mathbf{s}\_{t-1}W\_s + \mathbf{h}\_jW\_h)$ | $s\_{tj} = \dfrac{(\mathbf{z}\_tW^Q)(\mathbf{h}\_jW^K)^\top}{\sqrt{d\_k}}$ |
 | ประเภทคะแนน | additive (MLP 1 ชั้น) | scaled dot-product |
-| น้ำหนัก | $\alpha_{tj} = \text{softmax}_j(e_{tj})$ | $\alpha_{tj} = \text{softmax}_j(s_{tj})$ **เหมือนกันเป๊ะ** |
-| context | $\mathbf{c}_t = \sum_j \alpha_{tj}\mathbf{h}_j$ | $\mathbf{c}_t = \sum_j \alpha_{tj}(\mathbf{h}_jW^V)$ |
-| "query" | $\mathbf{s}_{t-1}$ (RNN state) | $\mathbf{z}_t$ (decoder residual stream) |
-| "key" กับ "value" | เป็น $\mathbf{h}_j$ **ตัวเดียวกัน** | **แยกกัน** ผ่าน $W^K$ และ $W^V$ |
+| น้ำหนัก | $\alpha\_{tj} = \text{softmax}\_j(e\_{tj})$ | $\alpha\_{tj} = \text{softmax}\_j(s\_{tj})$ **เหมือนกันเป๊ะ** |
+| context | $\mathbf{c}\_t = \sum\_j \alpha\_{tj}\mathbf{h}\_j$ | $\mathbf{c}\_t = \sum\_j \alpha\_{tj}(\mathbf{h}\_jW^V)$ |
+| "query" | $\mathbf{s}\_{t-1}$ (RNN state) | $\mathbf{z}\_t$ (decoder residual stream) |
+| "key" กับ "value" | เป็น $\mathbf{h}\_j$ **ตัวเดียวกัน** | **แยกกัน** ผ่าน $W^K$ และ $W^V$ |
 | จำนวนหัว | 1 | $H = 8$ |
-| คำนวณทุก $t$ พร้อมกันได้ไหม | ไม่ได้ ($\mathbf{s}_{t-1}$ ต้องรอ) | **ได้** (ทั้ง $m$ แถวพร้อมกัน) |
+| คำนวณทุก $t$ พร้อมกันได้ไหม | ไม่ได้ ($\mathbf{s}\_{t-1}$ ต้องรอ) | **ได้** (ทั้ง $m$ แถวพร้อมกัน) |
 
 **สามการเปลี่ยนแปลงที่เกิดขึ้น:**
 
-1. **additive → dot-product** เร็วกว่ามากเพราะยุบเป็น matmul ตัวเดียว (ไฟล์ [05](05-self-attention-math.md)) แลกด้วยต้องหาร $\sqrt{d_k}$
-2. **แยก key ออกจาก value** — $\mathbf{h}_j$ ทำสองหน้าที่ที่ขัดกัน (เป็นทั้งตัวจับคู่และตัวเนื้อหา) การแยกให้อิสระในการเรียนคนละแบบ
+1. **additive → dot-product** เร็วกว่ามากเพราะยุบเป็น matmul ตัวเดียว (ไฟล์ [05](05-self-attention-math.md)) แลกด้วยต้องหาร $\sqrt{d\_k}$
+2. **แยก key ออกจาก value** — $\mathbf{h}\_j$ ทำสองหน้าที่ที่ขัดกัน (เป็นทั้งตัวจับคู่และตัวเนื้อหา) การแยกให้อิสระในการเรียนคนละแบบ
 3. **หลายหัว** — จับ alignment ได้หลายมุมพร้อมกัน (ไฟล์ [06](06-multi-head-attention.md))
 
 > **สัญชาตญาณ:** Cross-attention ไม่ใช่ของใหม่ มันคือ Bahdanau attention ที่ถูกจัดระเบียบใหม่ให้เป็น matmul ล้วน ๆ — และการจัดระเบียบนั้นเองที่ทำให้ recurrence กลายเป็นสิ่งที่ตัดทิ้งได้
@@ -299,7 +299,7 @@ $A_{\text{cross}} = \text{softmax}(S_{\text{cross}})$ — **normalize ตาม�
 |---|---|---|---|
 | Decoder self-attention | **causal + pad ของ target** | $m \times m$ | ห้ามเห็นอนาคตของ target |
 | Cross-attention | **pad ของ source เท่านั้น** | $m \times n$ | source มีให้ครบตั้งแต่ต้น ไม่มี "อนาคต" ให้ห้าม |
-| Encoder self-attention | **pad ของ source เท่านั้น** | $n \times n$ | ไฟล์ [10 §5](10-encoder-full-pipeline.md) |
+| Encoder self-attention | **pad ของ source เท่านั้น** | $n \times n$ | ไฟล์ [10-5](10-encoder-full-pipeline.md) |
 
 > **จุดสำคัญที่คนพลาดบ่อย:** cross-attention **ไม่มี causal mask** — decoder ตำแหน่งที่ 1 มองเห็น source ได้ทั้งประโยครวมถึงคำสุดท้าย นี่ถูกต้องแล้ว เพราะ "ห้ามมองอนาคต" หมายถึงอนาคตของ *สิ่งที่กำลังสร้าง* ไม่ใช่ของ *สิ่งที่อ่านเข้ามา*
 > การเผลอใส่ causal mask ตรงนี้จะทำให้โมเดลแปลได้เฉพาะแบบเรียงคำตรง ๆ
@@ -311,9 +311,9 @@ $A_{\text{cross}} = \text{softmax}(S_{\text{cross}})$ — **normalize ตาม�
 $$
 \boxed{
 \begin{aligned}
-Z_1 &= \text{LN}_1\big(X + \text{MaskedMultiHead}(X,\ M^{\text{causal}})\big) && \text{sublayer 1} \\[3pt]
-Z_2 &= \text{LN}_2\big(Z_1 + \text{MultiHead}(\underbrace{Z_1}_{Q},\ \underbrace{\mathcal{M},\ \mathcal{M}}_{K,\,V})\big) && \text{sublayer 2} \\[3pt]
-Y   &= \text{LN}_3\big(Z_2 + \text{FFN}(Z_2)\big) && \text{sublayer 3}
+Z\_1 &= \text{LN}\_1\big(X + \text{MaskedMultiHead}(X,\ M^{\text{causal}})\big) && \text{sublayer 1} \\\\[3pt]
+Z\_2 &= \text{LN}\_2\big(Z\_1 + \text{MultiHead}(\underbrace{Z\_1}\_{Q},\ \underbrace{\mathcal{M},\ \mathcal{M}}\_{K,\\,V})\big) && \text{sublayer 2} \\\\[3pt]
+Y   &= \text{LN}\_3\big(Z\_2 + \text{FFN}(Z\_2)\big) && \text{sublayer 3}
 \end{aligned}}
 $$
 
@@ -358,7 +358,7 @@ flowchart TD
 |---|---|---|
 | masked self-attn ($W^Q,W^K,W^V,W^O$) | $4d^2$ | 1,048,576 |
 | cross-attn ($W^Q,W^K,W^V,W^O$) | $4d^2$ | 1,048,576 |
-| FFN | $2dd_{\text{ff}} + d_{\text{ff}} + d$ | 2,099,712 |
+| FFN | $2dd\_{\text{ff}} + d\_{\text{ff}} + d$ | 2,099,712 |
 | LN สามตัว | $3 \times 2d$ | 3,072 |
 | **รวม 1 เลเยอร์** | | **4,199,936** |
 | **decoder $N=6$** | | **25,199,616** |
@@ -369,18 +369,18 @@ flowchart TD
 
 ## 5. Output Head และ Weight Tying
 
-หลัง decoder layer สุดท้าย เราแปลง $\mathbb{R}^{m\times d_{\text{model}}}$ เป็นการแจกแจงเหนือ vocabulary
+หลัง decoder layer สุดท้าย เราแปลง $\mathbb{R}^{m\times d\_{\text{model}}}$ เป็นการแจกแจงเหนือ vocabulary
 
 $$
-\boxed{\ Z = X^{(N)}_{\text{dec}}W_{\text{out}} + \mathbf{b}_{\text{out}} \in \mathbb{R}^{m \times V},
+\boxed{\ Z = X^{(N)}\_{\text{dec}}W\_{\text{out}} + \mathbf{b}\_{\text{out}} \in \mathbb{R}^{m \times V},
 \qquad
-p(y_t \mid y_{{<}t}, \mathbf{x}) = \text{softmax}(\mathbf{z}_t)\ }
+p(y\_t \mid y\_{{<}t}, \mathbf{x}) = \text{softmax}(\mathbf{z}\_t)\ }
 $$
 
 | ตัวแปร | มิติ |
 |---|---|
-| $X^{(N)}_{\text{dec}}$ | $\mathbb{R}^{m \times d_{\text{model}}}$ |
-| $W_{\text{out}}$ | $\mathbb{R}^{d_{\text{model}} \times V}$ |
+| $X^{(N)}\_{\text{dec}}$ | $\mathbb{R}^{m \times d\_{\text{model}}}$ |
+| $W\_{\text{out}}$ | $\mathbb{R}^{d\_{\text{model}} \times V}$ |
 | $Z$ (logits) | $\mathbb{R}^{m \times V}$ |
 | $p$ | $\mathbb{R}^{m \times V}$, แต่ละแถวรวมได้ 1 |
 
@@ -389,14 +389,14 @@ $$
 **Weight tying** คือการบังคับให้
 
 $$
-\boxed{\ W_{\text{out}} = E^\top\ }
-\qquad (E \in \mathbb{R}^{V \times d_{\text{model}}}\ \text{คือ embedding matrix})
+\boxed{\ W\_{\text{out}} = E^\top\ }
+\qquad (E \in \mathbb{R}^{V \times d\_{\text{model}}}\ \text{คือ embedding matrix})
 $$
 
 ทำให้ logit ของโทเคน $v$ กลายเป็น dot product ตรง ๆ
 
 $$
-z_{tv} = \mathbf{x}_t \cdot \mathbf{e}_v
+z\_{tv} = \mathbf{x}\_t \cdot \mathbf{e}\_v
 $$
 
 เปเปอร์ Transformer ผูก **3 เมทริกซ์เข้าด้วยกัน**: source embedding, target embedding และ output projection (เป็นไปได้เพราะใช้ shared BPE vocabulary)
@@ -428,9 +428,9 @@ $$
 
 - ถ้าไม่ผูก: คำหายากจะได้ gradient ที่ input embedding น้อยมาก และที่ output ก็น้อยมาก → เรียนได้แย่ทั้งสองทาง
 - ถ้าผูก: gradient จากทั้งสองเส้นทางไปรวมกันที่เมทริกซ์เดียว → คำหายากได้สัญญาณมากขึ้นเท่าตัว
-- ผลเชิงเรขาคณิต: logit $= \mathbf{x}_t \cdot \mathbf{e}_v$ แปลว่า "ทำนายโทเคน $v$" $\equiv$ "ทำให้ hidden state ชี้ไปทางเดียวกับ embedding ของ $v$" ซึ่งบังคับให้ output space กับ embedding space เป็นปริภูมิเดียวกันโดยอัตโนมัติ
+- ผลเชิงเรขาคณิต: logit $= \mathbf{x}\_t \cdot \mathbf{e}\_v$ แปลว่า "ทำนายโทเคน $v$" $\equiv$ "ทำให้ hidden state ชี้ไปทางเดียวกับ embedding ของ $v$" ซึ่งบังคับให้ output space กับ embedding space เป็นปริภูมิเดียวกันโดยอัตโนมัติ
 
-> **ระวัง:** เมื่อผูกน้ำหนักแล้ว ตัวคูณ $\sqrt{d_{\text{model}}}$ ในไฟล์ [10 §1.3](10-encoder-full-pipeline.md) มีผลต่อ *ขนาดของ logits* ด้วย — สองอย่างนี้ต้องปรับด้วยกันเสมอ
+> **ระวัง:** เมื่อผูกน้ำหนักแล้ว ตัวคูณ $\sqrt{d\_{\text{model}}}$ ในไฟล์ [10-1.3](10-encoder-full-pipeline.md) มีผลต่อ *ขนาดของ logits* ด้วย — สองอย่างนี้ต้องปรับด้วยกันเสมอ
 
 ```python
 import torch.nn as nn
@@ -470,12 +470,12 @@ t=4: input [<s>, I, eat, rice]  → p₄ → เลือก "<eos>" → หย�
 
 ### 6.2 KV Cache
 
-**ข้อสังเกตที่ทำให้ทุกอย่างเปลี่ยน:** ด้วย causal mask ตำแหน่ง $j$ ไม่เคยเห็นตำแหน่งที่มาทีหลัง → $\mathbf{k}_j$ และ $\mathbf{v}_j$ **ไม่มีวันเปลี่ยน** เมื่อคำนวณไปแล้ว
+**ข้อสังเกตที่ทำให้ทุกอย่างเปลี่ยน:** ด้วย causal mask ตำแหน่ง $j$ ไม่เคยเห็นตำแหน่งที่มาทีหลัง → $\mathbf{k}\_j$ และ $\mathbf{v}\_j$ **ไม่มีวันเปลี่ยน** เมื่อคำนวณไปแล้ว
 
 $$
-\mathbf{k}_j = \mathbf{x}_jW^K, \quad \mathbf{v}_j = \mathbf{x}_jW^V
+\mathbf{k}\_j = \mathbf{x}\_jW^K, \quad \mathbf{v}\_j = \mathbf{x}\_jW^V
 \qquad \text{และ} \qquad
-\mathbf{x}_j \text{ ขึ้นกับแค่ } y_{\le j}
+\mathbf{x}\_j \text{ ขึ้นกับแค่ } y\_{\le j}
 $$
 
 จึงเก็บใส่ cache ได้ ก้าวที่ $t$ เหลือแค่
@@ -483,9 +483,9 @@ $$
 $$
 \boxed{
 \begin{aligned}
-K_{\le t} &= [K_{\le t-1};\ \mathbf{x}_tW^K] && \text{ต่อท้าย 1 แถว} \\
-V_{\le t} &= [V_{\le t-1};\ \mathbf{x}_tW^V] && \text{ต่อท้าย 1 แถว} \\
-\mathbf{o}_t &= \text{softmax}\!\left(\frac{(\mathbf{x}_tW^Q)K_{\le t}^\top}{\sqrt{d_k}}\right)V_{\le t} && \text{query แถวเดียว}
+K\_{\le t} &= [K\_{\le t-1};\ \mathbf{x}\_tW^K] && \text{ต่อท้าย 1 แถว} \\\
+V\_{\le t} &= [V\_{\le t-1};\ \mathbf{x}\_tW^V] && \text{ต่อท้าย 1 แถว} \\\
+\mathbf{o}\_t &= \text{softmax}\\!\left(\frac{(\mathbf{x}\_tW^Q)K\_{\le t}^\top}{\sqrt{d\_k}}\right)V\_{\le t} && \text{query แถวเดียว}
 \end{aligned}}
 $$
 
@@ -535,7 +535,7 @@ sequenceDiagram
 
 > **สัญชาตญาณ:** ไม่มี cache งานรวมโตแบบ $O(m^2)$ ถึง $O(m^3)$ มี cache โตแบบ $O(m)$ ถึง $O(m^2)$ — ยิ่งประโยคยาว ยิ่งได้กำไรมาก
 
-**ต้นทุนที่แลกมา: หน่วยความจำ** cache มีขนาด $2 \times N \times m \times d_{\text{model}}$ ตัวเลข
+**ต้นทุนที่แลกมา: หน่วยความจำ** cache มีขนาด $2 \times N \times m \times d\_{\text{model}}$ ตัวเลข
 
 | $m$ | ขนาด cache (fp32, batch = 1) |
 |---|---|
@@ -568,34 +568,34 @@ for m in [8, 32, 128, 512]:
 **Temperature** — ปรับความ "คม" ของการแจกแจงก่อนสุ่ม
 
 $$
-p_v = \frac{\exp(z_v / T)}{\sum_{v'}\exp(z_{v'} / T)}
+p\_v = \frac{\exp(z\_v / T)}{\sum\_{v'}\exp(z\_{v'} / T)}
 $$
 
 **Greedy** — คือกรณี $T \to 0$
 
 $$
-\hat{y}_t = \arg\max_v\ p_v
+\hat{y}\_t = \arg\max\_v\ p\_v
 $$
 
-**Beam Search** (จากไฟล์ [01 §5.4](01-seq2seq-rnn-basics.md)) — เก็บ $B$ เส้นทางที่ดีที่สุด ให้คะแนนด้วย log-prob สะสมหารด้วยความยาว
+**Beam Search** (จากไฟล์ [01-5.4](01-seq2seq-rnn-basics.md)) — เก็บ $B$ เส้นทางที่ดีที่สุด ให้คะแนนด้วย log-prob สะสมหารด้วยความยาว
 
 $$
-\text{score}(\mathbf{y}_{\le t}) = \frac{1}{t^\alpha}\sum_{t'=1}^{t}\log p(y_{t'} \mid y_{{<}t'}, \mathbf{x}), \qquad \alpha \approx 0.6
+\text{score}(\mathbf{y}\_{\le t}) = \frac{1}{t^\alpha}\sum\_{t'=1}^{t}\log p(y\_{t'} \mid y\_{{<}t'}, \mathbf{x}), \qquad \alpha \approx 0.6
 $$
 
 **Top-$k$ sampling** — เก็บเฉพาะ $k$ ตัวที่น่าจะเป็นที่สุด แล้ว normalize ใหม่
 
 $$
-\mathcal{V}_k = \text{top-}k\text{ ของ } p, \qquad
-p'_v = \begin{cases} \dfrac{p_v}{\sum_{v'\in\mathcal{V}_k}p_{v'}} & v \in \mathcal{V}_k \\[6pt] 0 & \text{อื่น ๆ} \end{cases}
+\mathcal{V}\_k = \text{top-}k\text{ ของ } p, \qquad
+p'\_v = \begin{cases} \dfrac{p\_v}{\sum\_{v'\in\mathcal{V}\_k}p\_{v'}} & v \in \mathcal{V}\_k \\\\[6pt] 0 & \text{อื่น ๆ} \end{cases}
 $$
 
 **Top-$p$ (nucleus) sampling** — เก็บเซตที่เล็กที่สุดที่ความน่าจะเป็นสะสมถึง $p$
 
 $$
-\mathcal{V}_p = \text{เซตเล็กสุดที่}\ \sum_{v \in \mathcal{V}_p} p_v \ge p,
+\mathcal{V}\_p = \text{เซตเล็กสุดที่}\ \sum\_{v \in \mathcal{V}\_p} p\_v \ge p,
 \qquad
-p'_v = \frac{p_v\,\mathbb{1}[v \in \mathcal{V}_p]}{\sum_{v'\in\mathcal{V}_p}p_{v'}}
+p'\_v = \frac{p\_v\\,\mathbb{1}[v \in \mathcal{V}\_p]}{\sum\_{v'\in\mathcal{V}\_p}p\_{v'}}
 $$
 
 **เดินตัวเลขทั้งหมดบนเวกเตอร์เดียวกัน** — logits $\mathbf{z} = [3.2,\ 1.8,\ 1.5,\ 0.4,\ -0.5]$ เหนือ vocabulary `{rice, noodle, bread, water, <eos>}`
@@ -614,7 +614,7 @@ $$
 ความน่าจะเป็นสะสม (เรียงจากมากไปน้อย): $[0.6601,\ 0.8229,\ 0.9435,\ 0.9837,\ 1.0000]$
 → ต้องใช้ 2 ตัวจึงถึง 0.8 และ 3 ตัวจึงถึง 0.9
 
-> **สังเกต:** บนเวกเตอร์นี้ top-$p$ 0.9 ให้ผลเท่ากับ top-$k$ 3 เป๊ะ ๆ — **ความต่างอยู่ที่การปรับตัว** ถ้าเจอการแจกแจงที่คมมาก (เช่น $p_1 = 0.95$) top-$p$ 0.9 จะเก็บแค่ **1 ตัว** ในขณะที่ top-$k$ 3 ยังยัด 2 ตัวหางเข้ามาเสมอ
+> **สังเกต:** บนเวกเตอร์นี้ top-$p$ 0.9 ให้ผลเท่ากับ top-$k$ 3 เป๊ะ ๆ — **ความต่างอยู่ที่การปรับตัว** ถ้าเจอการแจกแจงที่คมมาก (เช่น $p\_1 = 0.95$) top-$p$ 0.9 จะเก็บแค่ **1 ตัว** ในขณะที่ top-$k$ 3 ยังยัด 2 ตัวหางเข้ามาเสมอ
 > นั่นคือเหตุผลที่ nucleus sampling ชนะในทางปฏิบัติ: จำนวนตัวเลือกปรับตามความมั่นใจของโมเดล
 
 | วิธี | ใช้เมื่อไร |
@@ -655,13 +655,13 @@ print(np.round(top_p(p, 0.9), 4))        # [0.6997 0.1725 0.1278 0.     0.    ]
 encoder memory $\mathcal{M} \in \mathbb{R}^{3\times2}$ แทน `ฉัน กิน ข้าว`
 
 $$
-E_{\text{dec}} = \begin{bmatrix}
-0.0 & 0.0 \\ 0.6 & 0.2 \\ 0.1 & 0.7 \\ 0.5 & -0.4 \\ -0.3 & -0.6
+E\_{\text{dec}} = \begin{bmatrix}
+0.0 & 0.0 \\\ 0.6 & 0.2 \\\ 0.1 & 0.7 \\\ 0.5 & -0.4 \\\ -0.3 & -0.6
 \end{bmatrix},
 \qquad
-\mathcal{M} = \begin{bmatrix} 0.8 & 0.1 \\ 0.2 & 0.9 \\ 0.7 & -0.5 \end{bmatrix},
+\mathcal{M} = \begin{bmatrix} 0.8 & 0.1 \\\ 0.2 & 0.9 \\\ 0.7 & -0.5 \end{bmatrix},
 \qquad
-W^Q = \begin{bmatrix} 1.0 & 0.3 \\ 0.2 & 1.0 \end{bmatrix}
+W^Q = \begin{bmatrix} 1.0 & 0.3 \\\ 0.2 & 1.0 \end{bmatrix}
 $$
 
 ขั้นตอนต่อก้าว: masked self-attn (บนโทเคนที่มีแล้ว) → cross-attn ไป $\mathcal{M}$ → output head
@@ -670,7 +670,7 @@ $$
 
 $m=1$ → causal mask ทำให้ $A = [1.0]$ ตัวเดียว
 
-$A_{\text{cross}}$ แถวสุดท้าย $= [0.3333,\ 0.3333,\ 0.3333]$ (กระจายเท่ากันเพราะ query เป็นศูนย์)
+$A\_{\text{cross}}$ แถวสุดท้าย $= [0.3333,\ 0.3333,\ 0.3333]$ (กระจายเท่ากันเพราะ query เป็นศูนย์)
 
 $$
 \mathbf{h} = [0.5667,\ 0.1667]
@@ -680,13 +680,13 @@ $$
 
 | โทเคน | \<s\> | **I** | eat | rice | \<eos\> |
 |---|---|---|---|---|---|
-| $p_1$ | 0.0609 | **0.4639** | 0.2374 | 0.1484 | 0.0894 |
+| $p\_1$ | 0.0609 | **0.4639** | 0.2374 | 0.1484 | 0.0894 |
 
 → greedy เลือก **`I`**
 
 ### ก้าวที่ 2 — input `[<s>, I]`
 
-$A_{\text{cross}}$ แถวสุดท้าย $= [0.3508,\ 0.3391,\ 0.3101]$
+$A\_{\text{cross}}$ แถวสุดท้าย $= [0.3508,\ 0.3391,\ 0.3101]$
 
 $$
 \mathbf{h} = [0.5655,\ 0.1852]
@@ -696,13 +696,13 @@ $$
 
 | โทเคน | \<s\> | I | **eat** | rice | \<eos\> |
 |---|---|---|---|---|---|
-| $p_2$ | 0.0597 | 0.1442 | **0.4219** | 0.2715 | 0.1028 |
+| $p\_2$ | 0.0597 | 0.1442 | **0.4219** | 0.2715 | 0.1028 |
 
 → greedy เลือก **`eat`**
 
 ### ก้าวที่ 3 — input `[<s>, I, eat]`
 
-$A_{\text{cross}}$ แถวสุดท้าย $= [0.3418,\ 0.3785,\ 0.2797]$
+$A\_{\text{cross}}$ แถวสุดท้าย $= [0.3418,\ 0.3785,\ 0.2797]$
 
 $$
 \mathbf{h} = [0.5449,\ 0.2350]
@@ -712,7 +712,7 @@ $$
 
 | โทเคน | \<s\> | I | eat | **rice** | \<eos\> |
 |---|---|---|---|---|---|
-| $p_3$ | 0.0496 | 0.1142 | 0.1235 | **0.6251** | 0.0876 |
+| $p\_3$ | 0.0496 | 0.1142 | 0.1235 | **0.6251** | 0.0876 |
 
 → greedy เลือก **`rice`**
 
@@ -812,20 +812,20 @@ def greedy_decode(model, memory, src_pad, bos, eos, max_len=50):
 
 | สิ่งที่ได้ | สมการหลัก |
 |---|---|
-| Causal mask | $M_{ij} = 0$ ถ้า $j \le i$, $-\infty$ ถ้า $j {>} i$ |
-| Masked self-attention | $\text{softmax}\\!\left(\frac{QK^\top}{\sqrt{d_k}} + M\right)V$ |
+| Causal mask | $M\_{ij} = 0$ ถ้า $j \le i$, $-\infty$ ถ้า $j {>} i$ |
+| Masked self-attention | $\text{softmax}\\!\left(\frac{QK^\top}{\sqrt{d\_k}} + M\right)V$ |
 | ทำไม $-\infty$ ไม่ใช่คูณศูนย์ | แถวต้องรวมได้ 1 (มิฉะนั้นได้ 0.4184 / 0.7714 / 0.7281 ไม่เท่ากัน) |
 | ขนานตอนเทรน | teacher forcing + causal mask $\Rightarrow$ $m$ ตัวอย่างใน 1 forward pass |
 | Cross-attention | $Q$ จาก decoder, $K,V$ จาก encoder $\Rightarrow$ $A \in \mathbb{R}^{m\times n}$ |
 | มาสก์ของ cross-attn | **source pad เท่านั้น ไม่มี causal** |
 | Decoder layer | 3 sublayer: masked self → cross → FFN (4,199,936 พารามิเตอร์) |
-| Output head | $Z = X^{(N)}W_{\text{out}} + \mathbf{b}$, $W_{\text{out}} = E^\top$ (tying ประหยัด 37.9M) |
+| Output head | $Z = X^{(N)}W\_{\text{out}} + \mathbf{b}$, $W\_{\text{out}} = E^\top$ (tying ประหยัด 37.9M) |
 | Inference | $O(m)$ ก้าวเรียงลำดับ — KV cache เร็วขึ้น 263× ที่ $m=512$ |
 | Sampling | greedy / beam / top-$k$ / top-$p$ / temperature $T$ |
 
 **สิ่งที่ต้องจำไปไฟล์ถัดไป:**
 
-1. output ของโมเดลคือ $p(y_t \mid y_{{<}t}, \mathbf{x})$ ครบทั้ง $m$ ตำแหน่งในหนึ่ง forward pass — ไฟล์ 12 จะเอาไปคิด cross-entropy loss ทีเดียวทั้งก้อน
+1. output ของโมเดลคือ $p(y\_t \mid y\_{{<}t}, \mathbf{x})$ ครบทั้ง $m$ ตำแหน่งในหนึ่ง forward pass — ไฟล์ 12 จะเอาไปคิด cross-entropy loss ทีเดียวทั้งก้อน
 2. causal mask ทำให้ gradient ของตำแหน่ง $t$ ไม่ไหลไปหาโทเคนที่มาทีหลัง — โครงสร้างสามเหลี่ยมนี้จะปรากฏใน backward pass ด้วย
 3. ตำแหน่ง `<pad>` ต้องถูกตัดออกจากทั้ง attention **และ** loss
 

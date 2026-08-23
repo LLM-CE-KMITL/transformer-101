@@ -12,15 +12,15 @@
 
 | ส่วนประกอบ | หน้าที่ | ทำงานอย่างไร |
 |---|---|---|
-| RNN encoder | สร้าง $\mathbf{h}_1 \dots \mathbf{h}_n$ | วนซ้ำตามเวลา — $\mathbf{h}_t$ ต้องรอ $\mathbf{h}_{t-1}$ |
-| Attention | เลือกว่าจะดู $\mathbf{h}_j$ ตัวไหน | คำนวณ $n$ คะแนนพร้อมกัน — ขนานได้เต็มที่ |
+| RNN encoder | สร้าง $\mathbf{h}\_1 \dots \mathbf{h}\_n$ | วนซ้ำตามเวลา — $\mathbf{h}\_t$ ต้องรอ $\mathbf{h}\_{t-1}$ |
+| Attention | เลือกว่าจะดู $\mathbf{h}\_j$ ตัวไหน | คำนวณ $n$ คะแนนพร้อมกัน — ขนานได้เต็มที่ |
 
 คำถามที่ Vaswani et al. ตั้งคือ:
 
 > ถ้า attention เป็นตัวที่ให้ decoder "มองเห็นทุกตำแหน่งได้ในก้าวเดียว" อยู่แล้ว
 > แล้ว **RNN ยังเหลืองานอะไรให้ทำ**
 
-คำตอบเดียวที่ RNN ยังผูกขาดอยู่คือ **การผสมข้อมูลระหว่างตำแหน่งฝั่ง encoder เอง** — คือการที่ $\mathbf{h}_3$ รู้จัก $x_1$ เพราะข้อมูลไหลผ่าน $\mathbf{h}_1 \to \mathbf{h}_2 \to \mathbf{h}_3$
+คำตอบเดียวที่ RNN ยังผูกขาดอยู่คือ **การผสมข้อมูลระหว่างตำแหน่งฝั่ง encoder เอง** — คือการที่ $\mathbf{h}\_3$ รู้จัก $x\_1$ เพราะข้อมูลไหลผ่าน $\mathbf{h}\_1 \to \mathbf{h}\_2 \to \mathbf{h}\_3$
 
 แต่ถ้าเราให้ encoder ใช้ attention มอง **ตัวมันเอง** ล่ะ? นั่นคือ **self-attention** และงานสุดท้ายของ RNN ก็หายไป
 
@@ -55,13 +55,13 @@ flowchart TD
 | RNN recurrence | เป็นคอขวดเชิงเวลา ขนานไม่ได้ | Self-Attention | 05, 06 |
 | ลำดับที่มาจาก recurrence "ฟรี ๆ" | หายไปพร้อมกับ RNN | Positional Encoding | 07 |
 | ความไม่เชิงเส้นจาก $\tanh$ ในทุก timestep | attention เป็น linear ในตัว $V$ | FFN แบบ position-wise | 08 |
-| เส้นทาง gradient จาก cell state | ไม่มี $\mathbf{c}_t$ แล้ว | Residual connection + LayerNorm | 08, 09 |
+| เส้นทาง gradient จาก cell state | ไม่มี $\mathbf{c}\_t$ แล้ว | Residual connection + LayerNorm | 08, 09 |
 
 **ข้ออ้างหลัก 3 ข้อของเปเปอร์:**
 
 1. **ขนานได้เต็มที่** — ทุกตำแหน่งคำนวณพร้อมกันในก้าวเดียว ไม่มีอะไรต้องรอใคร
 2. **เส้นทางระหว่างสองตำแหน่งใด ๆ สั้นที่สุดเท่าที่เป็นไปได้** — ยาว 1 ก้าวเสมอ ไม่ว่าจะห่างกันเท่าไร
-3. **ต้นทุนต่อเลเยอร์ไม่ได้แพงกว่า** เมื่อ $n$ ยังไม่ยาวเกิน $d_{\text{model}}$
+3. **ต้นทุนต่อเลเยอร์ไม่ได้แพงกว่า** เมื่อ $n$ ยังไม่ยาวเกิน $d\_{\text{model}}$
 
 ข้อ 1 กับ 2 คือคำตอบตรง ๆ ต่อข้อจำกัดข้อ 3 และ 4 ใน [ไฟล์ 02](02-seq2seq-limitations.md)
 ข้อ 3 คือสิ่งที่ต้องพิสูจน์ด้วยตัวเลข — ซึ่งเป็นเนื้อหาของหัวข้อถัดไป
@@ -83,7 +83,7 @@ flowchart TD
 ### 3.1 Self-Attention
 
 $$
-\text{Attention}(Q,K,V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V
+\text{Attention}(Q,K,V) = \text{softmax}\\!\left(\frac{QK^\top}{\sqrt{d\_k}}\right)V
 $$
 
 | ตัวแปร | มิติ | ต้นทุนการคูณเมทริกซ์ |
@@ -103,12 +103,12 @@ $$
 ### 3.2 Recurrent
 
 $$
-\mathbf{h}_t = \tanh(\mathbf{h}_{t-1}W_{hh} + \mathbf{x}_t W_{xh} + \mathbf{b})
+\mathbf{h}\_t = \tanh(\mathbf{h}\_{t-1}W\_{hh} + \mathbf{x}\_t W\_{xh} + \mathbf{b})
 $$
 
 | การดำเนินการ | มิติ | ต้นทุน |
 |---|---|---|
-| $\mathbf{h}_{t-1}W_{hh}$ ต่อ 1 timestep | $\mathbb{R}^{1\times d} \times \mathbb{R}^{d\times d}$ | $d^2$ |
+| $\mathbf{h}\_{t-1}W\_{hh}$ ต่อ 1 timestep | $\mathbb{R}^{1\times d} \times \mathbb{R}^{d\times d}$ | $d^2$ |
 | รวม $n$ timesteps | — | $n d^2$ |
 
 $$
@@ -128,10 +128,10 @@ $$
 | $n$ ตำแหน่ง $\times$ $d$ channels | $k \cdot n \cdot d^2$ |
 
 $$
-\boxed{\ \text{Convolutional:}\quad O(k \cdot n \cdot d^2)\ \text{ต่อเลเยอร์}, \quad O(1)\ \text{sequential ops}, \quad O(\log_k n)\ \text{max path}\ }
+\boxed{\ \text{Convolutional:}\quad O(k \cdot n \cdot d^2)\ \text{ต่อเลเยอร์}, \quad O(1)\ \text{sequential ops}, \quad O(\log\_k n)\ \text{max path}\ }
 $$
 
-**ทำไม max path เป็น $\log_k n$:** conv เลเยอร์เดียวมองเห็นได้แค่ $k$ ตำแหน่งรอบตัว ต้องซ้อนหลายเลเยอร์ให้ **receptive field** โตขึ้นแบบทวีคูณ ($k \to k^2 \to k^3 \dots$) จึงจะครอบคลุมทั้งประโยค (แบบ dilated convolution)
+**ทำไม max path เป็น $\log\_k n$:** conv เลเยอร์เดียวมองเห็นได้แค่ $k$ ตำแหน่งรอบตัว ต้องซ้อนหลายเลเยอร์ให้ **receptive field** โตขึ้นแบบทวีคูณ ($k \to k^2 \to k^3 \dots$) จึงจะครอบคลุมทั้งประโยค (แบบ dilated convolution)
 
 | $n$ | RNN path | Conv path ที่ $k=3$ | Self-Attn path |
 |---|---|---|---|
@@ -140,7 +140,7 @@ $$
 | 512 | 512 | 6 | **1** |
 | 1000 | 1000 | 7 | **1** |
 
-*(Conv path = $\lceil \log_3 n \rceil$; เช่น $\log_3 512 = 5.6784 \to 6$)*
+*(Conv path = $\lceil \log\_3 n \rceil$; เช่น $\log\_3 512 = 5.6784 \to 6$)*
 
 ```mermaid
 flowchart LR
@@ -169,16 +169,16 @@ flowchart LR
 เทียบพจน์นำของสองวิธีตรง ๆ:
 
 $$
-\underbrace{n^2 d}_{\text{self-attention}} \ \ \text{vs} \ \ \underbrace{n d^2}_{\text{recurrent}}
+\underbrace{n^2 d}\_{\text{self-attention}} \ \ \text{vs} \ \ \underbrace{n d^2}\_{\text{recurrent}}
 \qquad\Longrightarrow\qquad
 \frac{n^2 d}{n d^2} = \frac{n}{d}
 $$
 
 $$
-\boxed{\ \text{self-attention ถูกกว่า} \iff n {<} d_{\text{model}}\ }
+\boxed{\ \text{self-attention ถูกกว่า} \iff n {<} d\_{\text{model}}\ }
 $$
 
-**คำนวณจริงที่ $d_{\text{model}} = 512$** (นับเป็นจำนวนการคูณ-บวก ไม่รวมค่าคงที่)
+**คำนวณจริงที่ $d\_{\text{model}} = 512$** (นับเป็นจำนวนการคูณ-บวก ไม่รวมค่าคงที่)
 
 | $n$ | $n^2 d$ (self-attn) | $n d^2$ (recurrent) | อัตราส่วน SA/RNN | ใครถูกกว่า |
 |---:|---:|---:|---:|---|
@@ -222,7 +222,7 @@ for n in [64, 128, 256, 512, 1024, 2048]:
 
 ### 4.1 $O(n^2)$ หน่วยความจำ
 
-ปัญหาที่แท้จริงของ self-attention **ไม่ใช่จำนวน FLOPs แต่คือหน่วยความจำ** เพราะเมทริกซ์ $A = \text{softmax}(QK^\top/\sqrt{d_k}) \in \mathbb{R}^{n\times n}$ ต้อง **ถูกเก็บไว้ทั้งก้อน** เพื่อใช้ตอน backward pass
+ปัญหาที่แท้จริงของ self-attention **ไม่ใช่จำนวน FLOPs แต่คือหน่วยความจำ** เพราะเมทริกซ์ $A = \text{softmax}(QK^\top/\sqrt{d\_k}) \in \mathbb{R}^{n\times n}$ ต้อง **ถูกเก็บไว้ทั้งก้อน** เพื่อใช้ตอน backward pass
 
 ขนาดจริงที่ fp32 (4 ไบต์ต่อค่า) และ $H = 8$ heads:
 
@@ -238,9 +238,9 @@ for n in [64, 128, 256, 512, 1024, 2048]:
 $$
 \text{bytes} = H \cdot n^2 \cdot 4
 = \begin{cases}
-8 \cdot 128^2 \cdot 4 = 524{,}288 & (n=128) \\
-8 \cdot 512^2 \cdot 4 = 8{,}388{,}608 & (n=512) \\
-8 \cdot 2048^2 \cdot 4 = 134{,}217{,}728 & (n=2048) \\
+8 \cdot 128^2 \cdot 4 = 524{,}288 & (n=128) \\\
+8 \cdot 512^2 \cdot 4 = 8{,}388{,}608 & (n=512) \\\
+8 \cdot 2048^2 \cdot 4 = 134{,}217{,}728 & (n=2048) \\\
 8 \cdot 8192^2 \cdot 4 = 2{,}147{,}483{,}648 & (n=8192)
 \end{cases}
 $$
@@ -289,7 +289,7 @@ RNN ได้ข้อมูลลำดับมา **ฟรี** เพรา�
 พิจารณาสมการ self-attention อีกครั้ง — ไม่มีตัวแปรไหนเลยที่บอกว่า "แถวนี้คือตำแหน่งที่เท่าไร"
 
 $$
-\text{Attention}(X) = \text{softmax}\!\left(\frac{(XW^Q)(XW^K)^\top}{\sqrt{d_k}}\right)XW^V
+\text{Attention}(X) = \text{softmax}\\!\left(\frac{(XW^Q)(XW^K)^\top}{\sqrt{d\_k}}\right)XW^V
 $$
 
 ผลที่ตามมาเป็นทฤษฎีบทเลย: **สลับลำดับแถวของ $X$ แล้ว output ก็สลับตามเป๊ะ ๆ โดยเนื้อหาไม่เปลี่ยน**
@@ -298,12 +298,12 @@ $$
 \text{Attention}(PX) = P \cdot \text{Attention}(X) \qquad \text{สำหรับ permutation matrix } P \text{ ใด ๆ}
 $$
 
-แปลว่าโมเดลมองว่า `"หมากัดคน"` กับ `"คนกัดหมา"` เป็นสิ่งเดียวกัน — จะพิสูจน์ด้วยตัวเลขจริงใน [ไฟล์ 05 §4.1](05-self-attention-math.md)
+แปลว่าโมเดลมองว่า `"หมากัดคน"` กับ `"คนกัดหมา"` เป็นสิ่งเดียวกัน — จะพิสูจน์ด้วยตัวเลขจริงใน [ไฟล์ 05-4.1](05-self-attention-math.md)
 
 **ทางแก้:** ฉีดข้อมูลตำแหน่งเข้าไปใน embedding ตั้งแต่ต้น
 
 $$
-X' = X_{\text{emb}} + PE, \qquad PE \in \mathbb{R}^{n \times d_{\text{model}}}
+X' = X\_{\text{emb}} + PE, \qquad PE \in \mathbb{R}^{n \times d\_{\text{model}}}
 $$
 
 รายละเอียดว่าทำไมต้องเป็น sinusoid และทำไมต้อง **บวก** ไม่ใช่ **concat** อยู่ใน [ไฟล์ 07](07-positional-encoding.md)
@@ -363,17 +363,17 @@ flowchart TB
 
 | บล็อก | สมการหลัก | อธิบายใน |
 |---|---|---|
-| Input / Output Embedding | $X = E[\text{tokens}] \cdot \sqrt{d_{\text{model}}}$ | [10 §1](10-encoder-full-pipeline.md) |
-| Positional Encoding | $PE_{(pos,2i)} = \sin(pos/10000^{2i/d})$ | [07](07-positional-encoding.md) |
-| Scaled Dot-Product Attention | $\text{softmax}(QK^\top/\sqrt{d_k})V$ | [05](05-self-attention-math.md) ← **ไฟล์ถัดไป** |
-| Multi-Head Attention | $[\text{head}_1;\dots;\text{head}_H]W^O$ | [06](06-multi-head-attention.md) |
-| Masked Self-Attention | $\text{softmax}(QK^\top/\sqrt{d_k} + M)V$ | [11 §2](11-decoder-masked-attention.md) |
-| Cross-Attention | $Q$ จาก decoder, $K,V$ จาก encoder | [11 §3](11-decoder-masked-attention.md) |
-| Position-wise FFN | $\max(0, \mathbf{x}W_1+\mathbf{b}_1)W_2+\mathbf{b}_2$ | [08 §1](08-feedforward-and-residual.md) |
-| Residual connection | $\mathbf{y} = \mathbf{x} + \text{Sublayer}(\mathbf{x})$ | [08 §2](08-feedforward-and-residual.md) |
+| Input / Output Embedding | $X = E[\text{tokens}] \cdot \sqrt{d\_{\text{model}}}$ | [10-1](10-encoder-full-pipeline.md) |
+| Positional Encoding | $PE\_{(pos,2i)} = \sin(pos/10000^{2i/d})$ | [07](07-positional-encoding.md) |
+| Scaled Dot-Product Attention | $\text{softmax}(QK^\top/\sqrt{d\_k})V$ | [05](05-self-attention-math.md) ← **ไฟล์ถัดไป** |
+| Multi-Head Attention | $[\text{head}\_1;\dots;\text{head}\_H]W^O$ | [06](06-multi-head-attention.md) |
+| Masked Self-Attention | $\text{softmax}(QK^\top/\sqrt{d\_k} + M)V$ | [11-2](11-decoder-masked-attention.md) |
+| Cross-Attention | $Q$ จาก decoder, $K,V$ จาก encoder | [11-3](11-decoder-masked-attention.md) |
+| Position-wise FFN | $\max(0, \mathbf{x}W\_1+\mathbf{b}\_1)W\_2+\mathbf{b}\_2$ | [08-1](08-feedforward-and-residual.md) |
+| Residual connection | $\mathbf{y} = \mathbf{x} + \text{Sublayer}(\mathbf{x})$ | [08-2](08-feedforward-and-residual.md) |
 | Layer Normalization | $\boldsymbol{\gamma}\odot\frac{\mathbf{x}-\mu}{\sqrt{\sigma^2+\epsilon}}+\boldsymbol{\beta}$ | [09](09-layernorm-math.md) |
 | Encoder เต็มรูปแบบ | ประกอบทุกอย่างข้างบน | [10](10-encoder-full-pipeline.md) |
-| Linear → Softmax + Loss | $\mathcal{L} = -\frac{1}{m}\sum_t \log p(y_t^*\mid\cdot)$ | [12](12-training-objective-backprop.md) |
+| Linear → Softmax + Loss | $\mathcal{L} = -\frac{1}{m}\sum\_t \log p(y\_t^\*\mid\cdot)$ | [12](12-training-objective-backprop.md) |
 
 ### ลำดับการอ่านที่เหลือ
 
@@ -399,8 +399,8 @@ flowchart LR
 |---|---|
 | Self-Attention complexity | $O(n^2 d)$ ต่อเลเยอร์, sequential $O(1)$, path $O(1)$ |
 | Recurrent complexity | $O(n d^2)$ ต่อเลเยอร์, sequential $O(n)$, path $O(n)$ |
-| Convolutional complexity | $O(k n d^2)$ ต่อเลเยอร์, sequential $O(1)$, path $O(\log_k n)$ |
-| จุดคุ้มทุน | $n^2 d {<} n d^2 \iff n {<} d_{\text{model}}$ → ที่ $d=512$ คุ้มเมื่อ $n {<} 512$ |
+| Convolutional complexity | $O(k n d^2)$ ต่อเลเยอร์, sequential $O(1)$, path $O(\log\_k n)$ |
+| จุดคุ้มทุน | $n^2 d {<} n d^2 \iff n {<} d\_{\text{model}}$ → ที่ $d=512$ คุ้มเมื่อ $n {<} 512$ |
 | ราคาที่จ่าย 1 | attention matrix $H n^2$ ค่า → ที่ $n=8192$, $H=8$, fp32 = 2 GiB ต่อ layer |
 | ราคาที่จ่าย 2 | $\text{Attention}(PX) = P\\,\text{Attention}(X)$ → ไม่รู้ลำดับ ต้องใส่ PE |
 
@@ -411,7 +411,7 @@ flowchart LR
 3. ทุกอย่างที่กล่าวมาย่อลงในสมการเดียว ซึ่งเราจะกางมันทีละชิ้นในไฟล์ถัดไป
 
 $$
-\text{Attention}(Q,K,V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V
+\text{Attention}(Q,K,V) = \text{softmax}\\!\left(\frac{QK^\top}{\sqrt{d\_k}}\right)V
 $$
 
 ---

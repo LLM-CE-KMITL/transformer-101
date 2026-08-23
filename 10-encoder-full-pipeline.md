@@ -27,7 +27,7 @@ flowchart LR
 
 ### 1.1 Tokenization → token ids
 
-โมเดลไม่รู้จัก "ตัวอักษร" หรือ "คำ" — รู้จักแค่ **จำนวนเต็ม** เราจึงต้องมีพจนานุกรมที่แมป *หน่วยข้อความ* → *เลขจำนวนเต็ม* $\{0, 1, \dots, V-1\}$
+โมเดลไม่รู้จัก "ตัวอักษร" หรือ "คำ" — รู้จักแค่ **จำนวนเต็ม** เราจึงต้องมีพจนานุกรมที่แมป *หน่วยข้อความ* → *เลขจำนวนเต็ม* $\\{0, 1, \dots, V-1\\}$
 
 ทางเลือกของ "หน่วยข้อความ":
 
@@ -62,7 +62,7 @@ flowchart LR
 เมทริกซ์ embedding คือ
 
 $$
-E \in \mathbb{R}^{V \times d_{\text{model}}}
+E \in \mathbb{R}^{V \times d\_{\text{model}}}
 $$
 
 แถวที่ $v$ คือเวกเตอร์ตัวแทนของโทเคน id $v$
@@ -71,18 +71,18 @@ $$
 
 | มุมมอง | สมการ | ต้นทุน |
 |---|---|---|
-| พีชคณิต | $\mathbf{e}_i = \mathbf{o}_i E$ เมื่อ $\mathbf{o}_i \in \\{0,1\\}^{1 \times V}$ เป็น one-hot | $O(V \cdot d_{\text{model}})$ ต่อโทเคน |
-| ปฏิบัติ | $\mathbf{e}_i = E[\text{id}_i,\ :]$ (index เข้าไปตรง ๆ) | $O(d_{\text{model}})$ |
+| พีชคณิต | $\mathbf{e}\_i = \mathbf{o}\_i E$ เมื่อ $\mathbf{o}\_i \in \\{0,1\\}^{1 \times V}$ เป็น one-hot | $O(V \cdot d\_{\text{model}})$ ต่อโทเคน |
+| ปฏิบัติ | $\mathbf{e}\_i = E[\text{id}\_i,\ :]$ (index เข้าไปตรง ๆ) | $O(d\_{\text{model}})$ |
 
 $$
-\boxed{\ \mathbf{o}_i E = E[\text{id}_i, :]\ }
+\boxed{\ \mathbf{o}\_i E = E[\text{id}\_i, :]\ }
 $$
 
 **สัญชาตญาณ:** การคูณ one-hot กับเมทริกซ์ คือการ "เลือกแถว" ล้วน ๆ — ทุกพจน์อื่นคูณด้วย 0 หมด เฟรมเวิร์กจึงข้ามการคูณไปใช้ index แทน (`nn.Embedding` = `nn.Linear` แบบไม่มี bias ที่รับ one-hot แต่ลัดวงจร)
 
 แต่มุมมอง one-hot **ไม่ไร้ประโยชน์** — มันบอกเราสองอย่าง:
 1. gradient ของ $E$ ที่แถว $v$ จะไม่เป็นศูนย์ก็ต่อเมื่อโทเคน $v$ ปรากฏใน batch → embedding เป็นเลเยอร์ที่ **sparse gradient**
-2. เพราะมันคือ linear layer จริง ๆ เราจึงเอามัน *ผูก* (tie) กับ output projection ได้ในไฟล์ [11 §5](11-decoder-masked-attention.md)
+2. เพราะมันคือ linear layer จริง ๆ เราจึงเอามัน *ผูก* (tie) กับ output projection ได้ในไฟล์ [11-5](11-decoder-masked-attention.md)
 
 ```python
 import torch, torch.nn as nn
@@ -96,33 +96,33 @@ oh = torch.nn.functional.one_hot(ids, V).float()   # (1, 3, 5)
 assert torch.allclose(oh @ emb.weight, e)          # ← o_i E == E[id_i]
 ```
 
-### 1.3 ทำไมต้องคูณ $\sqrt{d_{\text{model}}}$ ก่อนบวก PE
+### 1.3 ทำไมต้องคูณ $\sqrt{d\_{\text{model}}}$ ก่อนบวก PE
 
 เปเปอร์เขียนบรรทัดนี้ไว้สั้น ๆ แต่มีเหตุผลเชิงสเกลชัดเจน
 
 $$
-\boxed{\ X^{(0)} = \sqrt{d_{\text{model}}}\ E[\text{ids}] + PE\ }
+\boxed{\ X^{(0)} = \sqrt{d\_{\text{model}}}\ E[\text{ids}] + PE\ }
 $$
 
-**ปัญหา:** embedding มักถูก init ด้วย $\mathcal{N}(0,\ 1/d_{\text{model}})$ (คือ std $= 1/\sqrt{d_{\text{model}}}$) ในขณะที่ $PE$ (ไฟล์ [07](07-positional-encoding.md)) เป็น sin/cos ซึ่งมี amplitude เท่ากับ **1 เสมอ** ไม่ขึ้นกับ $d_{\text{model}}$
+**ปัญหา:** embedding มักถูก init ด้วย $\mathcal{N}(0,\ 1/d\_{\text{model}})$ (คือ std $= 1/\sqrt{d\_{\text{model}}}$) ในขณะที่ $PE$ (ไฟล์ [07](07-positional-encoding.md)) เป็น sin/cos ซึ่งมี amplitude เท่ากับ **1 เสมอ** ไม่ขึ้นกับ $d\_{\text{model}}$
 
 ผลคือถ้าบวกกันตรง ๆ **PE จะกลบ embedding**
 
-ตัวเลขยืนยัน ($d_{\text{model}} = 512$, สุ่ม 1000 โทเคน):
+ตัวเลขยืนยัน ($d\_{\text{model}} = 512$, สุ่ม 1000 โทเคน):
 
 | ปริมาณ | ค่า | หมายเหตุ |
 |---|---|---|
 | std ของ $E$ ตอน init | 0.0442 | $= 1/\sqrt{512}$ |
 | $\\|\mathbf{e}\\|$ เฉลี่ย (ก่อนสเกล) | 1.0007 | $\approx 1$ ตามการออกแบบ |
 | std ของ $PE$ | 0.5864 | ค่าระดับ $O(1)$ เพราะ sin/cos อยู่ในช่วง $[-1,1]$ เสมอ |
-| $\\|PE_{pos}\\|$ | **16.0000** | $= \sqrt{d_{\text{model}}/2} = \sqrt{256}$ **เป๊ะทุกตำแหน่ง** |
+| $\\|PE\_{pos}\\|$ | **16.0000** | $= \sqrt{d\_{\text{model}}/2} = \sqrt{256}$ **เป๊ะทุกตำแหน่ง** |
 | อัตราส่วน $\\|\mathbf{e}\\| / \\|PE\\|$ **ก่อน** สเกล | **0.0625** | $= 1/16$ → embedding เบากว่า PE 16 เท่า |
 | std ของ $\sqrt{d}\\,E$ | 1.0012 | $\approx 1$ |
 | $\\|\sqrt{d}\\,\mathbf{e}\\|$ เฉลี่ย | 22.6440 | $\approx \sqrt{512} = 22.6274$ |
 | อัตราส่วน **หลัง** สเกล | **1.4153** | $\approx \sqrt{2}$ → ทั้งสองสัญญาณมีน้ำหนักพอ ๆ กัน |
 
-> **สัญชาตญาณ:** $\|PE_{pos}\|^2 = \sum_{i}(\sin^2\theta_i + \cos^2\theta_i) = d_{\text{model}}/2$ — คงที่เป๊ะ ๆ ทุกตำแหน่ง
-> ส่วน $\|\mathbf{e}\| \approx 1$ ตามการ init การคูณ $\sqrt{d_{\text{model}}}$ จึงยก embedding ขึ้นไปอยู่ระดับเดียวกับ PE พอดี ($22.63$ vs $16$ ต่างกันแค่ $\sqrt{2}$)
+> **สัญชาตญาณ:** $\\|PE\_{pos}\\|^2 = \sum\_{i}(\sin^2\theta\_i + \cos^2\theta\_i) = d\_{\text{model}}/2$ — คงที่เป๊ะ ๆ ทุกตำแหน่ง
+> ส่วน $\\|\mathbf{e}\\| \approx 1$ ตามการ init การคูณ $\sqrt{d\_{\text{model}}}$ จึงยก embedding ขึ้นไปอยู่ระดับเดียวกับ PE พอดี ($22.63$ vs $16$ ต่างกันแค่ $\sqrt{2}$)
 > ถ้าไม่คูณ ข้อมูล *ความหมาย* ของคำจะกลายเป็นเสียงกระซิบเทียบกับข้อมูล *ตำแหน่ง* ที่ตะโกน
 
 ```python
@@ -141,7 +141,7 @@ print(round(ne/npe, 4))                           # 0.0625   ← embedding จ�
 print(round(ne*np.sqrt(d_model)/npe, 4))          # 1.4153   ← สมดุลแล้ว
 ```
 
-> **ข้อควรระวัง:** ถ้าเฟรมเวิร์กของคุณ init embedding ด้วย $\mathcal{N}(0,1)$ (std $=1$) การคูณ $\sqrt{d_{\text{model}}}$ จะทำให้ **ใหญ่เกินไป** — ตัวคูณนี้ผูกกับสมมติฐานเรื่อง init เสมอ ไม่ใช่สูตรศักดิ์สิทธิ์
+> **ข้อควรระวัง:** ถ้าเฟรมเวิร์กของคุณ init embedding ด้วย $\mathcal{N}(0,1)$ (std $=1$) การคูณ $\sqrt{d\_{\text{model}}}$ จะทำให้ **ใหญ่เกินไป** — ตัวคูณนี้ผูกกับสมมติฐานเรื่อง init เสมอ ไม่ใช่สูตรศักดิ์สิทธิ์
 
 ---
 
@@ -181,20 +181,20 @@ $$
 โดย (จากไฟล์ [06](06-multi-head-attention.md))
 
 $$
-\text{MultiHead}(X) = \big[\text{head}_1; \dots; \text{head}_H\big]W^O,
+\text{MultiHead}(X) = \big[\text{head}\_1; \dots; \text{head}\_H\big]W^O,
 \qquad
-\text{head}_h = \text{softmax}\!\left(\frac{(XW_h^Q)(XW_h^K)^\top}{\sqrt{d_k}}\right)XW_h^V
+\text{head}\_h = \text{softmax}\\!\left(\frac{(XW\_h^Q)(XW\_h^K)^\top}{\sqrt{d\_k}}\right)XW\_h^V
 $$
 
 | ตัวแปร | มิติ |
 |---|---|
-| $X$ | $\mathbb{R}^{n \times d_{\text{model}}}$ |
-| $W_h^Q, W_h^K$ | $\mathbb{R}^{d_{\text{model}} \times d_k}$ |
-| $W_h^V$ | $\mathbb{R}^{d_{\text{model}} \times d_v}$ |
-| $\text{head}_h$ | $\mathbb{R}^{n \times d_v}$ |
-| $[\text{head}_1;\dots;\text{head}_H]$ | $\mathbb{R}^{n \times H d_v} = \mathbb{R}^{n \times d_{\text{model}}}$ |
-| $W^O$ | $\mathbb{R}^{d_{\text{model}} \times d_{\text{model}}}$ |
-| $Z$ | $\mathbb{R}^{n \times d_{\text{model}}}$ |
+| $X$ | $\mathbb{R}^{n \times d\_{\text{model}}}$ |
+| $W\_h^Q, W\_h^K$ | $\mathbb{R}^{d\_{\text{model}} \times d\_k}$ |
+| $W\_h^V$ | $\mathbb{R}^{d\_{\text{model}} \times d\_v}$ |
+| $\text{head}\_h$ | $\mathbb{R}^{n \times d\_v}$ |
+| $[\text{head}\_1;\dots;\text{head}\_H]$ | $\mathbb{R}^{n \times H d\_v} = \mathbb{R}^{n \times d\_{\text{model}}}$ |
+| $W^O$ | $\mathbb{R}^{d\_{\text{model}} \times d\_{\text{model}}}$ |
+| $Z$ | $\mathbb{R}^{n \times d\_{\text{model}}}$ |
 
 **หน้าที่:** ผสมข้อมูล *ข้ามตำแหน่ง* — นี่คือ sublayer เดียวในเลเยอร์ที่โทเคนคุยกัน
 
@@ -203,16 +203,16 @@ $$
 $$
 \boxed{\ Y = \text{LN}\big(Z + \text{FFN}(Z)\big)\ },
 \qquad
-\text{FFN}(\mathbf{z}) = \max(0,\ \mathbf{z}W_1 + \mathbf{b}_1)W_2 + \mathbf{b}_2
+\text{FFN}(\mathbf{z}) = \max(0,\ \mathbf{z}W\_1 + \mathbf{b}\_1)W\_2 + \mathbf{b}\_2
 $$
 
 | ตัวแปร | มิติ |
 |---|---|
-| $W_1$ | $\mathbb{R}^{d_{\text{model}} \times d_{\text{ff}}}$ |
-| $\mathbf{b}_1$ | $\mathbb{R}^{1 \times d_{\text{ff}}}$ |
-| $W_2$ | $\mathbb{R}^{d_{\text{ff}} \times d_{\text{model}}}$ |
-| $\mathbf{b}_2$ | $\mathbb{R}^{1 \times d_{\text{model}}}$ |
-| $Y$ | $\mathbb{R}^{n \times d_{\text{model}}}$ |
+| $W\_1$ | $\mathbb{R}^{d\_{\text{model}} \times d\_{\text{ff}}}$ |
+| $\mathbf{b}\_1$ | $\mathbb{R}^{1 \times d\_{\text{ff}}}$ |
+| $W\_2$ | $\mathbb{R}^{d\_{\text{ff}} \times d\_{\text{model}}}$ |
+| $\mathbf{b}\_2$ | $\mathbb{R}^{1 \times d\_{\text{model}}}$ |
+| $Y$ | $\mathbb{R}^{n \times d\_{\text{model}}}$ |
 
 **หน้าที่:** ประมวลผล *ภายในตำแหน่ง* — ใช้น้ำหนักชุดเดียวกันกับทุกแถวอย่างอิสระ (จึงเรียก *position-wise*) ไม่มีการผสมข้ามตำแหน่งเลย (ไฟล์ [08](08-feedforward-and-residual.md))
 
@@ -223,9 +223,9 @@ $$
 เปเปอร์ต้นฉบับ (2017) ใช้ **Post-LN** ตามสมการข้างบน — LN อยู่ *หลัง* การบวก residual
 
 $$
-\text{Post-LN:}\quad x_{l} = \text{LN}\big(x_{l-1} + F(x_{l-1})\big)
+\text{Post-LN:}\quad x\_{l} = \text{LN}\big(x\_{l-1} + F(x\_{l-1})\big)
 \qquad\qquad
-\text{Pre-LN:}\quad x_{l} = x_{l-1} + F\big(\text{LN}(x_{l-1})\big)
+\text{Pre-LN:}\quad x\_{l} = x\_{l-1} + F\big(\text{LN}(x\_{l-1})\big)
 $$
 
 | | Post-LN (2017) | Pre-LN (ที่นิยมหลังปี 2019) |
@@ -236,8 +236,8 @@ $$
 | คุณภาพเมื่อเทรนสำเร็จ | มักดีกว่าเล็กน้อย | เสถียรกว่ามากที่ $N$ ใหญ่ |
 | ใช้ใน | เปเปอร์ต้นฉบับ, BERT | GPT-2/3, LLaMA, ViT |
 
-> **สัญชาตญาณ:** ใน Pre-LN เส้นทาง residual คือ $x_N = x_0 + \sum_l F_l(\cdot)$ — gradient ไหลกลับได้โดยไม่ผ่านอะไรเลย เหมือน cell state ของ LSTM ในไฟล์ [01 §3.2](01-seq2seq-rnn-basics.md) ส่วน Post-LN มี LN คั่นทุกก้าว จึงต้องอุ่นเครื่อง learning rate ก่อน
-> ไฟล์นี้ยึด **Post-LN** ตามเปเปอร์ เพื่อให้สมการตรงกับ [00 §6](00-overview.md)
+> **สัญชาตญาณ:** ใน Pre-LN เส้นทาง residual คือ $x\_N = x\_0 + \sum\_l F\_l(\cdot)$ — gradient ไหลกลับได้โดยไม่ผ่านอะไรเลย เหมือน cell state ของ LSTM ในไฟล์ [01-3.2](01-seq2seq-rnn-basics.md) ส่วน Post-LN มี LN คั่นทุกก้าว จึงต้องอุ่นเครื่อง learning rate ก่อน
+> ไฟล์นี้ยึด **Post-LN** ตามเปเปอร์ เพื่อให้สมการตรงกับ [00-6](00-overview.md)
 
 ---
 
@@ -246,14 +246,14 @@ $$
 $$
 \boxed{
 \begin{aligned}
-X^{(0)} &= \sqrt{d_{\text{model}}}\,E[\text{ids}] + PE \\[4pt]
-Z^{(l)} &= \text{LN}_1^{(l)}\big(X^{(l-1)} + \text{MultiHead}^{(l)}(X^{(l-1)})\big) \\[2pt]
-X^{(l)} &= \text{LN}_2^{(l)}\big(Z^{(l)} + \text{FFN}^{(l)}(Z^{(l)})\big)
+X^{(0)} &= \sqrt{d\_{\text{model}}}\\,E[\text{ids}] + PE \\\\[4pt]
+Z^{(l)} &= \text{LN}\_1^{(l)}\big(X^{(l-1)} + \text{MultiHead}^{(l)}(X^{(l-1)})\big) \\\\[2pt]
+X^{(l)} &= \text{LN}\_2^{(l)}\big(Z^{(l)} + \text{FFN}^{(l)}(Z^{(l)})\big)
 \end{aligned}
 \qquad l = 1, \dots, N}
 $$
 
-ผลลัพธ์สุดท้าย $\text{Enc}(\mathbf{x}) = X^{(N)} \in \mathbb{R}^{n \times d_{\text{model}}}$ คือสิ่งที่ decoder จะใช้เป็น $K, V$ ในไฟล์ [11](11-decoder-masked-attention.md)
+ผลลัพธ์สุดท้าย $\text{Enc}(\mathbf{x}) = X^{(N)} \in \mathbb{R}^{n \times d\_{\text{model}}}$ คือสิ่งที่ decoder จะใช้เป็น $K, V$ ในไฟล์ [11](11-decoder-masked-attention.md)
 
 ```mermaid
 flowchart TD
@@ -269,7 +269,7 @@ flowchart TD
 
 **สามข้อสังเกตสำคัญ:**
 
-1. **มิติไม่เปลี่ยนเลย** ตั้งแต่ $X^{(0)}$ ถึง $X^{(N)}$ ทุกตัวคือ $\mathbb{R}^{n \times d_{\text{model}}}$ — เรียกท่อนี้ว่า *residual stream* ซึ่งทำให้ซ้อนกี่เลเยอร์ก็ได้
+1. **มิติไม่เปลี่ยนเลย** ตั้งแต่ $X^{(0)}$ ถึง $X^{(N)}$ ทุกตัวคือ $\mathbb{R}^{n \times d\_{\text{model}}}$ — เรียกท่อนี้ว่า *residual stream* ซึ่งทำให้ซ้อนกี่เลเยอร์ก็ได้
 2. **น้ำหนักไม่แชร์ข้ามเลเยอร์** ต่างจาก RNN ที่แชร์ข้ามเวลา — เลเยอร์ 1 กับเลเยอร์ 6 มีพารามิเตอร์คนละชุด
 3. **PE ใส่ครั้งเดียวที่ $l=0$** ข้อมูลตำแหน่งเดินทางต่อผ่าน residual stream เอง
 
@@ -277,25 +277,25 @@ flowchart TD
 
 ## 4. ตารางไล่มิติทุกขั้น
 
-ตารางนี้ใช้ Transformer-base: $d_{\text{model}}=512$, $H=8$, $d_k=d_v=64$, $d_{\text{ff}}=2048$, $N=6$, $V=37{,}000$
+ตารางนี้ใช้ Transformer-base: $d\_{\text{model}}=512$, $H=8$, $d\_k=d\_v=64$, $d\_{\text{ff}}=2048$, $N=6$, $V=37{,}000$
 (นับพารามิเตอร์แบบ projection ของ attention **ไม่มี bias** ตามการ implement มาตรฐาน)
 
 | # | ขั้นตอน | สมการ | shape ผลลัพธ์ | พารามิเตอร์ |
 |---|---|---|---|---|
 | 0 | token ids | $\text{ids} = \text{tok}(\text{text})$ | $(n,)$ จำนวนเต็ม | 0 |
 | 1 | embedding lookup | $E[\text{ids}]$ | $n \times 512$ | $V d = 18{,}944{,}000$ |
-| 2 | สเกล | $\sqrt{d_{\text{model}}}\\,E[\text{ids}]$ | $n \times 512$ | 0 |
+| 2 | สเกล | $\sqrt{d\_{\text{model}}}\\,E[\text{ids}]$ | $n \times 512$ | 0 |
 | 3 | บวก PE | $X^{(0)} = (2) + PE$ | $n \times 512$ | 0 *(sinusoidal คงที่)* |
 | 4 | ฉาย Q, K, V ทุกหัว | $XW^Q, XW^K, XW^V$ | $3 \times (n \times 512)$ | $3 d^2 = 786{,}432$ |
-| 5 | แยกหัว | reshape $\to (H, n, d_k)$ | $8 \times n \times 64$ | 0 |
-| 6 | คะแนน | $S_h = Q_hK_h^\top/\sqrt{d_k}$ | $8 \times n \times n$ | 0 |
-| 7 | มาสก์ + softmax | $A_h = \text{softmax}(S_h + M)$ | $8 \times n \times n$ | 0 |
-| 8 | ถ่วงน้ำหนัก value | $A_hV_h$ | $8 \times n \times 64$ | 0 |
-| 9 | concat | $[\text{head}_1;\dots;\text{head}_8]$ | $n \times 512$ | 0 |
+| 5 | แยกหัว | reshape $\to (H, n, d\_k)$ | $8 \times n \times 64$ | 0 |
+| 6 | คะแนน | $S\_h = Q\_hK\_h^\top/\sqrt{d\_k}$ | $8 \times n \times n$ | 0 |
+| 7 | มาสก์ + softmax | $A\_h = \text{softmax}(S\_h + M)$ | $8 \times n \times n$ | 0 |
+| 8 | ถ่วงน้ำหนัก value | $A\_hV\_h$ | $8 \times n \times 64$ | 0 |
+| 9 | concat | $[\text{head}\_1;\dots;\text{head}\_8]$ | $n \times 512$ | 0 |
 | 10 | ฉายออก | $(9)\\,W^O$ | $n \times 512$ | $d^2 = 262{,}144$ |
 | 11 | residual + LN | $Z = \text{LN}(X + (10))$ | $n \times 512$ | $2d = 1{,}024$ |
-| 12 | FFN ชั้นใน | $\max(0, ZW_1 + \mathbf{b}_1)$ | $n \times 2048$ | $d\\,d_{\text{ff}} + d_{\text{ff}} = 1{,}050{,}624$ |
-| 13 | FFN ชั้นนอก | $(12)W_2 + \mathbf{b}_2$ | $n \times 512$ | $d_{\text{ff}}d + d = 1{,}049{,}088$ |
+| 12 | FFN ชั้นใน | $\max(0, ZW\_1 + \mathbf{b}\_1)$ | $n \times 2048$ | $d\\,d\_{\text{ff}} + d\_{\text{ff}} = 1{,}050{,}624$ |
+| 13 | FFN ชั้นนอก | $(12)W\_2 + \mathbf{b}\_2$ | $n \times 512$ | $d\_{\text{ff}}d + d = 1{,}049{,}088$ |
 | 14 | residual + LN | $X^{(l)} = \text{LN}(Z + (13))$ | $n \times 512$ | $2d = 1{,}024$ |
 | — | **รวม 1 เลเยอร์** | ขั้น 4–14 | $n \times 512$ | **3,150,336** |
 | 15 | ซ้อน $N=6$ | ทำขั้น 4–14 หกรอบ | $n \times 512$ | $6 \times 3{,}150{,}336 = 18{,}902{,}016$ |
@@ -323,16 +323,16 @@ flowchart TD
 นิยาม mask จากเวกเตอร์บอกความยาวจริง
 
 $$
-\boxed{\ M^{\text{pad}}_{ij} = \begin{cases} 0 & \text{ถ้าตำแหน่ง } j \text{ เป็นโทเคนจริง} \\ -\infty & \text{ถ้าตำแหน่ง } j \text{ เป็น } \texttt{{<}pad{>}} \end{cases}\ }
+\boxed{\ M^{\text{pad}}\_{ij} = \begin{cases} 0 & \text{ถ้าตำแหน่ง } j \text{ เป็นโทเคนจริง} \\\ -\infty & \text{ถ้าตำแหน่ง } j \text{ เป็น } \texttt{{<}pad{>}} \end{cases}\ }
 $$
 
 สังเกตว่ามาสก์นี้ขึ้นกับ **คอลัมน์ $j$ อย่างเดียว** — ทุกแถวโดนมาสก์ชุดเดียวกัน (ต่างจาก causal mask ในไฟล์ 11 ที่ขึ้นกับทั้ง $i$ และ $j$)
 
 $$
 M^{\text{pad}} = \begin{bmatrix}
-0 & 0 & 0 & -\infty \\
-0 & 0 & 0 & -\infty \\
-0 & 0 & 0 & -\infty \\
+0 & 0 & 0 & -\infty \\\
+0 & 0 & 0 & -\infty \\\
+0 & 0 & 0 & -\infty \\\
 0 & 0 & 0 & -\infty
 \end{bmatrix} \in \mathbb{R}^{4 \times 4}
 $$
@@ -419,34 +419,34 @@ print(torch.round(A, decimals=4))
 
 ## 6. เดินตัวเลขทั้ง Pipeline ด้วยโมเดลจิ๋ว
 
-**การตั้งค่า:** $d_{\text{model}}=4$, $H=2$ (จึง $d_k=d_v=2$), $d_{\text{ff}}=8$, $N=1$, $n=3$, LN ใช้ $\gamma=\mathbf{1}, \beta=\mathbf{0}, \epsilon=10^{-5}$
+**การตั้งค่า:** $d\_{\text{model}}=4$, $H=2$ (จึง $d\_k=d\_v=2$), $d\_{\text{ff}}=8$, $N=1$, $n=3$, LN ใช้ $\gamma=\mathbf{1}, \beta=\mathbf{0}, \epsilon=10^{-5}$
 ประโยค `ฉัน กิน ข้าว` → ids `[1, 2, 3]`
 
 ### 6.1 Embedding lookup
 
 $$
 E = \begin{bmatrix}
-0.0 & 0.0 & 0.0 & 0.0 \\
-0.3 & -0.1 & 0.5 & 0.2 \\
--0.2 & 0.4 & 0.1 & -0.3 \\
-0.5 & 0.2 & -0.4 & 0.1 \\
+0.0 & 0.0 & 0.0 & 0.0 \\\
+0.3 & -0.1 & 0.5 & 0.2 \\\
+-0.2 & 0.4 & 0.1 & -0.3 \\\
+0.5 & 0.2 & -0.4 & 0.1 \\\
 0.1 & 0.1 & 0.1 & 0.1
 \end{bmatrix}
 \quad
 \Rightarrow
 \quad
 E[[1,2,3]] = \begin{bmatrix}
-0.3 & -0.1 & 0.5 & 0.2 \\
--0.2 & 0.4 & 0.1 & -0.3 \\
+0.3 & -0.1 & 0.5 & 0.2 \\\
+-0.2 & 0.4 & 0.1 & -0.3 \\\
 0.5 & 0.2 & -0.4 & 0.1
 \end{bmatrix}
 $$
 
 ### 6.2 สเกล $\times\sqrt{4}=2$ แล้วบวก PE
 
-**PE ($n=3$, $d_{\text{model}}=4$)**
+**PE ($n=3$, $d\_{\text{model}}=4$)**
 
-| | $d_1{=}\sin$ | $d_2{=}\cos$ | $d_3{=}\sin$ | $d_4{=}\cos$ |
+| | $d\_1{=}\sin$ | $d\_2{=}\cos$ | $d\_3{=}\sin$ | $d\_4{=}\cos$ |
 |---|---|---|---|---|
 | **pos=0** | 0.0000 | 1.0000 | 0.0000 | 1.0000 |
 | **pos=1** | 0.8415 | 0.5403 | 0.0100 | 1.0000 |
@@ -454,7 +454,7 @@ $$
 
 **$X = 2E[\text{ids}] + PE$**
 
-| | $d_1$ | $d_2$ | $d_3$ | $d_4$ |
+| | $d\_1$ | $d\_2$ | $d\_3$ | $d\_4$ |
 |---|---|---|---|---|
 | **ฉัน** | 0.6000 | 0.8000 | 1.0000 | 1.4000 |
 | **กิน** | 0.4415 | 1.3403 | 0.2100 | 0.4000 |
@@ -465,48 +465,48 @@ $$
 น้ำหนักที่ใช้ (แต่ละหัว $4 \times 2$):
 
 $$
-W_1^Q = \begin{bmatrix}0.5&-0.2\\0.1&0.4\\-0.3&0.2\\0.2&0.1\end{bmatrix}\!,\;
-W_1^K = \begin{bmatrix}0.2&0.4\\0.3&-0.1\\0.1&0.5\\-0.2&0.2\end{bmatrix}\!,\;
-W_1^V = \begin{bmatrix}0.3&0.1\\-0.2&0.5\\0.4&-0.3\\0.1&0.2\end{bmatrix}
+W\_1^Q = \begin{bmatrix}0.5&-0.2\\\0.1&0.4\\\\-0.3&0.2\\\0.2&0.1\end{bmatrix}\\!,\\;
+W\_1^K = \begin{bmatrix}0.2&0.4\\\0.3&-0.1\\\0.1&0.5\\\\-0.2&0.2\end{bmatrix}\\!,\\;
+W\_1^V = \begin{bmatrix}0.3&0.1\\\\-0.2&0.5\\\0.4&-0.3\\\0.1&0.2\end{bmatrix}
 $$
 
 $$
-W_2^Q = \begin{bmatrix}0.1&0.3\\-0.4&0.2\\0.2&-0.1\\0.3&0.5\end{bmatrix}\!,\;
-W_2^K = \begin{bmatrix}-0.1&0.2\\0.5&0.1\\0.2&0.3\\0.1&-0.4\end{bmatrix}\!,\;
-W_2^V = \begin{bmatrix}0.2&-0.3\\0.1&0.4\\-0.5&0.2\\0.3&0.1\end{bmatrix}
+W\_2^Q = \begin{bmatrix}0.1&0.3\\\\-0.4&0.2\\\0.2&-0.1\\\0.3&0.5\end{bmatrix}\\!,\\;
+W\_2^K = \begin{bmatrix}-0.1&0.2\\\0.5&0.1\\\0.2&0.3\\\0.1&-0.4\end{bmatrix}\\!,\\;
+W\_2^V = \begin{bmatrix}0.2&-0.3\\\0.1&0.4\\\\-0.5&0.2\\\0.3&0.1\end{bmatrix}
 $$
 
 $$
-W^O = \begin{bmatrix}0.4&-0.2&0.1&0.3\\0.1&0.5&-0.3&0.2\\-0.2&0.3&0.4&-0.1\\0.5&0.1&0.2&0.4\end{bmatrix}
+W^O = \begin{bmatrix}0.4&-0.2&0.1&0.3\\\0.1&0.5&-0.3&0.2\\\\-0.2&0.3&0.4&-0.1\\\0.5&0.1&0.2&0.4\end{bmatrix}
 $$
 
-**หัวที่ 1** — $Q_1 = XW_1^Q$, $K_1 = XW_1^K$, $V_1 = XW_1^V$
+**หัวที่ 1** — $Q\_1 = XW\_1^Q$, $K\_1 = XW\_1^K$, $V\_1 = XW\_1^V$
 
-| | $q_1$ | $q_2$ | | $k_1$ | $k_2$ | | $v_1$ | $v_2$ |
+| | $q\_1$ | $q\_2$ | | $k\_1$ | $k\_2$ | | $v\_1$ | $v\_2$ |
 |---|---|---|---|---|---|---|---|---|
 | **ฉัน** | 0.3600 | 0.5400 | | 0.1800 | 0.9400 | | 0.5600 | 0.4400 |
 | **กิน** | 0.3718 | 0.5298 | | 0.4314 | 0.2275 | | -0.0116 | 0.7313 |
 | **ข้าว** | 1.4270 | -0.4243 | | 0.0591 | 0.6153 | | 0.3840 | 0.6568 |
 
-$S_1 = Q_1K_1^\top/\sqrt{2}$ และ $A_1 = \text{softmax}(S_1)$
+$S\_1 = Q\_1K\_1^\top/\sqrt{2}$ และ $A\_1 = \text{softmax}(S\_1)$
 
-| $S_1$ | ฉัน | กิน | ข้าว | | $A_1$ | ฉัน | กิน | ข้าว |
+| $S\_1$ | ฉัน | กิน | ข้าว | | $A\_1$ | ฉัน | กิน | ข้าว |
 |---|---|---|---|---|---|---|---|---|
 | **ฉัน** | 0.4047 | 0.1967 | 0.2500 | | **ฉัน** | 0.3747 | 0.3043 | 0.3210 |
 | **กิน** | 0.3995 | 0.1986 | 0.2460 | | **กิน** | 0.3737 | 0.3057 | 0.3206 |
 | **ข้าว** | -0.1004 | 0.3670 | -0.1250 | | **ข้าว** | 0.2800 | 0.4468 | 0.2732 |
 
-$\text{head}_1 = A_1V_1$
+$\text{head}\_1 = A\_1V\_1$
 
-| | $o_1$ | $o_2$ |
+| | $o\_1$ | $o\_2$ |
 |---|---|---|
 | **ฉัน** | 0.3295 | 0.5982 |
 | **กิน** | 0.3288 | 0.5986 |
 | **ข้าว** | 0.2565 | 0.6294 |
 
-**หัวที่ 2** — $A_2 = \text{softmax}(Q_2K_2^\top/\sqrt{2})$ และ $\text{head}_2 = A_2V_2$
+**หัวที่ 2** — $A\_2 = \text{softmax}(Q\_2K\_2^\top/\sqrt{2})$ และ $\text{head}\_2 = A\_2V\_2$
 
-| $A_2$ | ฉัน | กิน | ข้าว | | $\text{head}_2$ | $o_1$ | $o_2$ |
+| $A\_2$ | ฉัน | กิน | ข้าว | | $\text{head}\_2$ | $o\_1$ | $o\_2$ |
 |---|---|---|---|---|---|---|---|
 | **ฉัน** | 0.3572 | 0.4069 | 0.2359 | | **ฉัน** | 0.4060 | 0.2239 |
 | **กิน** | 0.3146 | 0.3372 | 0.3482 | | **กิน** | 0.5113 | 0.1006 |
@@ -516,7 +516,7 @@ $\text{head}_1 = A_1V_1$
 
 **Concat แล้วฉายผ่าน $W^O$**
 
-| concat | $h_{1a}$ | $h_{1b}$ | $h_{2a}$ | $h_{2b}$ | | $\text{MultiHead}(X)$ | $d_1$ | $d_2$ | $d_3$ | $d_4$ |
+| concat | $h\_{1a}$ | $h\_{1b}$ | $h\_{2a}$ | $h\_{2b}$ | | $\text{MultiHead}(X)$ | $d\_1$ | $d\_2$ | $d\_3$ | $d\_4$ |
 |---|---|---|---|---|---|---|---|---|---|---|
 | **ฉัน** | 0.3295 | 0.5982 | 0.4060 | 0.2239 | | **ฉัน** | 0.2224 | 0.3774 | 0.0607 | 0.2675 |
 | **กิน** | 0.3288 | 0.5986 | 0.5113 | 0.1006 | | **กิน** | 0.1394 | 0.3970 | 0.0779 | 0.2075 |
@@ -526,7 +526,7 @@ $\text{head}_1 = A_1V_1$
 
 $X + \text{MultiHead}(X)$
 
-| | $d_1$ | $d_2$ | $d_3$ | $d_4$ | mean | std |
+| | $d\_1$ | $d\_2$ | $d\_3$ | $d\_4$ | mean | std |
 |---|---|---|---|---|---|---|
 | **ฉัน** | 0.8224 | 1.1774 | 1.0607 | 1.6675 | 1.1820 | 0.3081 |
 | **กิน** | 0.5809 | 1.7373 | 0.2879 | 0.6074 | 0.8034 | 0.5536 |
@@ -534,7 +534,7 @@ $X + \text{MultiHead}(X)$
 
 $Z = \text{LN}(X + \text{MultiHead}(X))$
 
-| | $d_1$ | $d_2$ | $d_3$ | $d_4$ |
+| | $d\_1$ | $d\_2$ | $d\_3$ | $d\_4$ |
 |---|---|---|---|---|
 | **ฉัน** | -1.1670 | -0.0149 | -0.3937 | 1.5756 |
 | **กิน** | -0.4019 | 1.6870 | -0.9311 | -0.3540 |
@@ -544,21 +544,21 @@ $Z = \text{LN}(X + \text{MultiHead}(X))$
 
 ### 6.5 FFN
 
-$W_1 \in \mathbb{R}^{4\times8}$, $W_2 \in \mathbb{R}^{8\times4}$
+$W\_1 \in \mathbb{R}^{4\times8}$, $W\_2 \in \mathbb{R}^{8\times4}$
 
 $$
-W_1 = \begin{bmatrix}
-0.2&-0.3&0.5&0.1&-0.2&0.4&0.1&-0.5\\
-0.4&0.1&-0.2&0.3&0.5&-0.1&0.2&0.3\\
--0.1&0.5&0.3&-0.4&0.1&0.2&-0.3&0.4\\
+W\_1 = \begin{bmatrix}
+0.2&-0.3&0.5&0.1&-0.2&0.4&0.1&-0.5\\\
+0.4&0.1&-0.2&0.3&0.5&-0.1&0.2&0.3\\\
+-0.1&0.5&0.3&-0.4&0.1&0.2&-0.3&0.4\\\
 0.3&0.2&-0.4&0.5&-0.3&0.1&0.4&-0.2
-\end{bmatrix},\;
-\mathbf{b}_1 = [0.1, -0.1, 0, 0.2, -0.2, 0.1, 0, -0.1]
+\end{bmatrix},\\;
+\mathbf{b}\_1 = [0.1, -0.1, 0, 0.2, -0.2, 0.1, 0, -0.1]
 $$
 
-**ก่อน ReLU** ($ZW_1 + \mathbf{b}_1$)
+**ก่อน ReLU** ($ZW\_1 + \mathbf{b}\_1$)
 
-| | $f_1$ | $f_2$ | $f_3$ | $f_4$ | $f_5$ | $f_6$ | $f_7$ | $f_8$ |
+| | $f\_1$ | $f\_2$ | $f\_3$ | $f\_4$ | $f\_5$ | $f\_6$ | $f\_7$ | $f\_8$ |
 |---|---|---|---|---|---|---|---|---|
 | **ฉัน** | 0.3727 | 0.3669 | -1.3289 | 1.0241 | -0.4861 | -0.2865 | 0.6287 | 0.0065 |
 | **กิน** | 0.6813 | -0.3471 | -0.6761 | 0.8614 | 0.7370 | -0.4511 | 0.4349 | 0.3054 |
@@ -566,15 +566,15 @@ $$
 
 **หลัง ReLU** — ค่าลบกลายเป็น 0 (นับได้ 9 จาก 24 ช่อง = 37.5% sparsity)
 
-| | $f_1$ | $f_2$ | $f_3$ | $f_4$ | $f_5$ | $f_6$ | $f_7$ | $f_8$ |
+| | $f\_1$ | $f\_2$ | $f\_3$ | $f\_4$ | $f\_5$ | $f\_6$ | $f\_7$ | $f\_8$ |
 |---|---|---|---|---|---|---|---|---|
 | **ฉัน** | 0.3727 | 0.3669 | 0.0000 | 1.0241 | 0.0000 | 0.0000 | 0.6287 | 0.0065 |
 | **กิน** | 0.6813 | 0.0000 | 0.0000 | 0.8614 | 0.7370 | 0.0000 | 0.4349 | 0.3054 |
 | **ข้าว** | 0.5103 | 0.0000 | 0.0131 | 1.0758 | 0.0000 | 0.3973 | 0.7118 | 0.0000 |
 
-**$\text{FFN}(Z)$** (หลัง $W_2 + \mathbf{b}_2$, $\mathbf{b}_2 = [0, 0.1, -0.1, 0.05]$)
+**$\text{FFN}(Z)$** (หลัง $W\_2 + \mathbf{b}\_2$, $\mathbf{b}\_2 = [0, 0.1, -0.1, 0.05]$)
 
-| | $d_1$ | $d_2$ | $d_3$ | $d_4$ |
+| | $d\_1$ | $d\_2$ | $d\_3$ | $d\_4$ |
 |---|---|---|---|---|
 | **ฉัน** | 0.3415 | -0.2610 | 0.6329 | 0.3774 |
 | **กิน** | 0.1380 | -0.1547 | 0.7694 | 0.3433 |
@@ -584,7 +584,7 @@ $$
 
 $Z + \text{FFN}(Z)$
 
-| | $d_1$ | $d_2$ | $d_3$ | $d_4$ |
+| | $d\_1$ | $d\_2$ | $d\_3$ | $d\_4$ |
 |---|---|---|---|---|
 | **ฉัน** | -0.8255 | -0.2759 | 0.2392 | 1.9530 |
 | **กิน** | -0.2639 | 1.5323 | -0.1618 | -0.0107 |
@@ -594,14 +594,14 @@ $$
 \boxed{\ Y = X^{(1)} = \text{LN}(Z + \text{FFN}(Z))\ }
 $$
 
-| | $d_1$ | $d_2$ | $d_3$ | $d_4$ |
+| | $d\_1$ | $d\_2$ | $d\_3$ | $d\_4$ |
 |---|---|---|---|---|
 | **ฉัน** | -1.0553 | -0.5272 | -0.0322 | 1.6147 |
 | **กิน** | -0.7348 | 1.7189 | -0.5952 | -0.3889 |
 | **ข้าว** | 1.2291 | -0.9383 | -1.0304 | 0.7396 |
 
 ทุกแถวมี mean $= 0.0000$ และ std $= 1.0000$ ตามที่ LN รับประกัน
-เมทริกซ์ $3 \times 4$ นี้คือ **memory** ที่ decoder จะดึงไปใช้เป็น $K$ และ $V$ ในไฟล์ [11 §3](11-decoder-masked-attention.md)
+เมทริกซ์ $3 \times 4$ นี้คือ **memory** ที่ decoder จะดึงไปใช้เป็น $K$ และ $V$ ในไฟล์ [11-3](11-decoder-masked-attention.md)
 
 ### 6.7 โค้ด NumPy ที่ผลิตตัวเลขข้างบนทั้งหมด
 
@@ -740,16 +740,16 @@ print(sum(p.numel() for p in enc.layers.parameters()))      # 18902016  ← ต�
 
 | ส่วนประกอบ | สูตร | จำนวน |
 |---|---|---|
-| $W^Q, W^K, W^V, W^O$ | $4d_{\text{model}}^2$ | 1,048,576 |
-| $W_1, \mathbf{b}_1$ | $d_{\text{model}}d_{\text{ff}} + d_{\text{ff}}$ | 1,050,624 |
-| $W_2, \mathbf{b}_2$ | $d_{\text{ff}}d_{\text{model}} + d_{\text{model}}$ | 1,049,088 |
-| LN สองตัว | $2 \times 2d_{\text{model}}$ | 2,048 |
+| $W^Q, W^K, W^V, W^O$ | $4d\_{\text{model}}^2$ | 1,048,576 |
+| $W\_1, \mathbf{b}\_1$ | $d\_{\text{model}}d\_{\text{ff}} + d\_{\text{ff}}$ | 1,050,624 |
+| $W\_2, \mathbf{b}\_2$ | $d\_{\text{ff}}d\_{\text{model}} + d\_{\text{model}}$ | 1,049,088 |
+| LN สองตัว | $2 \times 2d\_{\text{model}}$ | 2,048 |
 | **รวม 1 เลเยอร์** | | **3,150,336** |
 | **encoder $N=6$** | $\times 6$ | **18,902,016** |
-| embedding | $Vd_{\text{model}}$ | 18,944,000 |
+| embedding | $Vd\_{\text{model}}$ | 18,944,000 |
 | **encoder + embedding** | | **37,846,016** |
 
-**อ่านตาราง:** FFN กิน $\approx \frac{2{,}099{,}712}{3{,}150{,}336} = 66.7\%$ ของพารามิเตอร์ในเลเยอร์ — **สองในสาม** เพราะ $d_{\text{ff}} = 4d_{\text{model}}$
+**อ่านตาราง:** FFN กิน $\approx \frac{2{,}099{,}712}{3{,}150{,}336} = 66.7\\%$ ของพารามิเตอร์ในเลเยอร์ — **สองในสาม** เพราะ $d\_{\text{ff}} = 4d\_{\text{model}}$
 ส่วน LN แทบไม่มีอะไรเลย (0.065%) แต่ขาดไม่ได้
 
 > **สัญชาตญาณ:** attention คือส่วนที่ *มีชื่อเสียง* แต่ FFN คือส่วนที่ *เก็บความรู้* — งานวิจัยยุคหลังชี้ว่า FFN ทำตัวคล้าย key-value memory ของข้อเท็จจริง
@@ -758,9 +758,9 @@ print(sum(p.numel() for p in enc.layers.parameters()))      # 18902016  ← ต�
 
 | ส่วน | สูตร | ขึ้นกับ |
 |---|---|---|
-| ฉาย $Q,K,V,O$ | $2 \cdot 4nd_{\text{model}}^2$ | $O(n)$ |
-| คะแนน $QK^\top$ + $AV$ | $2 \cdot 2n^2d_{\text{model}}$ | $O(n^2)$ ← ตัวปัญหา |
-| FFN | $2 \cdot 2nd_{\text{model}}d_{\text{ff}}$ | $O(n)$ |
+| ฉาย $Q,K,V,O$ | $2 \cdot 4nd\_{\text{model}}^2$ | $O(n)$ |
+| คะแนน $QK^\top$ + $AV$ | $2 \cdot 2n^2d\_{\text{model}}$ | $O(n^2)$ ← ตัวปัญหา |
+| FFN | $2 \cdot 2nd\_{\text{model}}d\_{\text{ff}}$ | $O(n)$ |
 
 ตัวเลขจริงต่อ **1 เลเยอร์** (GFLOPs):
 
@@ -772,7 +772,7 @@ print(sum(p.numel() for p in enc.layers.parameters()))      # 18902016  ← ต�
 | 1000 | 2.0972 | 2.0480 | 4.1943 | 8.3395 | 50.0367 | 24.56% |
 
 > **จุดสำคัญ:** ที่ความยาวปกติ ($n \le 512$) พจน์ $O(n^2)$ **ยังไม่ใช่** ตัวกิน FLOPs หลัก — FFN ต่างหากที่ครองเวลา
-> จุดที่ $QK^\top$ แซงการฉาย QKVO อยู่ที่ $n = 2d_{\text{model}} = 1024$ พอดี
+> จุดที่ $QK^\top$ แซงการฉาย QKVO อยู่ที่ $n = 2d\_{\text{model}} = 1024$ พอดี
 > แต่ **หน่วยความจำ** $O(n^2)$ (เก็บ $A$ ขนาด $H \times n \times n$) เจ็บก่อนเสมอ — นี่คือเหตุผลที่มี FlashAttention
 
 ```python
@@ -792,20 +792,20 @@ for n in [10, 100, 512, 1000]:
 
 | สิ่งที่ได้ | สมการหลัก |
 |---|---|
-| Input pipeline | $X^{(0)} = \sqrt{d_{\text{model}}}\\,E[\text{ids}] + PE$ |
-| ทำไมต้อง $\sqrt{d_{\text{model}}}$ | $\\|\mathbf{e}\\| \approx 1$ แต่ $\\|PE\\| = \sqrt{d_{\text{model}}/2} = 16$ → อัตราส่วน $0.0625 \to 1.4153$ |
+| Input pipeline | $X^{(0)} = \sqrt{d\_{\text{model}}}\\,E[\text{ids}] + PE$ |
+| ทำไมต้อง $\sqrt{d\_{\text{model}}}$ | $\\|\mathbf{e}\\| \approx 1$ แต่ $\\|PE\\| = \sqrt{d\_{\text{model}}/2} = 16$ → อัตราส่วน $0.0625 \to 1.4153$ |
 | Sublayer 1 | $Z = \text{LN}(X + \text{MultiHead}(X))$ |
 | Sublayer 2 | $Y = \text{LN}(Z + \text{FFN}(Z))$ |
-| ซ้อน $N$ เลเยอร์ | $X^{(l)} = \text{LN}_2(Z^{(l)} + \text{FFN}(Z^{(l)}))$, $l=1..N$ |
-| Padding mask | $M^{\text{pad}}_{ij} = -\infty$ ถ้า $j$ เป็น `<pad>` (ขึ้นกับ $j$ อย่างเดียว) |
-| มิติคงที่ | ทุกขั้นในท่อหลักคือ $\mathbb{R}^{n \times d_{\text{model}}}$ |
+| ซ้อน $N$ เลเยอร์ | $X^{(l)} = \text{LN}\_2(Z^{(l)} + \text{FFN}(Z^{(l)}))$, $l=1..N$ |
+| Padding mask | $M^{\text{pad}}\_{ij} = -\infty$ ถ้า $j$ เป็น `<pad>` (ขึ้นกับ $j$ อย่างเดียว) |
+| มิติคงที่ | ทุกขั้นในท่อหลักคือ $\mathbb{R}^{n \times d\_{\text{model}}}$ |
 | พารามิเตอร์ | 3,150,336 ต่อเลเยอร์ · 18,902,016 ต่อ encoder · FFN กิน 66.7% |
 | FLOPs | $O(n^2)$ ยังไม่ครองที่ $n \le 512$ — FFN ครองแทน |
 
 **สิ่งที่ต้องจำไปไฟล์ถัดไป:**
 
 1. encoder เห็น **ทุกตำแหน่ง** ได้อิสระ (มาสก์แค่ pad) — decoder จะทำแบบนี้ไม่ได้
-2. output $X^{(N)} \in \mathbb{R}^{n \times d_{\text{model}}}$ จะกลายเป็น $K$ และ $V$ ของ cross-attention
+2. output $X^{(N)} \in \mathbb{R}^{n \times d\_{\text{model}}}$ จะกลายเป็น $K$ และ $V$ ของ cross-attention
 3. รูปแบบ `LN(x + Sublayer(x))` จะถูกใช้ซ้ำอีก **3 ครั้ง** ในหนึ่ง decoder layer
 
 ---
