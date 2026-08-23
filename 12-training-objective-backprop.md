@@ -17,36 +17,36 @@
 จากไฟล์ [01 §1.2](01-seq2seq-rnn-basics.md) เรารู้ว่าโมเดลประมาณค่า
 
 $$
-p(\mathbf{y} \mid \mathbf{x}) = \prod_{t=1}^{m} p(y_t \mid y_{{<}t}, \mathbf{x})
+p(\mathbf{y} \mid \mathbf{x}) = \prod\_{t=1}^{m} p(y\_t \mid y\_{{<}t}, \mathbf{x})
 $$
 
-การเทรนคือการหาพารามิเตอร์ $\theta$ ที่ทำให้ประโยคเฉลย $\mathbf{y}^*$ **มีโอกาสเกิดสูงที่สุด** (maximum likelihood)
+การเทรนคือการหาพารามิเตอร์ $\theta$ ที่ทำให้ประโยคเฉลย $\mathbf{y}^\*$ **มีโอกาสเกิดสูงที่สุด** (maximum likelihood)
 
 $$
-\theta^\star = \arg\max_\theta \prod_{t=1}^{m} p_\theta(y_t^* \mid y^*_{{<}t}, \mathbf{x})
+\theta^\star = \arg\max\_\theta \prod\_{t=1}^{m} p\_\theta(y\_t^\* \mid y^\*\_{{<}t}, \mathbf{x})
 $$
 
 ผลคูณของเลข $\in (0,1)$ หลายร้อยตัวจะ underflow ทันที จึงใส่ $\log$ (ฟังก์ชันเพิ่มแบบเข้ม → argmax ไม่เปลี่ยน) แล้วกลับเครื่องหมายให้กลายเป็นปัญหา **minimize**
 
 $$
-\boxed{\ \mathcal{L} = -\frac{1}{m}\sum_{t=1}^{m} \log p_\theta\!\left(y_t^* \mid y^*_{{<}t},\ \mathbf{x}\right)\ }
+\boxed{\ \mathcal{L} = -\frac{1}{m}\sum\_{t=1}^{m} \log p\_\theta\\!\left(y\_t^\* \mid y^\*\_{{<}t},\ \mathbf{x}\right)\ }
 $$
 
 | สัญลักษณ์ | มิติ | ความหมาย |
 |---|---|---|
-| $\mathbf{z}_t$ | $\mathbb{R}^{1 \times V}$ | logits ที่ตำแหน่ง $t$ (ก่อน softmax) |
-| $\mathbf{p}_t = \text{softmax}(\mathbf{z}_t)$ | $\mathbb{R}^{1 \times V}$ | การแจกแจงที่โมเดลทำนาย |
-| $y_t^*$ | scalar $\in \\{1..V\\}$ | ดัชนีโทเคนเฉลย |
-| $\mathbf{y}_t^{\text{onehot}}$ | $\mathbb{R}^{1 \times V}$ | one-hot ของ $y_t^*$ |
+| $\mathbf{z}\_t$ | $\mathbb{R}^{1 \times V}$ | logits ที่ตำแหน่ง $t$ (ก่อน softmax) |
+| $\mathbf{p}\_t = \text{softmax}(\mathbf{z}\_t)$ | $\mathbb{R}^{1 \times V}$ | การแจกแจงที่โมเดลทำนาย |
+| $y\_t^\*$ | scalar $\in \\{1..V\\}$ | ดัชนีโทเคนเฉลย |
+| $\mathbf{y}\_t^{\text{onehot}}$ | $\mathbb{R}^{1 \times V}$ | one-hot ของ $y\_t^\*$ |
 | $m$ | scalar | ความยาว target |
 | $V$ | scalar | ขนาด vocabulary |
 
 > **สัญชาตญาณ:** *maximize likelihood* กับ *minimize negative log-likelihood* คือเรื่องเดียวกันมองคนละมุม — $\log$ ไม่เปลี่ยนลำดับ ส่วนเครื่องหมายลบแค่พลิกยอดเขาให้เป็นก้นหุบเขา เพื่อให้ใช้ gradient **descent** ได้
 
-และเพราะ $\mathbf{y}_t^{\text{onehot}}$ มีค่า 1 ที่ตำแหน่งเดียว สมการข้างบนจึงเท่ากับ **cross-entropy** ระหว่างการแจกแจงจริงกับที่ทำนาย
+และเพราะ $\mathbf{y}\_t^{\text{onehot}}$ มีค่า 1 ที่ตำแหน่งเดียว สมการข้างบนจึงเท่ากับ **cross-entropy** ระหว่างการแจกแจงจริงกับที่ทำนาย
 
 $$
-\mathcal{L}_t = H(\mathbf{y}_t^{\text{onehot}},\ \mathbf{p}_t) = -\sum_{v=1}^{V} y^{\text{onehot}}_{t,v}\log p_{t,v} = -\log p_{t,\,y_t^*}
+\mathcal{L}\_t = H(\mathbf{y}\_t^{\text{onehot}},\ \mathbf{p}\_t) = -\sum\_{v=1}^{V} y^{\text{onehot}}\_{t,v}\log p\_{t,v} = -\log p\_{t,\\,y\_t^\*}
 $$
 
 **สัญชาตญาณ:** loss สนใจแค่ "โมเดลให้ความน่าจะเป็นกับคำที่ถูกเท่าไร" — ส่วนที่เหลือใน $V-1$ ตัวจะกระจายอย่างไรก็ได้ (ข้อนี้จะเปลี่ยนไปเมื่อใส่ label smoothing ใน §1.3)
@@ -54,7 +54,7 @@ $$
 ### 1.2 Perplexity
 
 $$
-\boxed{\ \text{PPL} = \exp(\mathcal{L}) = \exp\!\left(-\frac{1}{m}\sum_t \log p(y^*_t \mid \cdot)\right)\ }
+\boxed{\ \text{PPL} = \exp(\mathcal{L}) = \exp\\!\left(-\frac{1}{m}\sum\_t \log p(y^\*\_t \mid \cdot)\right)\ }
 $$
 
 PPL คือ **geometric mean ส่วนกลับ** ของความน่าจะเป็นที่โมเดลให้กับคำถูก อ่านได้ว่า
@@ -74,7 +74,7 @@ PPL คือ **geometric mean ส่วนกลับ** ของความ�
 
 ### 1.3 Label Smoothing
 
-ปัญหาของ one-hot: gradient จะดัน $p_{y^*} \to 1$ ไม่มีที่สิ้นสุด ซึ่งทำได้ก็ต่อเมื่อ logit ของคำถูก $\to +\infty$ → โมเดล **overconfident** และน้ำหนักโตไม่หยุด
+ปัญหาของ one-hot: gradient จะดัน $p\_{y^\*} \to 1$ ไม่มีที่สิ้นสุด ซึ่งทำได้ก็ต่อเมื่อ logit ของคำถูก $\to +\infty$ → โมเดล **overconfident** และน้ำหนักโตไม่หยุด
 
 Label smoothing แทน one-hot ด้วยการแจกแจงที่ "นิ่มลง"
 
@@ -84,8 +84,8 @@ $$
 $$
 
 $$
-\mathcal{L}^{\text{LS}} = -\sum_{v=1}^{V} q_v \log p_v
-= \underbrace{(1-\varepsilon)\big(-\log p_{y^*}\big)}_{\text{พจน์เดิม}} \;+\; \underbrace{\frac{\varepsilon}{V}\sum_{v=1}^{V}\big(-\log p_v\big)}_{\text{ดึงทุกคำขึ้นนิดหน่อย}}
+\mathcal{L}^{\text{LS}} = -\sum\_{v=1}^{V} q\_v \log p\_v
+= \underbrace{(1-\varepsilon)\big(-\log p\_{y^\*}\big)}\_{\text{พจน์เดิม}} \\;+\\; \underbrace{\frac{\varepsilon}{V}\sum\_{v=1}^{V}\big(-\log p\_v\big)}\_{\text{ดึงทุกคำขึ้นนิดหน่อย}}
 $$
 
 | $\varepsilon$ | ผลต่อ $\mathbf{q}$ (ที่ $V=4$) | ผล |
@@ -101,8 +101,8 @@ $$
 | Perplexity | **ดีกว่า** | แย่ลง |
 | BLEU | ต่ำกว่า | **ดีกว่า** |
 
-> **สัญชาตญาณ:** perplexity แย่ลงเพราะเราตั้งใจห้ามโมเดลมั่นใจเต็มร้อย ($p_{y^*}$ ที่ optimal คือ $\approx 0.925$ ไม่ใช่ $1.0$) แต่ BLEU ดีขึ้นเพราะการแจกแจงที่ไม่คมเกินไปทำให้ **beam search** มีตัวเลือกสำรองที่สมเหตุสมผล และโมเดล calibrate ดีกว่า
-> อีกมุมหนึ่ง: $\mathcal{L}^{\text{LS}} = H(\mathbf{q}) + \text{KL}(\mathbf{q}\,\|\,\mathbf{p})$ โดย $H(\mathbf{q})$ เป็นค่าคงที่ → ค่า loss ต่ำสุดที่เป็นไปได้ไม่ใช่ 0 อีกต่อไป แต่เป็น $H(\mathbf{q})$
+> **สัญชาตญาณ:** perplexity แย่ลงเพราะเราตั้งใจห้ามโมเดลมั่นใจเต็มร้อย ($p\_{y^\*}$ ที่ optimal คือ $\approx 0.925$ ไม่ใช่ $1.0$) แต่ BLEU ดีขึ้นเพราะการแจกแจงที่ไม่คมเกินไปทำให้ **beam search** มีตัวเลือกสำรองที่สมเหตุสมผล และโมเดล calibrate ดีกว่า
+> อีกมุมหนึ่ง: $\mathcal{L}^{\text{LS}} = H(\mathbf{q}) + \text{KL}(\mathbf{q}\\,\\|\\,\mathbf{p})$ โดย $H(\mathbf{q})$ เป็นค่าคงที่ → ค่า loss ต่ำสุดที่เป็นไปได้ไม่ใช่ 0 อีกต่อไป แต่เป็น $H(\mathbf{q})$
 
 ---
 
@@ -112,8 +112,8 @@ $$
 
 | โหมด | input ของ decoder ที่ขั้น $t$ | สมการ |
 |---|---|---|
-| **Training** (teacher forcing) | โทเคน**เฉลย**ก่อนหน้า | $p_t = f_\theta(y^*_{{<}t},\ \mathbf{x})$ |
-| **Inference** (autoregressive) | โทเคนที่**โมเดลสร้างเอง** | $p_t = f_\theta(\hat{y}_{{<}t},\ \mathbf{x})$, $\ \hat{y}_t \sim p_t$ |
+| **Training** (teacher forcing) | โทเคน**เฉลย**ก่อนหน้า | $p\_t = f\_\theta(y^\*\_{{<}t},\ \mathbf{x})$ |
+| **Inference** (autoregressive) | โทเคนที่**โมเดลสร้างเอง** | $p\_t = f\_\theta(\hat{y}\_{{<}t},\ \mathbf{x})$, $\ \hat{y}\_t \sim p\_t$ |
 
 ```mermaid
 flowchart LR
@@ -140,11 +140,11 @@ flowchart LR
 
 ### 2.2 ทำไมมันทำให้เทรนขนานได้
 
-เพราะทั้งลำดับ $y^*_1 \dots y^*_m$ **รู้ล่วงหน้าตั้งแต่ต้น** เราจึงป้อนทั้งแถวเข้า decoder ได้พร้อมกัน แล้วให้ **causal mask** (ไฟล์ [11 §2.4](11-decoder-masked-attention.md)) เป็นตัวรับประกันว่าตำแหน่ง $t$ มองไม่เห็นตำแหน่ง ${>}t$
+เพราะทั้งลำดับ $y^\*\_1 \dots y^\*\_m$ **รู้ล่วงหน้าตั้งแต่ต้น** เราจึงป้อนทั้งแถวเข้า decoder ได้พร้อมกัน แล้วให้ **causal mask** (ไฟล์ [11 §2.4](11-decoder-masked-attention.md)) เป็นตัวรับประกันว่าตำแหน่ง $t$ มองไม่เห็นตำแหน่ง ${>}t$
 
 $$
-\text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}} + M\right)V, \qquad
-M_{ij} = \begin{cases} 0 & j \le i \\ -\infty & j {>} i\end{cases}
+\text{softmax}\\!\left(\frac{QK^\top}{\sqrt{d\_k}} + M\right)V, \qquad
+M\_{ij} = \begin{cases} 0 & j \le i \\\ -\infty & j {>} i\end{cases}
 $$
 
 | สถาปัตยกรรม | เทรนขนานตามแกนเวลาได้ไหม | เหตุผล |
@@ -160,7 +160,7 @@ $$
 
 | วิธีบรรเทา | ไอเดียสั้น ๆ |
 |---|---|
-| **Scheduled sampling** | ตอนเทรน สุ่มสลับป้อน $\hat{y}\_{t-1}$ แทน $y^*\_{t-1}$ ด้วยความน่าจะเป็นที่เพิ่มขึ้นตามเวลา |
+| **Scheduled sampling** | ตอนเทรน สุ่มสลับป้อน $\hat{y}\_{t-1}$ แทน $y^\*\_{t-1}$ ด้วยความน่าจะเป็นที่เพิ่มขึ้นตามเวลา |
 | **Label smoothing** (§1.3) | ทำให้โมเดลไม่มั่นใจเกิน → ทนคำผิดได้ดีขึ้น |
 | **Beam search** | เก็บหลายเส้นทาง ลดโอกาสหลุดจากพลาดครั้งเดียว |
 | **Minimum Risk Training / RL** | ปรับด้วยตัวชี้วัดระดับประโยค เช่น BLEU โดยตรง |
@@ -203,7 +203,7 @@ $$
 
 **เดินตัวเลข** — ให้ $V = 4$, $\mathbf{z} = [2.0,\ 1.0,\ 0.1,\ -0.5]$, เฉลยคือดัชนีที่ 2 (นับจาก 1)
 
-| $v$ | $z_v$ | $p_v$ | $y^{\text{onehot}}_v$ | $\partial\mathcal{L}/\partial z_v = p_v - y_v$ |
+| $v$ | $z\_v$ | $p\_v$ | $y^{\text{onehot}}\_v$ | $\partial\mathcal{L}/\partial z\_v = p\_v - y\_v$ |
 |---|---|---|---|---|
 | 1 | 2.0 | 0.6252 | 0 | **+0.6252** ← ทายเกิน กดลง |
 | 2 | 1.0 | 0.2300 | 1 | **−0.7700** ← คำถูก ดันขึ้น |
@@ -211,7 +211,7 @@ $$
 | 4 | −0.5 | 0.0513 | 0 | +0.0513 |
 
 $\mathcal{L} = -\log(0.2300) = 1.4697$, $\ \text{PPL} = e^{1.4697} = 4.3479$
-ผลรวมของ gradient $= 0$ เสมอ (เพราะ $\sum p_v = \sum y_v = 1$) → แปลว่า "ความน่าจะเป็นถูกย้ายจากที่หนึ่งไปอีกที่หนึ่ง" ไม่ใช่สร้างขึ้นใหม่
+ผลรวมของ gradient $= 0$ เสมอ (เพราะ $\sum p\_v = \sum y\_v = 1$) → แปลว่า "ความน่าจะเป็นถูกย้ายจากที่หนึ่งไปอีกที่หนึ่ง" ไม่ใช่สร้างขึ้นใหม่
 
 **ยืนยันด้วย autograd และ finite difference:**
 
@@ -240,7 +240,7 @@ print(np.max(np.abs(fd - g_analytic)))                 # 7.33e-11  ← ตรง
 
 **เทียบกับ label smoothing** ($\varepsilon = 0.1$) — สมการกลายเป็น $\partial\mathcal{L}^{\text{LS}}/\partial\mathbf{z} = \mathbf{p} - \mathbf{q}$
 
-| | $\mathcal{L}$ | PPL | gradient | $\\|\text{grad}\\|_2$ |
+| | $\mathcal{L}$ | PPL | gradient | $\\|\text{grad}\\|\_2$ |
 |---|---|---|---|---|
 | ธรรมดา | **1.4697** | 4.3479 | $[0.6252,\ -0.7700,\ 0.0935,\ 0.0513]$ | 0.9976 |
 | label smoothing | 1.5047 | 4.5028 | $[0.6002,\ -0.6950,\ 0.0685,\ 0.0263]$ | 0.9212 |
@@ -263,14 +263,14 @@ print(zt2.grad.numpy())                     # [ 0.6002 -0.695  0.0685  0.0263] =
 
 $$
 \frac{\partial \mathcal{L}}{\partial \mathbf{x}}
-= \frac{1}{\sigma}\left[\ \mathbf{g} \;-\; \overline{\mathbf{g}}\,\mathbf{1} \;-\; \hat{\mathbf{x}}\odot \overline{(\mathbf{g}\odot\hat{\mathbf{x}})}\ \right],
+= \frac{1}{\sigma}\left[\ \mathbf{g} \\;-\\; \overline{\mathbf{g}}\\,\mathbf{1} \\;-\\; \hat{\mathbf{x}}\odot \overline{(\mathbf{g}\odot\hat{\mathbf{x}})}\ \right],
 \qquad \mathbf{g} = \frac{\partial\mathcal{L}}{\partial\hat{\mathbf{x}}}
 $$
 
 โดย $\overline{(\cdot)}$ คือค่าเฉลี่ยตามแกน feature ผลลัพธ์สำคัญคือ **สองเงื่อนไขตั้งฉาก**
 
 $$
-\sum_k \frac{\partial \mathcal{L}}{\partial x_k} = 0
+\sum\_k \frac{\partial \mathcal{L}}{\partial x\_k} = 0
 \qquad\text{และ}\qquad
 \left\langle \frac{\partial \mathcal{L}}{\partial \mathbf{x}},\ \hat{\mathbf{x}} \right\rangle = 0
 $$
@@ -307,7 +307,7 @@ $$
 \boxed{\ \frac{\partial \mathbf{y}}{\partial \mathbf{x}} = I + \frac{\partial F}{\partial \mathbf{x}}\ }
 $$
 
-ซ้อน $N$ ชั้นจะได้ $\prod_{l} \left(I + \partial F_l/\partial \mathbf{x}\right)$ ซึ่งกางออกมามีพจน์ $I \cdot I \cdots I = I$ อยู่เสมอ — นี่คือ **เส้นทางลัด (identity path)** ที่ gradient ไหลจาก loss ถึงชั้นล่างสุดโดยไม่ถูกคูณอะไรเลย (โยงไฟล์ [08 §2.2](08-feedforward-and-residual.md))
+ซ้อน $N$ ชั้นจะได้ $\prod\_{l} \left(I + \partial F\_l/\partial \mathbf{x}\right)$ ซึ่งกางออกมามีพจน์ $I \cdot I \cdots I = I$ อยู่เสมอ — นี่คือ **เส้นทางลัด (identity path)** ที่ gradient ไหลจาก loss ถึงชั้นล่างสุดโดยไม่ถูกคูณอะไรเลย (โยงไฟล์ [08 §2.2](08-feedforward-and-residual.md))
 
 **เดินตัวเลข** — $d = 3$, $F(\mathbf{x}) = \tanh(\mathbf{x}W)$ ที่ $W$ สเกลเล็ก
 
@@ -321,36 +321,36 @@ $$
 
 ### 3.4 ผ่าน Attention
 
-ต่อจากไฟล์ [05 §5](05-self-attention-math.md) ให้ $S = \frac{QK^\top}{\sqrt{d_k}}$, $A = \text{softmax}(S)$ (ตามแถว), $O = AV$
+ต่อจากไฟล์ [05 §5](05-self-attention-math.md) ให้ $S = \frac{QK^\top}{\sqrt{d\_k}}$, $A = \text{softmax}(S)$ (ตามแถว), $O = AV$
 
 | อนุพันธ์ | สูตร | มิติ |
 |---|---|---|
-| $\partial\mathcal{L}/\partial V$ | $A^\top\\, G_O$ | $\mathbb{R}^{n \times d_v}$ |
-| $\partial\mathcal{L}/\partial A$ | $G_O\\, V^\top$ | $\mathbb{R}^{n \times n}$ |
-| $\partial\mathcal{L}/\partial S$ | $A \odot \left(G_A - \text{rowsum}(G_A \odot A)\\,\mathbf{1}^\top\right)$ | $\mathbb{R}^{n \times n}$ |
-| $\partial\mathcal{L}/\partial Q$ | $\dfrac{1}{\sqrt{d_k}}\\, G_S\\, K$ | $\mathbb{R}^{n \times d_k}$ |
-| $\partial\mathcal{L}/\partial K$ | $\dfrac{1}{\sqrt{d_k}}\\, G_S^\top\\, Q$ | $\mathbb{R}^{n \times d_k}$ |
+| $\partial\mathcal{L}/\partial V$ | $A^\top\\, G\_O$ | $\mathbb{R}^{n \times d\_v}$ |
+| $\partial\mathcal{L}/\partial A$ | $G\_O\\, V^\top$ | $\mathbb{R}^{n \times n}$ |
+| $\partial\mathcal{L}/\partial S$ | $A \odot \left(G\_A - \text{rowsum}(G\_A \odot A)\\,\mathbf{1}^\top\right)$ | $\mathbb{R}^{n \times n}$ |
+| $\partial\mathcal{L}/\partial Q$ | $\dfrac{1}{\sqrt{d\_k}}\\, G\_S\\, K$ | $\mathbb{R}^{n \times d\_k}$ |
+| $\partial\mathcal{L}/\partial K$ | $\dfrac{1}{\sqrt{d\_k}}\\, G\_S^\top\\, Q$ | $\mathbb{R}^{n \times d\_k}$ |
 
-โดย $G_X \equiv \partial\mathcal{L}/\partial X$ และ $\text{rowsum}$ ทำแล้ว broadcast กลับทุกคอลัมน์
+โดย $G\_X \equiv \partial\mathcal{L}/\partial X$ และ $\text{rowsum}$ ทำแล้ว broadcast กลับทุกคอลัมน์
 
 > **สัญชาตญาณ 3 ข้อ:**
-> 1. **$V$ ได้ gradient แบบ "แจกตามน้ำหนัก"** — $A^\top G_O$ คือการกระจาย error ของ output กลับไปยังแต่ละ value ตามสัดส่วน attention ที่มันได้รับ ตำแหน่งที่ไม่มีใครสนใจ ($\alpha \approx 0$) แทบไม่ได้ gradient
+> 1. **$V$ ได้ gradient แบบ "แจกตามน้ำหนัก"** — $A^\top G\_O$ คือการกระจาย error ของ output กลับไปยังแต่ละ value ตามสัดส่วน attention ที่มันได้รับ ตำแหน่งที่ไม่มีใครสนใจ ($\alpha \approx 0$) แทบไม่ได้ gradient
 > 2. **แถวของ $\partial\mathcal{L}/\partial S$ รวมกันได้ 0 เสมอ** — เหตุผลเดียวกับ §3.1: softmax เป็นการแจกแจง เพิ่มที่หนึ่งต้องลดอีกที่หนึ่ง
-> 3. **$Q$ กับ $K$ สลับบทบาทกัน** — สูตรทั้งคู่หน้าตาเหมือนกันแค่ transpose เพราะ $S$ สมมาตรเชิงโครงสร้างใน $Q \leftrightarrow K$ และ $1/\sqrt{d_k}$ ติดมากับ gradient ด้วย → **scaling ช่วยทั้งขาไปและขากลับ**
+> 3. **$Q$ กับ $K$ สลับบทบาทกัน** — สูตรทั้งคู่หน้าตาเหมือนกันแค่ transpose เพราะ $S$ สมมาตรเชิงโครงสร้างใน $Q \leftrightarrow K$ และ $1/\sqrt{d\_k}$ ติดมากับ gradient ด้วย → **scaling ช่วยทั้งขาไปและขากลับ**
 
-**เดินตัวเลข** — $n = 2$, $d_k = d_v = 2$
-
-$$
-Q = \begin{bmatrix} 1 & 0 \\ 0 & 1\end{bmatrix},\quad
-K = \begin{bmatrix} 1 & 1 \\ 0 & 1\end{bmatrix},\quad
-V = \begin{bmatrix} 1 & 2 \\ 3 & 4\end{bmatrix},\quad
-G_O = \begin{bmatrix} 1 & 0 \\ 0 & 1\end{bmatrix}
-$$
+**เดินตัวเลข** — $n = 2$, $d\_k = d\_v = 2$
 
 $$
-S = \begin{bmatrix} 0.7071 & 0 \\ 0.7071 & 0.7071\end{bmatrix},\quad
-A = \begin{bmatrix} 0.6698 & 0.3302 \\ 0.5000 & 0.5000\end{bmatrix},\quad
-O = \begin{bmatrix} 1.6605 & 2.6605 \\ 2.0000 & 3.0000\end{bmatrix}
+Q = \begin{bmatrix} 1 & 0 \\\ 0 & 1\end{bmatrix},\quad
+K = \begin{bmatrix} 1 & 1 \\\ 0 & 1\end{bmatrix},\quad
+V = \begin{bmatrix} 1 & 2 \\\ 3 & 4\end{bmatrix},\quad
+G\_O = \begin{bmatrix} 1 & 0 \\\ 0 & 1\end{bmatrix}
+$$
+
+$$
+S = \begin{bmatrix} 0.7071 & 0 \\\ 0.7071 & 0.7071\end{bmatrix},\quad
+A = \begin{bmatrix} 0.6698 & 0.3302 \\\ 0.5000 & 0.5000\end{bmatrix},\quad
+O = \begin{bmatrix} 1.6605 & 2.6605 \\\ 2.0000 & 3.0000\end{bmatrix}
 $$
 
 | gradient | ค่า |
@@ -384,10 +384,10 @@ print(np.allclose(dQ, Q.grad.numpy()), np.allclose(dK, K.grad.numpy()),
 
 ### 3.5 ย้อนถึง Embedding
 
-ชั้นล่างสุด embedding lookup คือ $\mathbf{e}_i = \mathbf{o}_i E$ โดย $\mathbf{o}_i$ เป็น one-hot ดังนั้น
+ชั้นล่างสุด embedding lookup คือ $\mathbf{e}\_i = \mathbf{o}\_i E$ โดย $\mathbf{o}\_i$ เป็น one-hot ดังนั้น
 
 $$
-\frac{\partial \mathcal{L}}{\partial E_{[v,:]}} = \sum_{i\,:\,x_i = v} \frac{\partial \mathcal{L}}{\partial \mathbf{e}_i}
+\frac{\partial \mathcal{L}}{\partial E\_{[v,:]}} = \sum\_{i\\,:\\,x\_i = v} \frac{\partial \mathcal{L}}{\partial \mathbf{e}\_i}
 $$
 
 > **สัญชาตญาณ:** gradient เป็น **sparse** — เฉพาะแถวของโทเคนที่ปรากฏจริงใน batch เท่านั้นที่ไม่เป็นศูนย์ และถ้าโทเคนหนึ่งปรากฏหลายครั้ง gradient ของทุกครั้งจะ **บวกสะสม** ลงแถวเดียวกัน
@@ -414,24 +414,24 @@ print(emb.weight.grad)
 
 $$
 \begin{aligned}
-\mathbf{m}_t &= \beta_1 \mathbf{m}_{t-1} + (1-\beta_1)\,\mathbf{g}_t && \text{โมเมนต์ที่ 1 — ทิศเฉลี่ย} \\
-\mathbf{v}_t &= \beta_2 \mathbf{v}_{t-1} + (1-\beta_2)\,\mathbf{g}_t^{\odot 2} && \text{โมเมนต์ที่ 2 — ขนาดเฉลี่ย} \\[4pt]
-\hat{\mathbf{m}}_t &= \frac{\mathbf{m}_t}{1-\beta_1^{\,t}}, \qquad
-\hat{\mathbf{v}}_t = \frac{\mathbf{v}_t}{1-\beta_2^{\,t}} && \text{bias correction} \\[4pt]
-\theta_t &= \theta_{t-1} - \eta_t \cdot \frac{\hat{\mathbf{m}}_t}{\sqrt{\hat{\mathbf{v}}_t} + \epsilon}
+\mathbf{m}\_t &= \beta\_1 \mathbf{m}\_{t-1} + (1-\beta\_1)\\,\mathbf{g}\_t && \text{โมเมนต์ที่ 1 — ทิศเฉลี่ย} \\\
+\mathbf{v}\_t &= \beta\_2 \mathbf{v}\_{t-1} + (1-\beta\_2)\\,\mathbf{g}\_t^{\odot 2} && \text{โมเมนต์ที่ 2 — ขนาดเฉลี่ย} \\\\[4pt]
+\hat{\mathbf{m}}\_t &= \frac{\mathbf{m}\_t}{1-\beta\_1^{\\,t}}, \qquad
+\hat{\mathbf{v}}\_t = \frac{\mathbf{v}\_t}{1-\beta\_2^{\\,t}} && \text{bias correction} \\\\[4pt]
+\theta\_t &= \theta\_{t-1} - \eta\_t \cdot \frac{\hat{\mathbf{m}}\_t}{\sqrt{\hat{\mathbf{v}}\_t} + \epsilon}
 \end{aligned}
 $$
 
 | ไฮเปอร์พารามิเตอร์ | ค่าในเปเปอร์ | บทบาท |
 |---|---|---|
-| $\beta_1$ | **0.9** | ค่าเฉลี่ยเคลื่อนที่ของทิศ (~10 ก้าวล่าสุด) |
-| $\beta_2$ | **0.98** | ค่าเฉลี่ยเคลื่อนที่ของขนาด (~50 ก้าวล่าสุด) — ต่ำกว่า 0.999 มาตรฐาน เพื่อให้ปรับตัวไวขึ้น |
+| $\beta\_1$ | **0.9** | ค่าเฉลี่ยเคลื่อนที่ของทิศ (~10 ก้าวล่าสุด) |
+| $\beta\_2$ | **0.98** | ค่าเฉลี่ยเคลื่อนที่ของขนาด (~50 ก้าวล่าสุด) — ต่ำกว่า 0.999 มาตรฐาน เพื่อให้ปรับตัวไวขึ้น |
 | $\epsilon$ | **$10^{-9}$** | กันหารศูนย์ |
-| $\eta_t$ | ตาม §4.2 | learning rate ที่แปรตาม step |
+| $\eta\_t$ | ตาม §4.2 | learning rate ที่แปรตาม step |
 
-> **สัญชาตญาณของ bias correction:** เริ่มจาก $\mathbf{m}_0 = \mathbf{v}_0 = 0$ ทำให้ประมาณการช่วงแรก **เอนไปทางศูนย์อย่างรุนแรง** — ที่ $t=1$ ได้ $\mathbf{m}_1 = 0.1\mathbf{g}_1$ ทั้งที่ควรเป็น $\mathbf{g}_1$ การหารด้วย $1-\beta_1^t$ แก้ให้พอดี
+> **สัญชาตญาณของ bias correction:** เริ่มจาก $\mathbf{m}\_0 = \mathbf{v}\_0 = 0$ ทำให้ประมาณการช่วงแรก **เอนไปทางศูนย์อย่างรุนแรง** — ที่ $t=1$ ได้ $\mathbf{m}\_1 = 0.1\mathbf{g}\_1$ ทั้งที่ควรเป็น $\mathbf{g}\_1$ การหารด้วย $1-\beta\_1^t$ แก้ให้พอดี
 
-| $t$ | $1-\beta_1^t$ | $1-\beta_2^t$ | ผลถ้าไม่แก้ |
+| $t$ | $1-\beta\_1^t$ | $1-\beta\_2^t$ | ผลถ้าไม่แก้ |
 |---|---|---|---|
 | 1 | 0.100000 | 0.020000 | ประมาณต่ำไป 10× และ 50× |
 | 2 | 0.190000 | 0.039600 | ยังต่ำไปมาก |
@@ -465,14 +465,14 @@ opt = torch.optim.Adam(model.parameters(), lr=1.0, betas=(0.9, 0.98), eps=1e-9)
 ### 4.2 ตารางเรียนรู้ของเปเปอร์ (Noam Schedule)
 
 $$
-\boxed{\ \eta_t = d_{\text{model}}^{-0.5}\cdot \min\!\left(t^{-0.5},\ \ t\cdot \text{warmup}^{-1.5}\right)\ }
+\boxed{\ \eta\_t = d\_{\text{model}}^{-0.5}\cdot \min\\!\left(t^{-0.5},\ \ t\cdot \text{warmup}^{-1.5}\right)\ }
 $$
 
 | สัญลักษณ์ | ค่าในเปเปอร์ | บทบาท |
 |---|---|---|
 | $t$ | 1, 2, 3, … | หมายเลข step (ไม่ใช่ epoch) |
 | $\text{warmup}$ | 4000 | จุดสลับระหว่างสองระบอบ |
-| $d_{\text{model}}$ | 512 | โมเดลใหญ่ → lr เล็กลงอัตโนมัติ |
+| $d\_{\text{model}}$ | 512 | โมเดลใหญ่ → lr เล็กลงอัตโนมัติ |
 
 สองพจน์ใน $\min$ คือสองระบอบ:
 
@@ -484,12 +484,12 @@ $$
 จุดสลับอยู่ที่ $t = \text{warmup}$ พอดี (แก้สมการ $t^{-0.5} = t\cdot w^{-1.5}$ ได้ $t = w$) ดังนั้น
 
 $$
-\eta_{\max} = (d_{\text{model}}\cdot \text{warmup})^{-0.5} = (512 \times 4000)^{-0.5} = 6.987712\times10^{-4}
+\eta\_{\max} = (d\_{\text{model}}\cdot \text{warmup})^{-0.5} = (512 \times 4000)^{-0.5} = 6.987712\times10^{-4}
 $$
 
-**ตารางค่าจริง** ($d_{\text{model}}=512$, warmup $=4000$):
+**ตารางค่าจริง** ($d\_{\text{model}}=512$, warmup $=4000$):
 
-| step $t$ | $\eta_t$ | ระบอบ | เทียบกับจุดสูงสุด |
+| step $t$ | $\eta\_t$ | ระบอบ | เทียบกับจุดสูงสุด |
 |---|---|---|---|
 | 1 | $1.746928\times10^{-7}$ | warmup | 1/4000 |
 | 100 | $1.746928\times10^{-5}$ | warmup | 1/40 |
@@ -538,7 +538,7 @@ sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: noam_lr(max(s, 1)))
 
 | เหตุผล | กลไก |
 |---|---|
-| **Adam ยังไม่รู้จักภูมิประเทศ** | $\hat{\mathbf{v}}_t$ คำนวณจาก gradient แค่ไม่กี่ตัวอย่าง → variance ของตัวประมาณสูงมาก ถ้า $\hat{\mathbf{v}}$ บังเอิญเล็ก ตัวหาร $\sqrt{\hat{\mathbf{v}}}$ จะเล็ก → ก้าวยักษ์ไปในทิศที่อาจผิด |
+| **Adam ยังไม่รู้จักภูมิประเทศ** | $\hat{\mathbf{v}}\_t$ คำนวณจาก gradient แค่ไม่กี่ตัวอย่าง → variance ของตัวประมาณสูงมาก ถ้า $\hat{\mathbf{v}}$ บังเอิญเล็ก ตัวหาร $\sqrt{\hat{\mathbf{v}}}$ จะเล็ก → ก้าวยักษ์ไปในทิศที่อาจผิด |
 | **Post-LN ขยาย gradient ที่ชั้นบน** | Transformer ดั้งเดิมวาง LayerNorm **หลัง** residual (ไฟล์ [09 §4.2](09-layernorm-math.md)) ทำให้ gradient ที่ชั้นบน ๆ ใหญ่กว่าชั้นล่างมากตอนเริ่มต้น — lr ใหญ่ตั้งแต่ step แรกจะทำให้ loss ระเบิด |
 
 > **สัญชาตญาณ:** warmup คือ "ค่อย ๆ เหยียบคันเร่ง" ให้ Adam เก็บสถิติจนนิ่ง และให้ LayerNorm ปรับ $\gamma, \beta$ เข้าที่ก่อน แล้วจึงเร่งเต็ม
@@ -547,7 +547,7 @@ sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: noam_lr(max(s, 1)))
 ### 4.4 Gradient Clipping
 
 $$
-\boxed{\ \mathbf{g} \leftarrow \mathbf{g}\cdot \min\!\left(1,\ \frac{c}{\|\mathbf{g}\|_2}\right)\ }
+\boxed{\ \mathbf{g} \leftarrow \mathbf{g}\cdot \min\\!\left(1,\ \frac{c}{\\|\mathbf{g}\\|\_2}\right)\ }
 $$
 
 | กรณี | ผล |
@@ -559,7 +559,7 @@ $$
 
 **เดินตัวเลข** — $\mathbf{g} = [3, 4, 12]$, $c = 1.0$
 
-$\|\mathbf{g}\|_2 = 13.0000$ → ตัวคูณ $= 1/13 = 0.076923$ → $\mathbf{g}_{\text{new}} = [0.2308,\ 0.3077,\ 0.9231]$, $\|\mathbf{g}_{\text{new}}\| = 1.0000$ ✓
+$\\|\mathbf{g}\\|\_2 = 13.0000$ → ตัวคูณ $= 1/13 = 0.076923$ → $\mathbf{g}\_{\text{new}} = [0.2308,\ 0.3077,\ 0.9231]$, $\\|\mathbf{g}\_{\text{new}}\\| = 1.0000$ ✓
 
 ```python
 import numpy as np, torch
@@ -573,25 +573,25 @@ torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)   # เที�
 
 ## 5. ต้นทุนการเทรน: FLOPs ต่อ Token
 
-> **หมายเหตุสัญลักษณ์:** ในไฟล์อื่น $N$ = จำนวนเลเยอร์ (=6) แต่ในหัวข้อนี้ต้องพูดถึงจำนวนพารามิเตอร์ด้วย จึงเขียนแยกชัดเจนว่า **$N_{\text{params}}$** = จำนวนพารามิเตอร์ทั้งหมด ส่วน $N$ ยังคงหมายถึงจำนวนเลเยอร์เหมือนเดิม
+> **หมายเหตุสัญลักษณ์:** ในไฟล์อื่น $N$ = จำนวนเลเยอร์ (=6) แต่ในหัวข้อนี้ต้องพูดถึงจำนวนพารามิเตอร์ด้วย จึงเขียนแยกชัดเจนว่า **$N\_{\text{params}}$** = จำนวนพารามิเตอร์ทั้งหมด ส่วน $N$ ยังคงหมายถึงจำนวนเลเยอร์เหมือนเดิม
 
 $$
-\boxed{\ \text{FLOPs} \approx 6\,N_{\text{params}}\, \times\, \#\text{tokens}\ }
+\boxed{\ \text{FLOPs} \approx 6\\,N\_{\text{params}}\\, \times\\, \\#\text{tokens}\ }
 $$
 
 **ที่มาของเลข 6** — พารามิเตอร์ส่วนใหญ่อยู่ในเมทริกซ์ และการคูณ $\mathbf{x}W$ ต่อ 1 token ใช้ 1 คูณ + 1 บวก ต่อ 1 พารามิเตอร์
 
 | เฟส | สิ่งที่คำนวณ | FLOPs ต่อ token |
 |---|---|---|
-| **Forward** | $\mathbf{y} = \mathbf{x}W$ | $2N_{\text{params}}$ (คูณ + บวก) |
-| **Backward** ครั้งที่ 1 | $\partial\mathcal{L}/\partial \mathbf{x} = \mathbf{g}W^\top$ (ส่งต่อชั้นล่าง) | $2N_{\text{params}}$ |
-| **Backward** ครั้งที่ 2 | $\partial\mathcal{L}/\partial W = \mathbf{x}^\top\mathbf{g}$ (อัปเดตน้ำหนัก) | $2N_{\text{params}}$ |
-| **รวม** | | $\mathbf{6N_{\text{params}}}$ |
+| **Forward** | $\mathbf{y} = \mathbf{x}W$ | $2N\_{\text{params}}$ (คูณ + บวก) |
+| **Backward** ครั้งที่ 1 | $\partial\mathcal{L}/\partial \mathbf{x} = \mathbf{g}W^\top$ (ส่งต่อชั้นล่าง) | $2N\_{\text{params}}$ |
+| **Backward** ครั้งที่ 2 | $\partial\mathcal{L}/\partial W = \mathbf{x}^\top\mathbf{g}$ (อัปเดตน้ำหนัก) | $2N\_{\text{params}}$ |
+| **รวม** | | $\mathbf{6N\_{\text{params}}}$ |
 
 > **สัญชาตญาณ:** backward แพงเป็น **2 เท่า** ของ forward เสมอ เพราะทุกเมทริกซ์ต้องทำ 2 งาน (ส่ง gradient ลงล่าง + คำนวณ gradient ของตัวเอง) ส่วน forward ทำงานเดียว → 2 : 4 = 1 : 2
 > สูตรนี้ **ละเลย** ต้นทุนของ attention matrix ($O(n^2 d)$) ซึ่งสำคัญเมื่อ $n$ ยาวมาก ๆ แต่ที่ $n \approx 100$ ในงานแปล มันเป็นเศษเสี้ยว
 
-**ตัวอย่างคำนวณจริง** — โมเดล $N_{\text{params}} = 65\times10^6$ เทรนบน $10^9$ tokens
+**ตัวอย่างคำนวณจริง** — โมเดล $N\_{\text{params}} = 65\times10^6$ เทรนบน $10^9$ tokens
 
 | ปริมาณ | ค่า |
 |---|---|
@@ -636,17 +636,17 @@ for name, peak, util in [("V100 fp32", 15.7e12, 0.30), ("A100 bf16", 312e12, 0.4
 | Gradient ที่ output | $\partial\mathcal{L}/\partial\mathbf{z} = \mathbf{p} - \mathbf{y}^{\text{onehot}}$ |
 | Gradient ผ่าน LayerNorm | ตั้งฉากกับทิศ $\mathbf{1}$ และทิศ $\hat{\mathbf{x}}$ |
 | Gradient ผ่าน residual | $\partial\mathbf{y}/\partial\mathbf{x} = I + \partial F/\partial\mathbf{x}$ |
-| Gradient ผ่าน attention | $G_V = A^\top G_O$, $\ G_Q = G_S K/\sqrt{d_k}$, $\ G_K = G_S^\top Q/\sqrt{d_k}$ |
-| Adam | $\theta \leftarrow \theta - \eta_t \hat{\mathbf{m}}_t/(\sqrt{\hat{\mathbf{v}}_t}+\epsilon)$, $\ \beta=(0.9, 0.98)$ |
-| LR schedule | $\eta_t = d_{\text{model}}^{-0.5}\min(t^{-0.5},\ t\cdot w^{-1.5})$, สูงสุด $6.99\times10^{-4}$ ที่ $t=4000$ |
+| Gradient ผ่าน attention | $G\_V = A^\top G\_O$, $\ G\_Q = G\_S K/\sqrt{d\_k}$, $\ G\_K = G\_S^\top Q/\sqrt{d\_k}$ |
+| Adam | $\theta \leftarrow \theta - \eta\_t \hat{\mathbf{m}}\_t/(\sqrt{\hat{\mathbf{v}}\_t}+\epsilon)$, $\ \beta=(0.9, 0.98)$ |
+| LR schedule | $\eta\_t = d\_{\text{model}}^{-0.5}\min(t^{-0.5},\ t\cdot w^{-1.5})$, สูงสุด $6.99\times10^{-4}$ ที่ $t=4000$ |
 | Gradient clipping | $\mathbf{g} \leftarrow \mathbf{g}\min(1, c/\\|\mathbf{g}\\|)$ |
-| ต้นทุน | $\text{FLOPs} \approx 6 N_{\text{params}} \times \\#\text{tokens}$ |
+| ต้นทุน | $\text{FLOPs} \approx 6 N\_{\text{params}} \times \\#\text{tokens}$ |
 
 **สามข้อที่ควรติดตัวไปจากไฟล์นี้:**
 
 1. gradient ที่ปลายทางคือ **ความผิดพลาดตรง ๆ** ($\mathbf{p} - \mathbf{y}$) — ที่เหลือคือการส่งต่อมันลงไปให้ครบทุกชั้น
 2. **residual คือเส้นเลือดใหญ่ของ gradient** ส่วน **LayerNorm คือวาล์วควบคุมสเกล** — ทั้งคู่มีไว้เพื่อการเทรนล้วน ๆ ไม่ได้เพิ่มความสามารถในการแทนค่า
-3. ทุกตัวเลขในสูตรของเปเปอร์ ($\beta_2 = 0.98$, warmup $= 4000$, $\varepsilon = 0.1$) เป็น **ยาแก้อาการ** ของปัญหาที่ระบุได้ชัดเจน ไม่ใช่เวทมนตร์
+3. ทุกตัวเลขในสูตรของเปเปอร์ ($\beta\_2 = 0.98$, warmup $= 4000$, $\varepsilon = 0.1$) เป็น **ยาแก้อาการ** ของปัญหาที่ระบุได้ชัดเจน ไม่ใช่เวทมนตร์
 
 ---
 

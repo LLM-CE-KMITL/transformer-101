@@ -15,14 +15,14 @@
 ใน [ไฟล์ 03 §4](03-attention-mechanism-origin.md) เราได้ข้อสรุปว่า attention คือ **ค่าเฉลี่ยถ่วงน้ำหนัก**
 
 $$
-\mathbf{c}_t = \sum_{j=1}^{n} \alpha_{tj}\,\mathbf{h}_j, \qquad \sum_j \alpha_{tj} = 1
+\mathbf{c}\_t = \sum\_{j=1}^{n} \alpha\_{tj}\\,\mathbf{h}\_j, \qquad \sum\_j \alpha\_{tj} = 1
 $$
 
-โดยน้ำหนัก $\alpha_{tj}$ มาจากการ "จับคู่" ระหว่างสิ่งที่ decoder ต้องการ ($\mathbf{s}_{t-1}$) กับสิ่งที่ encoder มี ($\mathbf{h}_j$)
+โดยน้ำหนัก $\alpha\_{tj}$ มาจากการ "จับคู่" ระหว่างสิ่งที่ decoder ต้องการ ($\mathbf{s}\_{t-1}$) กับสิ่งที่ encoder มี ($\mathbf{h}\_j$)
 
-สังเกตว่าในสูตรนี้ $\mathbf{h}_j$ ถูกใช้ **สองหน้าที่พร้อมกัน**:
+สังเกตว่าในสูตรนี้ $\mathbf{h}\_j$ ถูกใช้ **สองหน้าที่พร้อมกัน**:
 
-1. ใช้คำนวณคะแนน $e_{tj}$ — คือทำหน้าที่ "ป้ายชื่อ" ให้ query มาจับคู่
+1. ใช้คำนวณคะแนน $e\_{tj}$ — คือทำหน้าที่ "ป้ายชื่อ" ให้ query มาจับคู่
 2. ใช้เป็นเนื้อหาที่ถูกถ่วงน้ำหนักออกไป — คือทำหน้าที่ "พัสดุ" ที่ถูกส่งกลับ
 
 **นี่คือข้อจำกัดโดยไม่จำเป็น** — เวกเตอร์เดียวถูกบังคับให้เก่งสองอย่างที่ต้องการคุณสมบัติต่างกัน
@@ -55,21 +55,21 @@ $$
 
 | สัญลักษณ์ | มิติ | ความหมาย | เรียนรู้ได้ไหม |
 |---|---|---|---|
-| $X$ | $\mathbb{R}^{n \times d_{\text{model}}}$ | input — แถวที่ $i$ คือ embedding ของโทเคนที่ $i$ | — (มาจากเลเยอร์ก่อน) |
-| $W^Q$ | $\mathbb{R}^{d_{\text{model}} \times d_k}$ | ฉาย $X$ ไปเป็นคำถาม | ✅ |
-| $W^K$ | $\mathbb{R}^{d_{\text{model}} \times d_k}$ | ฉาย $X$ ไปเป็นป้ายชื่อ | ✅ |
-| $W^V$ | $\mathbb{R}^{d_{\text{model}} \times d_v}$ | ฉาย $X$ ไปเป็นเนื้อหา | ✅ |
-| $Q$ | $\mathbb{R}^{n \times d_k}$ | แถวที่ $i$ = $\mathbf{q}_i$ | — |
-| $K$ | $\mathbb{R}^{n \times d_k}$ | แถวที่ $j$ = $\mathbf{k}_j$ | — |
-| $V$ | $\mathbb{R}^{n \times d_v}$ | แถวที่ $j$ = $\mathbf{v}_j$ | — |
+| $X$ | $\mathbb{R}^{n \times d\_{\text{model}}}$ | input — แถวที่ $i$ คือ embedding ของโทเคนที่ $i$ | — (มาจากเลเยอร์ก่อน) |
+| $W^Q$ | $\mathbb{R}^{d\_{\text{model}} \times d\_k}$ | ฉาย $X$ ไปเป็นคำถาม | ✅ |
+| $W^K$ | $\mathbb{R}^{d\_{\text{model}} \times d\_k}$ | ฉาย $X$ ไปเป็นป้ายชื่อ | ✅ |
+| $W^V$ | $\mathbb{R}^{d\_{\text{model}} \times d\_v}$ | ฉาย $X$ ไปเป็นเนื้อหา | ✅ |
+| $Q$ | $\mathbb{R}^{n \times d\_k}$ | แถวที่ $i$ = $\mathbf{q}\_i$ | — |
+| $K$ | $\mathbb{R}^{n \times d\_k}$ | แถวที่ $j$ = $\mathbf{k}\_j$ | — |
+| $V$ | $\mathbb{R}^{n \times d\_v}$ | แถวที่ $j$ = $\mathbf{v}\_j$ | — |
 | $S = QK^\top$ | $\mathbb{R}^{n \times n}$ | เมทริกซ์คะแนน | — |
-| $A = \text{softmax}(S/\sqrt{d_k})$ | $\mathbb{R}^{n \times n}$ | เมทริกซ์น้ำหนัก | — |
-| output $= AV$ | $\mathbb{R}^{n \times d_v}$ | ผลลัพธ์ | — |
+| $A = \text{softmax}(S/\sqrt{d\_k})$ | $\mathbb{R}^{n \times n}$ | เมทริกซ์น้ำหนัก | — |
+| output $= AV$ | $\mathbb{R}^{n \times d\_v}$ | ผลลัพธ์ | — |
 
 > **จุดสำคัญ 3 ข้อจากตารางนี้:**
-> 1. $Q$ กับ $K$ **ต้อง** มีมิติเท่ากัน ($d_k$) เพราะต้อง dot product กัน — แต่ $V$ ไม่จำเป็น ($d_v$ อิสระ)
+> 1. $Q$ กับ $K$ **ต้อง** มีมิติเท่ากัน ($d\_k$) เพราะต้อง dot product กัน — แต่ $V$ ไม่จำเป็น ($d\_v$ อิสระ)
 > 2. มิติ $n$ ไม่ปรากฏใน $W$ เลย → **โมเดลรับความยาวเท่าไรก็ได้** ด้วยพารามิเตอร์ชุดเดียว (เหมือน weight sharing ของ RNN ใน [01 §2.2](01-seq2seq-rnn-basics.md) แต่ได้มาฟรีกว่า)
-> 3. ใน Transformer-base: $d_{\text{model}}=512$, $H=8$, $d_k=d_v=512/8=64$
+> 3. ใน Transformer-base: $d\_{\text{model}}=512$, $H=8$, $d\_k=d\_v=512/8=64$
 
 ```mermaid
 flowchart TD
@@ -108,7 +108,7 @@ print(Q.shape, K.shape, V.shape)          # (5, 64) (5, 64) (5, 64)
 ### 2.1 สมการเต็ม
 
 $$
-\boxed{\ \text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V\ }
+\boxed{\ \text{Attention}(Q, K, V) = \text{softmax}\\!\left(\frac{QK^\top}{\sqrt{d\_k}}\right)V\ }
 $$
 
 สมการเดียวนี้แทนที่ทั้ง RNN encoder และกลไก attention แบบ Bahdanau — และแตกออกได้เป็น 4 ขั้นชัดเจน
@@ -133,38 +133,38 @@ flowchart LR
 
 | ขั้น | การดำเนินการ | มิติเข้า → ออก | อธิบายใน |
 |---|---|---|---|
-| 1 | $S = QK^\top$ | $(n\times d_k),(n\times d_k) \to (n\times n)$ | §2.2 |
-| 2 | $\tilde{S} = S/\sqrt{d_k}$ | $(n\times n) \to (n\times n)$ | §2.3 |
-| 3 | $A = \text{softmax}_{\text{row}}(\tilde{S})$ | $(n\times n) \to (n\times n)$ | §2.4 |
-| 4 | $O = AV$ | $(n\times n),(n\times d_v) \to (n\times d_v)$ | §2.5 |
+| 1 | $S = QK^\top$ | $(n\times d\_k),(n\times d\_k) \to (n\times n)$ | §2.2 |
+| 2 | $\tilde{S} = S/\sqrt{d\_k}$ | $(n\times n) \to (n\times n)$ | §2.3 |
+| 3 | $A = \text{softmax}\_{\text{row}}(\tilde{S})$ | $(n\times n) \to (n\times n)$ | §2.4 |
+| 4 | $O = AV$ | $(n\times n),(n\times d\_v) \to (n\times d\_v)$ | §2.5 |
 
 ### 2.2 ขั้นที่ 1 — เมทริกซ์คะแนน $S = QK^\top$
 
 $$
 S = QK^\top \in \mathbb{R}^{n\times n}, \qquad
-S_{ij} = \mathbf{q}_i \cdot \mathbf{k}_j^\top = \sum_{c=1}^{d_k} q_{ic}\,k_{jc}
+S\_{ij} = \mathbf{q}\_i \cdot \mathbf{k}\_j^\top = \sum\_{c=1}^{d\_k} q\_{ic}\\,k\_{jc}
 $$
 
 **ความหมายของแต่ละช่อง:**
 
 $$
-S_{ij} = \text{"query ที่ตำแหน่ง } i \text{ เข้ากันได้ดีแค่ไหนกับ key ที่ตำแหน่ง } j\text{"}
+S\_{ij} = \text{"query ที่ตำแหน่ง } i \text{ เข้ากันได้ดีแค่ไหนกับ key ที่ตำแหน่ง } j\text{"}
 $$
 
 | อ่านตาม | ได้อะไร |
 |---|---|
 | **แถวที่ $i$** | คะแนนของ query $i$ เทียบกับ key ทั้ง $n$ ตัว → หลัง softmax จะกลายเป็น "โทเคน $i$ สนใจใครบ้าง" |
 | **คอลัมน์ที่ $j$** | คะแนนที่ key $j$ ได้รับจาก query ทั้ง $n$ ตัว → "โทเคน $j$ ถูกใครสนใจบ้าง" |
-| **เส้นทแยงมุม $S_{ii}$** | โทเคนเทียบกับตัวเอง — มักจะสูง แต่ไม่จำเป็นเสมอไป |
+| **เส้นทแยงมุม $S\_{ii}$** | โทเคนเทียบกับตัวเอง — มักจะสูง แต่ไม่จำเป็นเสมอไป |
 
 > **สัญชาตญาณ — ทำไม dot product ถึงวัดความคล้ายได้:**
-> $\mathbf{q}\cdot\mathbf{k} = \|\mathbf{q}\|\|\mathbf{k}\|\cos\theta$ — ยิ่งสองเวกเตอร์ชี้ไปทางเดียวกัน ($\theta$ เล็ก) ค่ายิ่งบวกมาก
+> $\mathbf{q}\cdot\mathbf{k} = \\|\mathbf{q}\\|\\|\mathbf{k}\\|\cos\theta$ — ยิ่งสองเวกเตอร์ชี้ไปทางเดียวกัน ($\theta$ เล็ก) ค่ายิ่งบวกมาก
 > แต่สังเกตว่ามันแปรตาม **ขนาด** ของเวกเตอร์ด้วย ไม่ใช่แค่ทิศทาง — ข้อเท็จจริงนี้จะกลายเป็นปัญหาใน §2.3 ทันที
 
-**ทำไมไม่ใช้ additive attention แบบ Bahdanau:** $e_{ij} = \mathbf{v}^\top\tanh(\mathbf{q}_iW_s + \mathbf{k}_jW_h)$ ต้องคำนวณทีละคู่ $(i,j)$ ผ่าน MLP → เขียนเป็นการคูณเมทริกซ์ก้อนเดียวไม่ได้
+**ทำไมไม่ใช้ additive attention แบบ Bahdanau:** $e\_{ij} = \mathbf{v}^\top\tanh(\mathbf{q}\_iW\_s + \mathbf{k}\_jW\_h)$ ต้องคำนวณทีละคู่ $(i,j)$ ผ่าน MLP → เขียนเป็นการคูณเมทริกซ์ก้อนเดียวไม่ได้
 ส่วน dot product คือ `matmul` ตัวเดียว ซึ่ง GPU ทำได้เร็วกว่ามาก แม้ complexity เชิงทฤษฎีจะใกล้กัน
 
-### 2.3 ขั้นที่ 2 — ทำไมต้องหาร $\sqrt{d_k}$
+### 2.3 ขั้นที่ 2 — ทำไมต้องหาร $\sqrt{d\_k}$
 
 นี่เป็นรายละเอียดที่ดูเล็กที่สุดในสมการ แต่ถ้าตัดออก **โมเดลจะเทรนไม่ขึ้นเลย**
 
@@ -173,23 +173,23 @@ $$
 สมมติ $\mathbf{q}$ และ $\mathbf{k}$ มีสมาชิกเป็น i.i.d. mean $0$ variance $1$ แล้ว
 
 $$
-\boxed{\ \mathbb{E}[\mathbf{q}\cdot\mathbf{k}] = 0, \qquad \text{Var}(\mathbf{q}\cdot\mathbf{k}) = d_k
-\quad\Longrightarrow\quad \text{sd} = \sqrt{d_k}\ }
+\boxed{\ \mathbb{E}[\mathbf{q}\cdot\mathbf{k}] = 0, \qquad \text{Var}(\mathbf{q}\cdot\mathbf{k}) = d\_k
+\quad\Longrightarrow\quad \text{sd} = \sqrt{d\_k}\ }
 $$
 
-> **สัญชาตญาณ (ไม่ต้องกาง algebra):** dot product คือ **ผลรวมของ $d_k$ พจน์อิสระ** $q_c k_c$ แต่ละพจน์มี mean 0 และ variance 1
-> variance ของผลรวมตัวแปรอิสระ = ผลรวมของ variance → $d_k \times 1 = d_k$
-> ส่วนเบี่ยงเบนมาตรฐานจึงโตแบบ $\sqrt{d_k}$ ไม่ใช่ $d_k$ — **การหารด้วย $\sqrt{d_k}$ คือการ normalize ให้ variance กลับมาเป็น 1 พอดี**
+> **สัญชาตญาณ (ไม่ต้องกาง algebra):** dot product คือ **ผลรวมของ $d\_k$ พจน์อิสระ** $q\_c k\_c$ แต่ละพจน์มี mean 0 และ variance 1
+> variance ของผลรวมตัวแปรอิสระ = ผลรวมของ variance → $d\_k \times 1 = d\_k$
+> ส่วนเบี่ยงเบนมาตรฐานจึงโตแบบ $\sqrt{d\_k}$ ไม่ใช่ $d\_k$ — **การหารด้วย $\sqrt{d\_k}$ คือการ normalize ให้ variance กลับมาเป็น 1 พอดี**
 
-ที่ $d_k = 64$ ในโมเดลจริง → sd ของคะแนนดิบ $= \sqrt{64} = 8$
+ที่ $d\_k = 64$ ในโมเดลจริง → sd ของคะแนนดิบ $= \sqrt{64} = 8$
 
 **ยืนยันด้วยการสุ่มจริง 200,000 คู่:**
 
 | ปริมาณ | ค่าทฤษฎี | ค่าที่วัดได้ |
 |---|---|---|
 | $\mathbb{E}[\mathbf{q}\cdot\mathbf{k}]$ | 0 | **0.0139** |
-| $\text{Var}(\mathbf{q}\cdot\mathbf{k})$ | $d_k = 64$ | **63.9856** |
-| $\text{sd}$ | $\sqrt{d_k} = 8.0$ | **7.9991** |
+| $\text{Var}(\mathbf{q}\cdot\mathbf{k})$ | $d\_k = 64$ | **63.9856** |
+| $\text{sd}$ | $\sqrt{d\_k} = 8.0$ | **7.9991** |
 
 ```python
 import numpy as np
@@ -207,19 +207,19 @@ print(round(dots.mean(), 4), round(dots.var(), 4), round(dots.std(), 4))
 softmax ไม่สนใจค่าสัมบูรณ์ แต่สนใจ **ระยะห่างระหว่างคะแนน** — และระยะห่างนั้นแปรตาม sd โดยตรง
 
 $$
-\frac{e^{z_{\max}}}{\sum_j e^{z_j}} \longrightarrow 1 \quad \text{เมื่อ } z_{\max} - z_{\text{รองลงมา}} \text{ โตขึ้น}
+\frac{e^{z\_{\max}}}{\sum\_j e^{z\_j}} \longrightarrow 1 \quad \text{เมื่อ } z\_{\max} - z\_{\text{รองลงมา}} \text{ โตขึ้น}
 $$
 
 ถ้า sd $=8$ ความต่างระหว่างคะแนนสูงสุดกับตัวอื่นมักอยู่ระดับ 10–20 ซึ่ง $e^{15} \approx 3.3\times10^6$ — softmax จึงกลายเป็น **one-hot เกือบสมบูรณ์**
 
 ผลที่ตามมาคือ **gradient เกือบศูนย์** เพราะ Jacobian ของ softmax คือ $\text{diag}(\mathbf{p}) - \mathbf{p}^\top\mathbf{p}$ (ดู §5.1)
-เมื่อ $\mathbf{p}$ เป็น one-hot → $p_i(1-p_i) \approx 0$ ทุกตัว → Jacobian ยุบเป็นศูนย์ → เรียนอะไรไม่ได้เลย
+เมื่อ $\mathbf{p}$ เป็น one-hot → $p\_i(1-p\_i) \approx 0$ ทุกตัว → Jacobian ยุบเป็นศูนย์ → เรียนอะไรไม่ได้เลย
 
 #### การทดลองความคิด: เทียบ softmax ที่ scale ต่างกัน
 
-ใช้ query 1 ตัวเทียบกับ key $n=8$ ตัว ที่ $d_k=64$ ทั้งหมดสุ่มจาก $\mathcal{N}(0,1)$
+ใช้ query 1 ตัวเทียบกับ key $n=8$ ตัว ที่ $d\_k=64$ ทั้งหมดสุ่มจาก $\mathcal{N}(0,1)$
 
-| $j$ | คะแนนดิบ $S_j$ | หลังหาร $\sqrt{64}=8$ | $A_j$ **ไม่หาร** (sd≈8) | $A_j$ **หาร** (sd≈1) |
+| $j$ | คะแนนดิบ $S\_j$ | หลังหาร $\sqrt{64}=8$ | $A\_j$ **ไม่หาร** (sd≈8) | $A\_j$ **หาร** (sd≈1) |
 |---:|---:|---:|---:|---:|
 | 1 | 1.1820 | 0.1477 | 0.0000 | 0.0619 |
 | 2 | −1.2591 | −0.1574 | 0.0000 | 0.0456 |
@@ -234,20 +234,20 @@ $$
 
 สรุปเชิงตัวเลข:
 
-| ตัววัด | ไม่หาร $\sqrt{d_k}$ | หาร $\sqrt{d_k}$ | ค่าอ้างอิง |
+| ตัววัด | ไม่หาร $\sqrt{d\_k}$ | หาร $\sqrt{d\_k}$ | ค่าอ้างอิง |
 |---|---:|---:|---|
 | sd ของคะแนน | 8.7016 | 1.0877 | — |
-| น้ำหนักสูงสุด $\max_j A_j$ | **0.9776** | **0.4401** | uniform = 0.125 |
+| น้ำหนักสูงสุด $\max\_j A\_j$ | **0.9776** | **0.4401** | uniform = 0.125 |
 | entropy ของการแจกแจง | 0.1074 | 1.5376 | uniform = $\ln 8$ = 2.0794 |
-| $\\|J_{\text{softmax}}\\|_F$ | **0.0438** | **0.3939** | — |
-| $\max_{ij}\\|J_{ij}\\|$ | 0.0219 | 0.2464 | — |
+| $\\|J\_{\text{softmax}}\\|\_F$ | **0.0438** | **0.3939** | — |
+| $\max\_{ij}\\|J\_{ij}\\|$ | 0.0219 | 0.2464 | — |
 
 $$
-\frac{\|J\|_F \text{ ที่หาร}}{\|J\|_F \text{ ที่ไม่หาร}} = \frac{0.3939}{0.0438} \approx 8.99
+\frac{\\|J\\|\_F \text{ ที่หาร}}{\\|J\\|\_F \text{ ที่ไม่หาร}} = \frac{0.3939}{0.0438} \approx 8.99
 $$
 
-> **จุดสำคัญ:** การหารด้วย $\sqrt{d_k}$ ทำให้ **gradient ใหญ่ขึ้นเกือบ 9 เท่า** ในตัวอย่างนี้
-> และยิ่ง $d_k$ ใหญ่ ช่องว่างยิ่งถ่างขึ้น — นี่คือเหตุผลทั้งหมดของเครื่องหมายหารตัวเดียวในสมการ
+> **จุดสำคัญ:** การหารด้วย $\sqrt{d\_k}$ ทำให้ **gradient ใหญ่ขึ้นเกือบ 9 เท่า** ในตัวอย่างนี้
+> และยิ่ง $d\_k$ ใหญ่ ช่องว่างยิ่งถ่างขึ้น — นี่คือเหตุผลทั้งหมดของเครื่องหมายหารตัวเดียวในสมการ
 
 ```python
 import numpy as np
@@ -273,7 +273,7 @@ print(round(np.linalg.norm(jac(p_unscaled)), 4),
 ### 2.4 ขั้นที่ 3 — Softmax แบบแถว (row-wise)
 
 $$
-A_{ij} = \text{softmax}(\tilde{\mathbf{s}}_i)_j = \frac{\exp(\tilde{S}_{ij})}{\sum_{j'=1}^{n}\exp(\tilde{S}_{ij'})}
+A\_{ij} = \text{softmax}(\tilde{\mathbf{s}}\_i)\_j = \frac{\exp(\tilde{S}\_{ij})}{\sum\_{j'=1}^{n}\exp(\tilde{S}\_{ij'})}
 $$
 
 **สำคัญที่สุด: softmax ทำ "ตามแถว" ไม่ใช่ทั้งเมทริกซ์** — ในโค้ดคือ `axis=-1` / `dim=-1`
@@ -288,19 +288,19 @@ $$
 
 | คุณสมบัติ | สมการ | ใช้ที่ไหน |
 |---|---|---|
-| เป็นบวกเสมอ | $A_{ij} {>} 0$ | §4.3 convex combination |
-| รวมกันได้ 1 ต่อแถว | $\sum_j A_{ij} = 1$ | §4.3 |
+| เป็นบวกเสมอ | $A\_{ij} {>} 0$ | §4.3 convex combination |
+| รวมกันได้ 1 ต่อแถว | $\sum\_j A\_{ij} = 1$ | §4.3 |
 | ไม่แปรตามการบวกค่าคงที่ | $\text{softmax}(\mathbf{z}+c) = \text{softmax}(\mathbf{z})$ | เสถียรภาพเชิงตัวเลข |
-| แปรตามการคูณสเกล | $\text{softmax}(\beta\mathbf{z})$ คมขึ้นเมื่อ $\beta$ โต | §2.3 เหตุผลของ $\sqrt{d_k}$ |
+| แปรตามการคูณสเกล | $\text{softmax}(\beta\mathbf{z})$ คมขึ้นเมื่อ $\beta$ โต | §2.3 เหตุผลของ $\sqrt{d\_k}$ |
 | $-\infty$ → น้ำหนัก 0 | $\exp(-\infty)=0$ | masking ในไฟล์ 11 |
 
 #### เสถียรภาพเชิงตัวเลข — ทำไมต้องลบ max
 
 $e^{800}$ ล้นขอบเขต `float32` ทันที (ค่าสูงสุด $\approx 3.4\times10^{38}$ ซึ่งคือราว $e^{88}$)
-ใช้คุณสมบัติ "ไม่แปรตามการบวกค่าคงที่" โดยเลือก $c = -\max_j \tilde{S}_{ij}$
+ใช้คุณสมบัติ "ไม่แปรตามการบวกค่าคงที่" โดยเลือก $c = -\max\_j \tilde{S}\_{ij}$
 
 $$
-A_{ij} = \frac{\exp(\tilde{S}_{ij} - \max_{j'}\tilde{S}_{ij'})}{\sum_{j'}\exp(\tilde{S}_{ij'} - \max_{j''}\tilde{S}_{ij''})}
+A\_{ij} = \frac{\exp(\tilde{S}\_{ij} - \max\_{j'}\tilde{S}\_{ij'})}{\sum\_{j'}\exp(\tilde{S}\_{ij'} - \max\_{j''}\tilde{S}\_{ij''})}
 $$
 
 หลังลบ max แล้ว เลขชี้กำลังทุกตัวจะ $\le 0$ → $\exp$ อยู่ในช่วง $(0, 1]$ → ล้นไม่ได้อีก
@@ -321,14 +321,14 @@ print(np.round(softmax(big), 4))   # [0.09   0.2447 0.6652]  ← ปลอดภ
 ### 2.5 ขั้นที่ 4 — คูณด้วย $V$
 
 $$
-O = AV \in \mathbb{R}^{n\times d_v}, \qquad
-\mathbf{o}_i = \sum_{j=1}^{n} A_{ij}\,\mathbf{v}_j
+O = AV \in \mathbb{R}^{n\times d\_v}, \qquad
+\mathbf{o}\_i = \sum\_{j=1}^{n} A\_{ij}\\,\mathbf{v}\_j
 $$
 
-เพราะ $A_{ij} {>} 0$ และ $\sum_j A_{ij} = 1$ แถวที่ $i$ ของ output จึงเป็น **convex combination ของแถวใน $V$**
+เพราะ $A\_{ij} {>} 0$ และ $\sum\_j A\_{ij} = 1$ แถวที่ $i$ ของ output จึงเป็น **convex combination ของแถวใน $V$**
 
 $$
-\boxed{\ \mathbf{o}_i \in \text{conv}\{\mathbf{v}_1, \dots, \mathbf{v}_n\}\ }
+\boxed{\ \mathbf{o}\_i \in \text{conv}\\{\mathbf{v}\_1, \dots, \mathbf{v}\_n\\}\ }
 $$
 
 > **สัญชาตญาณ:** output ของ attention **ไม่เคยหลุดออกนอกกล่อง** ที่ value ทั้งหมดล้อมไว้
@@ -340,15 +340,15 @@ $$
 
 ## 3. เดินตัวเลขเต็มรูปแบบ
 
-กำหนด $n = 3$, $d_{\text{model}} = 4$, $d_k = d_v = 2$ — ตัวเลขทุกตัวข้างล่างนี้มาจากการรัน Python จริง (ปัดทศนิยม 4 ตำแหน่ง)
+กำหนด $n = 3$, $d\_{\text{model}} = 4$, $d\_k = d\_v = 2$ — ตัวเลขทุกตัวข้างล่างนี้มาจากการรัน Python จริง (ปัดทศนิยม 4 ตำแหน่ง)
 
 ### 3.1 Input $X \in \mathbb{R}^{3\times 4}$
 
-| | $c_1$ | $c_2$ | $c_3$ | $c_4$ |
+| | $c\_1$ | $c\_2$ | $c\_3$ | $c\_4$ |
 |---|---:|---:|---:|---:|
-| $\mathbf{x}_1$ | 1 | 0 | 1 | 0 |
-| $\mathbf{x}_2$ | 0 | 1 | 1 | 0 |
-| $\mathbf{x}_3$ | 1 | 1 | 0 | 1 |
+| $\mathbf{x}\_1$ | 1 | 0 | 1 | 0 |
+| $\mathbf{x}\_2$ | 0 | 1 | 1 | 0 |
+| $\mathbf{x}\_3$ | 1 | 1 | 0 | 1 |
 
 ### 3.2 เมทริกซ์ฉายทั้งสาม
 
@@ -366,11 +366,11 @@ $W^Q, W^K, W^V \in \mathbb{R}^{4\times 2}$
 เพราะ $X$ เป็น 0/1 การคูณจึงกลายเป็น "บวกแถวของ $W$ ที่ตรงกับตำแหน่งที่เป็น 1"
 
 $$
-\mathbf{q}_1 = \mathbf{x}_1 W^Q = W^Q_{1,:} + W^Q_{3,:} = [1,1] + [0,-1] = [1,\ 0]
+\mathbf{q}\_1 = \mathbf{x}\_1 W^Q = W^Q\_{1,:} + W^Q\_{3,:} = [1,1] + [0,-1] = [1,\ 0]
 $$
 
 $$
-\mathbf{q}_3 = W^Q_{1,:} + W^Q_{2,:} + W^Q_{4,:} = [1,1] + [-1,0] + [-1,1] = [-1,\ 2]
+\mathbf{q}\_3 = W^Q\_{1,:} + W^Q\_{2,:} + W^Q\_{4,:} = [1,1] + [-1,0] + [-1,1] = [-1,\ 2]
 $$
 
 ผลลัพธ์ทั้งหมด:
@@ -379,55 +379,55 @@ $$
 
 | | คอลัมน์ 1 | คอลัมน์ 2 |
 |---|---:|---:|
-| $\mathbf{q}_1$ | 1 | 0 |
-| $\mathbf{q}_2$ | −1 | −1 |
-| $\mathbf{q}_3$ | −1 | 2 |
+| $\mathbf{q}\_1$ | 1 | 0 |
+| $\mathbf{q}\_2$ | −1 | −1 |
+| $\mathbf{q}\_3$ | −1 | 2 |
 
 **$K = XW^K \in \mathbb{R}^{3\times2}$**
 
 | | คอลัมน์ 1 | คอลัมน์ 2 |
 |---|---:|---:|
-| $\mathbf{k}_1$ | −1 | −2 |
-| $\mathbf{k}_2$ | −1 | 0 |
-| $\mathbf{k}_3$ | 1 | 0 |
+| $\mathbf{k}\_1$ | −1 | −2 |
+| $\mathbf{k}\_2$ | −1 | 0 |
+| $\mathbf{k}\_3$ | 1 | 0 |
 
 **$V = XW^V \in \mathbb{R}^{3\times2}$**
 
 | | คอลัมน์ 1 | คอลัมน์ 2 |
 |---|---:|---:|
-| $\mathbf{v}_1$ | 0 | −1 |
-| $\mathbf{v}_2$ | 1 | 1 |
-| $\mathbf{v}_3$ | −1 | 1 |
+| $\mathbf{v}\_1$ | 0 | −1 |
+| $\mathbf{v}\_2$ | 1 | 1 |
+| $\mathbf{v}\_3$ | −1 | 1 |
 
 ### 3.4 เมทริกซ์คะแนน $S = QK^\top \in \mathbb{R}^{3\times3}$
 
 ตัวอย่างการคำนวณ 2 ช่อง:
 
 $$
-S_{21} = \mathbf{q}_2\cdot\mathbf{k}_1 = (-1)(-1) + (-1)(-2) = 1 + 2 = 3
+S\_{21} = \mathbf{q}\_2\cdot\mathbf{k}\_1 = (-1)(-1) + (-1)(-2) = 1 + 2 = 3
 $$
 
 $$
-S_{31} = \mathbf{q}_3\cdot\mathbf{k}_1 = (-1)(-1) + (2)(-2) = 1 - 4 = -3
+S\_{31} = \mathbf{q}\_3\cdot\mathbf{k}\_1 = (-1)(-1) + (2)(-2) = 1 - 4 = -3
 $$
 
 **$S$ เต็ม** *(แถว = query, คอลัมน์ = key)*
 
-| $S$ | $\mathbf{k}_1$ | $\mathbf{k}_2$ | $\mathbf{k}_3$ |
+| $S$ | $\mathbf{k}\_1$ | $\mathbf{k}\_2$ | $\mathbf{k}\_3$ |
 |---|---:|---:|---:|
-| $\mathbf{q}_1$ | −1 | −1 | **1** |
-| $\mathbf{q}_2$ | **3** | 1 | −1 |
-| $\mathbf{q}_3$ | −3 | **1** | −1 |
+| $\mathbf{q}\_1$ | −1 | −1 | **1** |
+| $\mathbf{q}\_2$ | **3** | 1 | −1 |
+| $\mathbf{q}\_3$ | −3 | **1** | −1 |
 
-### 3.5 หารด้วย $\sqrt{d_k} = \sqrt{2} = 1.4142$
+### 3.5 หารด้วย $\sqrt{d\_k} = \sqrt{2} = 1.4142$
 
 **$\tilde{S} = S/\sqrt{2}$**
 
-| $\tilde{S}$ | $\mathbf{k}_1$ | $\mathbf{k}_2$ | $\mathbf{k}_3$ |
+| $\tilde{S}$ | $\mathbf{k}\_1$ | $\mathbf{k}\_2$ | $\mathbf{k}\_3$ |
 |---|---:|---:|---:|
-| $\mathbf{q}_1$ | −0.7071 | −0.7071 | **0.7071** |
-| $\mathbf{q}_2$ | **2.1213** | 0.7071 | −0.7071 |
-| $\mathbf{q}_3$ | −2.1213 | **0.7071** | −0.7071 |
+| $\mathbf{q}\_1$ | −0.7071 | −0.7071 | **0.7071** |
+| $\mathbf{q}\_2$ | **2.1213** | 0.7071 | −0.7071 |
+| $\mathbf{q}\_3$ | −2.1213 | **0.7071** | −0.7071 |
 
 ### 3.6 Softmax รายแถว → $A$
 
@@ -435,7 +435,7 @@ $$
 
 | ขั้น | $j=1$ | $j=2$ | $j=3$ |
 |---|---:|---:|---:|
-| $\tilde{S}_{1j}$ | −0.7071 | −0.7071 | 0.7071 |
+| $\tilde{S}\_{1j}$ | −0.7071 | −0.7071 | 0.7071 |
 | ลบ max $=0.7071$ | −1.4142 | −1.4142 | 0.0000 |
 | $\exp(\cdot)$ | 0.2431 | 0.2431 | 1.0000 |
 | หารด้วยผลรวม $=1.4862$ | **0.1636** | **0.1636** | **0.6728** |
@@ -443,9 +443,9 @@ $$
 แถวที่ 2: $\exp$ ได้ $[1.0000,\ 0.2431,\ 0.0591]$ ผลรวม $= 1.3022$
 แถวที่ 3: $\exp$ ได้ $[0.0591,\ 1.0000,\ 0.2431]$ ผลรวม $= 1.3022$
 
-**$A = \text{softmax}_{\text{row}}(\tilde{S})$**
+**$A = \text{softmax}\_{\text{row}}(\tilde{S})$**
 
-| $A$ | ดู $\mathbf{v}_1$ | ดู $\mathbf{v}_2$ | ดู $\mathbf{v}_3$ | รวม |
+| $A$ | ดู $\mathbf{v}\_1$ | ดู $\mathbf{v}\_2$ | ดู $\mathbf{v}\_3$ | รวม |
 |---|---:|---:|---:|---:|
 | โทเคน 1 | 0.1636 | 0.1636 | **0.6728** | 1.0000 |
 | โทเคน 2 | **0.7679** | 0.1867 | 0.0454 | 1.0000 |
@@ -487,24 +487,24 @@ flowchart LR
 ### 3.8 คูณด้วย $V$ → Output
 
 $$
-\mathbf{o}_1 = 0.1636\,[0,-1] + 0.1636\,[1,1] + 0.6728\,[-1,1] = [-0.5093,\ 0.6728]
+\mathbf{o}\_1 = 0.1636\\,[0,-1] + 0.1636\\,[1,1] + 0.6728\\,[-1,1] = [-0.5093,\ 0.6728]
 $$
 
 $$
-\mathbf{o}_2 = 0.7679\,[0,-1] + 0.1867\,[1,1] + 0.0454\,[-1,1] = [0.1413,\ -0.5358]
+\mathbf{o}\_2 = 0.7679\\,[0,-1] + 0.1867\\,[1,1] + 0.0454\\,[-1,1] = [0.1413,\ -0.5358]
 $$
 
 $$
-\mathbf{o}_3 = 0.0454\,[0,-1] + 0.7679\,[1,1] + 0.1867\,[-1,1] = [0.5812,\ 0.9092]
+\mathbf{o}\_3 = 0.0454\\,[0,-1] + 0.7679\\,[1,1] + 0.1867\\,[-1,1] = [0.5812,\ 0.9092]
 $$
 
 **$O = AV \in \mathbb{R}^{3\times2}$**
 
 | | คอลัมน์ 1 | คอลัมน์ 2 |
 |---|---:|---:|
-| $\mathbf{o}_1$ | −0.5093 | 0.6728 |
-| $\mathbf{o}_2$ | 0.1413 | −0.5358 |
-| $\mathbf{o}_3$ | 0.5812 | 0.9092 |
+| $\mathbf{o}\_1$ | −0.5093 | 0.6728 |
+| $\mathbf{o}\_2$ | 0.1413 | −0.5358 |
+| $\mathbf{o}\_3$ | 0.5812 | 0.9092 |
 
 **ตรวจสอบ convex hull:** ค่าใน $V$ อยู่ในช่วง $[-1, 1]$ ทั้งสองคอลัมน์
 ค่าใน $O$ อยู่ในช่วง $[-0.5093,\ 0.5812]$ และ $[-0.5358,\ 0.9092]$ — **อยู่ข้างในทั้งหมด** ✅ ตรงกับ §2.5
@@ -581,7 +581,7 @@ print(torch.allclose(out_mine, out_torch, atol=1e-6))      # True
 print(float((out_mine - out_torch).abs().max()))           # 5.96e-08  ← ต่างแค่ floating point
 ```
 
-> **หมายเหตุ:** `F.scaled_dot_product_attention` หารด้วย $\sqrt{d_k}$ ให้อัตโนมัติ และไม่คืนเมทริกซ์ $A$ ออกมา
+> **หมายเหตุ:** `F.scaled_dot_product_attention` หารด้วย $\sqrt{d\_k}$ ให้อัตโนมัติ และไม่คืนเมทริกซ์ $A$ ออกมา
 > (เพราะ backend อย่าง FlashAttention ไม่ได้สร้าง $A$ ทั้งก้อนขึ้นมาจริง ๆ — ดู [04 §4.1](04-transformer-motivation.md))
 > ถ้าต้องการดู attention map เพื่อ visualize ต้องเขียนเวอร์ชันของตัวเอง
 
@@ -592,14 +592,14 @@ print(float((out_mine - out_torch).abs().max()))           # 5.96e-08  ← ต�
 ### 4.1 Permutation Equivariance
 
 $$
-\boxed{\ \text{Attention}(PX) = P\,\text{Attention}(X)\ }
+\boxed{\ \text{Attention}(PX) = P\\,\text{Attention}(X)\ }
 \qquad \text{สำหรับ permutation matrix } P \text{ ใด ๆ}
 $$
 
-และในระดับเมทริกซ์น้ำหนัก: $A(PX) = P\,A(X)\,P^\top$
+และในระดับเมทริกซ์น้ำหนัก: $A(PX) = P\\,A(X)\\,P^\top$
 
 > **สัญชาตญาณ:** ในสมการทั้งหมดไม่มีที่ไหนเลยที่ดัชนี $i$ หรือ $j$ ปรากฏเป็น *ค่า* — มันปรากฏแค่เป็น *ป้ายกำกับ*
-> $S_{ij}$ ขึ้นกับ $\mathbf{x}_i$ กับ $\mathbf{x}_j$ เท่านั้น ไม่ขึ้นกับว่าใครมาก่อนใคร
+> $S\_{ij}$ ขึ้นกับ $\mathbf{x}\_i$ กับ $\mathbf{x}\_j$ เท่านั้น ไม่ขึ้นกับว่าใครมาก่อนใคร
 > เปรียบเทียบ: attention มองประโยคเป็น **ถุงของโทเคน** ที่มีเส้นเชื่อมถึงกันหมด ไม่ใช่ **แถวเรียง**
 
 #### ยืนยันด้วยตัวเลข
@@ -607,9 +607,9 @@ $$
 ใช้ $X$ เดิมจาก §3 และ permutation ที่สลับลำดับแถวเป็น $(3, 1, 2)$
 
 $$
-P = \begin{bmatrix} 0&0&1 \\ 1&0&0 \\ 0&1&0 \end{bmatrix}
+P = \begin{bmatrix} 0&0&1 \\\ 1&0&0 \\\ 0&1&0 \end{bmatrix}
 \qquad\Longrightarrow\qquad
-PX = \begin{bmatrix} 1&1&0&1 \\ 1&0&1&0 \\ 0&1&1&0 \end{bmatrix}
+PX = \begin{bmatrix} 1&1&0&1 \\\ 1&0&1&0 \\\ 0&1&1&0 \end{bmatrix}
 $$
 
 รันใหม่ทั้ง pipeline บน $PX$ ได้
@@ -653,7 +653,7 @@ print(np.allclose(Ap, P @ A @ P.T))    # True   ← A(PX) = P A Pᵀ
 งานทางภาษาแทบทุกงานขึ้นกับลำดับ → ต้องฉีดข้อมูลตำแหน่งเข้าไปเอง
 
 $$
-X' = X_{\text{emb}} + PE
+X' = X\_{\text{emb}} + PE
 $$
 
 เมื่อบวก $PE$ เข้าไป แถวที่ 1 กับแถวที่ 2 จะ **ไม่เหมือนกันอีกต่อไป** แม้โทเคนจะเป็นคำเดียวกัน → permutation equivariance ถูกทำลายอย่างตั้งใจ
@@ -665,15 +665,15 @@ $$
 ### 4.2 ทุกตำแหน่งเชื่อมถึงกันใน 1 ก้าว
 
 $$
-\frac{\partial \mathbf{o}_i}{\partial \mathbf{v}_j} = A_{ij} I \ne 0 \qquad \text{สำหรับทุกคู่ } (i,j)
+\frac{\partial \mathbf{o}\_i}{\partial \mathbf{v}\_j} = A\_{ij} I \ne 0 \qquad \text{สำหรับทุกคู่ } (i,j)
 $$
 
-เพราะ $A_{ij} {>} 0$ เสมอ (softmax ไม่เคยให้ศูนย์แท้) **ทุกตำแหน่งมีอิทธิพลต่อทุกตำแหน่งโดยตรง**
+เพราะ $A\_{ij} {>} 0$ เสมอ (softmax ไม่เคยให้ศูนย์แท้) **ทุกตำแหน่งมีอิทธิพลต่อทุกตำแหน่งโดยตรง**
 
 | สถาปัตยกรรม | จำนวนก้าวจากตำแหน่ง 1 ถึงตำแหน่ง $n$ | จำนวนการคูณที่ gradient ต้องผ่าน |
 |---|---|---|
 | RNN / LSTM | $n - 1$ | $n-1$ ครั้ง → หด/ระเบิดแบบเลขชี้กำลัง |
-| CNN ($k=3$) | $\lceil\log_3 n\rceil$ | $O(\log n)$ ครั้ง |
+| CNN ($k=3$) | $\lceil\log\_3 n\rceil$ | $O(\log n)$ ครั้ง |
 | **Self-Attention** | **1** | **1 ครั้ง** |
 
 > **สัญชาตญาณ:** ปัญหา vanishing gradient ใน [ไฟล์ 02](02-seq2seq-limitations.md) เกิดจากผลคูณของอนุพันธ์จำนวนมากตามความยาว
@@ -710,16 +710,16 @@ flowchart TD
 ### 4.3 แต่ละแถวของ $A$ รวมกันได้ 1 → output อยู่ใน convex hull
 
 $$
-\sum_{j} A_{ij} = 1,\quad A_{ij} {>} 0
+\sum\_{j} A\_{ij} = 1,\quad A\_{ij} {>} 0
 \qquad\Longrightarrow\qquad
-\mathbf{o}_i = \sum_j A_{ij}\mathbf{v}_j \in \text{conv}\{\mathbf{v}_1,\dots,\mathbf{v}_n\}
+\mathbf{o}\_i = \sum\_j A\_{ij}\mathbf{v}\_j \in \text{conv}\\{\mathbf{v}\_1,\dots,\mathbf{v}\_n\\}
 $$
 
 **ผลที่ตามมา 3 ข้อ:**
 
 | ผล | อธิบาย |
 |---|---|
-| **เสถียรเชิงตัวเลข** | $\\|\mathbf{o}_i\\| \le \max_j\\|\mathbf{v}_j\\|$ — output ไม่มีวันระเบิด ไม่ต้องมี gate แบบ LSTM |
+| **เสถียรเชิงตัวเลข** | $\\|\mathbf{o}\_i\\| \le \max\_j\\|\mathbf{v}\_j\\|$ — output ไม่มีวันระเบิด ไม่ต้องมี gate แบบ LSTM |
 | **attention เป็น linear ในตัว $V$** | ความไม่เชิงเส้นทั้งหมดอยู่ใน softmax ซึ่งกระทำกับ *น้ำหนัก* ไม่ใช่ *เนื้อหา* |
 | **ต้องมี FFN ต่อท้าย** | ถ้ามีแต่ attention ซ้อนกัน โมเดลจะแทน "การผสม" ได้เก่งขึ้นแต่แปลงเนื้อหาไม่เป็น → [ไฟล์ 08](08-feedforward-and-residual.md) |
 
@@ -747,34 +747,34 @@ $$
 เขียนทีละช่อง:
 
 $$
-J_{ij} = \frac{\partial p_i}{\partial z_j} =
+J\_{ij} = \frac{\partial p\_i}{\partial z\_j} =
 \begin{cases}
-p_i(1 - p_i) & i = j \\
--p_i p_j & i \ne j
+p\_i(1 - p\_i) & i = j \\\
+-p\_i p\_j & i \ne j
 \end{cases}
 $$
 
-> **สัญชาตญาณ — ทำไมมี 2 พจน์:** softmax คือเศษส่วน $p_i = e^{z_i}/Z$ โดย $Z = \sum_j e^{z_j}$
-> การเพิ่ม $z_j$ ส่งผล **สองทาง** พร้อมกัน:
-> — **พจน์ $\text{diag}(\mathbf{p})$** มาจากตัวเศษ: เพิ่ม $z_i$ → $e^{z_i}$ โตขึ้น → $p_i$ โตขึ้น (มีเฉพาะเมื่อ $i=j$)
-> — **พจน์ $-\mathbf{p}^\top\mathbf{p}$** มาจากตัวส่วน: เพิ่ม $z_j$ ตัวไหนก็ตาม → $Z$ โตขึ้น → **ทุก** $p_i$ หดลง
-> รวมกันสะท้อนข้อจำกัด $\sum_i p_i = 1$ — ใครได้เพิ่ม คนอื่นต้องเสีย เป็นเกมผลรวมคงที่
+> **สัญชาตญาณ — ทำไมมี 2 พจน์:** softmax คือเศษส่วน $p\_i = e^{z\_i}/Z$ โดย $Z = \sum\_j e^{z\_j}$
+> การเพิ่ม $z\_j$ ส่งผล **สองทาง** พร้อมกัน:
+> — **พจน์ $\text{diag}(\mathbf{p})$** มาจากตัวเศษ: เพิ่ม $z\_i$ → $e^{z\_i}$ โตขึ้น → $p\_i$ โตขึ้น (มีเฉพาะเมื่อ $i=j$)
+> — **พจน์ $-\mathbf{p}^\top\mathbf{p}$** มาจากตัวส่วน: เพิ่ม $z\_j$ ตัวไหนก็ตาม → $Z$ โตขึ้น → **ทุก** $p\_i$ หดลง
+> รวมกันสะท้อนข้อจำกัด $\sum\_i p\_i = 1$ — ใครได้เพิ่ม คนอื่นต้องเสีย เป็นเกมผลรวมคงที่
 
 **คุณสมบัติที่ตามมา:** ทุกแถวและทุกคอลัมน์ของ $J$ รวมกันได้ 0 → $J$ singular เสมอ (มี eigenvalue 0 ในทิศ $\mathbf{1}$) ซึ่งสมเหตุสมผลเพราะ softmax ไม่แปรตามการบวกค่าคงที่ (§2.4)
 
 ### 5.2 อนุพันธ์เทียบ $V$, $Q$, $K$ ของบล็อก attention
 
-ให้ $G = \dfrac{\partial \mathcal{L}}{\partial O} \in \mathbb{R}^{n\times d_v}$ เป็น gradient ที่ไหลย้อนเข้ามา แล้ว
+ให้ $G = \dfrac{\partial \mathcal{L}}{\partial O} \in \mathbb{R}^{n\times d\_v}$ เป็น gradient ที่ไหลย้อนเข้ามา แล้ว
 
 | เทียบกับ | สูตร | มิติ | ที่มา |
 |---|---|---|---|
-| $V$ | $\dfrac{\partial\mathcal{L}}{\partial V} = A^\top G$ | $n\times d_v$ | ตรงจาก $O = AV$ |
+| $V$ | $\dfrac{\partial\mathcal{L}}{\partial V} = A^\top G$ | $n\times d\_v$ | ตรงจาก $O = AV$ |
 | $A$ | $\dfrac{\partial\mathcal{L}}{\partial A} = G V^\top$ | $n\times n$ | ตรงจาก $O = AV$ |
 | $\tilde{S}$ | $\dfrac{\partial\mathcal{L}}{\partial \tilde{S}} = A \odot \left(\dfrac{\partial\mathcal{L}}{\partial A} - \text{rowsum}\\!\left(\dfrac{\partial\mathcal{L}}{\partial A}\odot A\right)\right)$ | $n\times n$ | Jacobian ของ softmax (§5.1) รายแถว |
-| $Q$ | $\dfrac{\partial\mathcal{L}}{\partial Q} = \dfrac{1}{\sqrt{d_k}}\\,\dfrac{\partial\mathcal{L}}{\partial \tilde{S}}\\,K$ | $n\times d_k$ | ตรงจาก $\tilde{S} = QK^\top/\sqrt{d_k}$ |
-| $K$ | $\dfrac{\partial\mathcal{L}}{\partial K} = \dfrac{1}{\sqrt{d_k}}\left(\dfrac{\partial\mathcal{L}}{\partial \tilde{S}}\right)^{\\!\top} Q$ | $n\times d_k$ | ตรงจาก $\tilde{S} = QK^\top/\sqrt{d_k}$ |
+| $Q$ | $\dfrac{\partial\mathcal{L}}{\partial Q} = \dfrac{1}{\sqrt{d\_k}}\\,\dfrac{\partial\mathcal{L}}{\partial \tilde{S}}\\,K$ | $n\times d\_k$ | ตรงจาก $\tilde{S} = QK^\top/\sqrt{d\_k}$ |
+| $K$ | $\dfrac{\partial\mathcal{L}}{\partial K} = \dfrac{1}{\sqrt{d\_k}}\left(\dfrac{\partial\mathcal{L}}{\partial \tilde{S}}\right)^{\\!\top} Q$ | $n\times d\_k$ | ตรงจาก $\tilde{S} = QK^\top/\sqrt{d\_k}$ |
 
-แถว $\tilde{S}$ คือรูปย่อของ $\left(\frac{\partial\mathcal{L}}{\partial\tilde{\mathbf{s}}_i}\right) = \left(\frac{\partial\mathcal{L}}{\partial \mathbf{a}_i}\right) J_i$ โดย $J_i = \text{diag}(\mathbf{a}_i) - \mathbf{a}_i^\top\mathbf{a}_i$ — เขียนแบบ element-wise เพื่อไม่ต้องสร้าง Jacobian ขนาด $n\times n$ ต่อแถวจริง ๆ
+แถว $\tilde{S}$ คือรูปย่อของ $\left(\frac{\partial\mathcal{L}}{\partial\tilde{\mathbf{s}}\_i}\right) = \left(\frac{\partial\mathcal{L}}{\partial \mathbf{a}\_i}\right) J\_i$ โดย $J\_i = \text{diag}(\mathbf{a}\_i) - \mathbf{a}\_i^\top\mathbf{a}\_i$ — เขียนแบบ element-wise เพื่อไม่ต้องสร้าง Jacobian ขนาด $n\times n$ ต่อแถวจริง ๆ
 
 จากนั้น gradient ไหลต่อไปยังพารามิเตอร์ผ่านการฉาย:
 
@@ -832,7 +832,7 @@ print(torch.allclose(dV, V.grad, atol=1e-5),   # True
 
 จับสองสิ่งมาต่อกัน:
 
-1. จาก §5.1: $J_{ii} = p_i(1-p_i)$ — ถ้า $p_i \to 1$ หรือ $p_i \to 0$ แล้ว $J_{ii} \to 0$
+1. จาก §5.1: $J\_{ii} = p\_i(1-p\_i)$ — ถ้า $p\_i \to 1$ หรือ $p\_i \to 0$ แล้ว $J\_{ii} \to 0$
 2. จาก §5.2: gradient ของ **ทุกอย่าง** ที่อยู่ก่อน softmax ($\tilde{S}, Q, K, W^Q, W^K$) ต้องคูณผ่าน $J$
 
 $$
@@ -841,27 +841,27 @@ $$
 
 นี่คือ **เหตุผลทางคณิตศาสตร์เต็มรูปแบบว่าทำไม §2.3 สำคัญ** — ย้อนกลับไปดูตัวเลขจากการทดลอง:
 
-| กรณี | $\max_j A_j$ | $\\|J\\|_F$ | เกิดอะไรขึ้นตอนเทรน |
+| กรณี | $\max\_j A\_j$ | $\\|J\\|\_F$ | เกิดอะไรขึ้นตอนเทรน |
 |---|---:|---:|---|
-| ไม่หาร $\sqrt{d_k}$ | 0.9776 | 0.0438 | gradient เล็กมาก → $W^Q, W^K$ แทบไม่ขยับ |
-| หาร $\sqrt{d_k}$ | 0.4401 | 0.3939 | gradient ปกติ → เรียนได้ |
+| ไม่หาร $\sqrt{d\_k}$ | 0.9776 | 0.0438 | gradient เล็กมาก → $W^Q, W^K$ แทบไม่ขยับ |
+| หาร $\sqrt{d\_k}$ | 0.4401 | 0.3939 | gradient ปกติ → เรียนได้ |
 
 $$
 \text{อัตราส่วนในตัวอย่างเดียวนี้} = \frac{0.3939}{0.0438} \approx 8.99
 $$
 
-ตัวอย่างเดียวอาจเป็นความบังเอิญ จึงวัดซ้ำ 2,000 ครั้งที่ $d_k$ ต่าง ๆ (รายงานเป็นมัธยฐานของอัตราส่วน $\|J\|_F$ ระหว่าง "หาร" กับ "ไม่หาร")
+ตัวอย่างเดียวอาจเป็นความบังเอิญ จึงวัดซ้ำ 2,000 ครั้งที่ $d\_k$ ต่าง ๆ (รายงานเป็นมัธยฐานของอัตราส่วน $\\|J\\|\_F$ ระหว่าง "หาร" กับ "ไม่หาร")
 
-| $d_k$ | $\sqrt{d_k}$ | อัตราส่วน $\\|J\\|_F$ (มัธยฐาน 2,000 ครั้ง) |
+| $d\_k$ | $\sqrt{d\_k}$ | อัตราส่วน $\\|J\\|\_F$ (มัธยฐาน 2,000 ครั้ง) |
 |---:|---:|---:|
 | 16 | 4.0 | **1.29** |
 | 64 | 8.0 | **5.96** |
 | 256 | 16.0 | **253.51** |
 
-> **จุดสำคัญ:** อัตราส่วนนี้ **ไม่ได้โตแบบ $\sqrt{d_k}$** แต่โตเร็วกว่านั้นมาก
-> เหตุผล: ระยะห่างระหว่างคะแนนโตแบบ $\sqrt{d_k}$ แต่ softmax saturate แบบ **เลขชี้กำลัง** ตามระยะห่างนั้น → ผลลัพธ์รวมคือ gradient หดตัวแบบเลขชี้กำลังใน $\sqrt{d_k}$
-> ที่ $d_k = 16$ แทบไม่ต่าง แต่ที่ $d_k = 256$ ต่างกันกว่า 250 เท่า — **ยิ่งโมเดลใหญ่ การละตัวหารนี้ทิ้งยิ่งเป็นหายนะ**
-> และนี่คือส่วนหนึ่งของเหตุผลว่าทำไม Transformer เลือกใช้ $d_k = 64$ ต่อ head แทนที่จะใช้ $d_k = 512$ หัวเดียว ([ไฟล์ 06](06-multi-head-attention.md))
+> **จุดสำคัญ:** อัตราส่วนนี้ **ไม่ได้โตแบบ $\sqrt{d\_k}$** แต่โตเร็วกว่านั้นมาก
+> เหตุผล: ระยะห่างระหว่างคะแนนโตแบบ $\sqrt{d\_k}$ แต่ softmax saturate แบบ **เลขชี้กำลัง** ตามระยะห่างนั้น → ผลลัพธ์รวมคือ gradient หดตัวแบบเลขชี้กำลังใน $\sqrt{d\_k}$
+> ที่ $d\_k = 16$ แทบไม่ต่าง แต่ที่ $d\_k = 256$ ต่างกันกว่า 250 เท่า — **ยิ่งโมเดลใหญ่ การละตัวหารนี้ทิ้งยิ่งเป็นหายนะ**
+> และนี่คือส่วนหนึ่งของเหตุผลว่าทำไม Transformer เลือกใช้ $d\_k = 64$ ต่อ head แทนที่จะใช้ $d\_k = 512$ หัวเดียว ([ไฟล์ 06](06-multi-head-attention.md))
 
 ```python
 import numpy as np
@@ -884,8 +884,8 @@ for d_k in [16, 64, 256]:
 # 256 253.51
 ```
 
-**ข้อควรระวังในทางปฏิบัติ:** การหาร $\sqrt{d_k}$ ช่วยได้ **เฉพาะตอนเริ่มต้น** เท่านั้น
-เมื่อเทรนไปนาน ๆ โมเดลอาจเรียนรู้ที่จะทำให้ $\|\mathbf{q}\|, \|\mathbf{k}\|$ ใหญ่ขึ้นเองจน saturate อีก — เทคนิคสมัยใหม่อย่าง QK-LayerNorm จึงเกิดขึ้นมาเพื่อคุมเรื่องนี้โดยตรง
+**ข้อควรระวังในทางปฏิบัติ:** การหาร $\sqrt{d\_k}$ ช่วยได้ **เฉพาะตอนเริ่มต้น** เท่านั้น
+เมื่อเทรนไปนาน ๆ โมเดลอาจเรียนรู้ที่จะทำให้ $\\|\mathbf{q}\\|, \\|\mathbf{k}\\|$ ใหญ่ขึ้นเองจน saturate อีก — เทคนิคสมัยใหม่อย่าง QK-LayerNorm จึงเกิดขึ้นมาเพื่อคุมเรื่องนี้โดยตรง
 
 ---
 
@@ -893,29 +893,29 @@ for d_k in [16, 64, 256]:
 
 | สิ่งที่ได้ | สมการหลัก |
 |---|---|
-| **สมการแกนกลาง** | $\text{Attention}(Q,K,V) = \text{softmax}\\!\left(\dfrac{QK^\top}{\sqrt{d_k}}\right)V$ |
+| **สมการแกนกลาง** | $\text{Attention}(Q,K,V) = \text{softmax}\\!\left(\dfrac{QK^\top}{\sqrt{d\_k}}\right)V$ |
 | การฉาย 3 บทบาท | $Q = XW^Q$, $K = XW^K$, $V = XW^V$ |
-| เมทริกซ์คะแนน | $S_{ij} = \mathbf{q}_i\cdot\mathbf{k}_j$, $S \in \mathbb{R}^{n\times n}$ |
-| เหตุผลของ $\sqrt{d_k}$ | $\text{Var}(\mathbf{q}\cdot\mathbf{k}) = d_k$ → sd $=\sqrt{d_k}$ → ต้อง normalize ไม่งั้น softmax saturate |
-| softmax รายแถว | $\sum_j A_{ij} = 1$, ลบ max เพื่อความเสถียร |
+| เมทริกซ์คะแนน | $S\_{ij} = \mathbf{q}\_i\cdot\mathbf{k}\_j$, $S \in \mathbb{R}^{n\times n}$ |
+| เหตุผลของ $\sqrt{d\_k}$ | $\text{Var}(\mathbf{q}\cdot\mathbf{k}) = d\_k$ → sd $=\sqrt{d\_k}$ → ต้อง normalize ไม่งั้น softmax saturate |
+| softmax รายแถว | $\sum\_j A\_{ij} = 1$, ลบ max เพื่อความเสถียร |
 | output | $\mathbf{o}\_i = \sum\_j A\_{ij}\mathbf{v}\_j \in \text{conv}\\{\mathbf{v}\_j\\}$ |
 | Permutation equivariance | $\text{Attention}(PX) = P\\,\text{Attention}(X)$ → ต้องมี PE |
 | Path length | 1 ก้าวระหว่างทุกคู่ตำแหน่ง |
 | Jacobian ของ softmax | $J = \text{diag}(\mathbf{p}) - \mathbf{p}^\top\mathbf{p}$ |
-| Gradient ของบล็อก | $\partial_V = A^\top G$, $\partial_Q = \tilde{S}'K/\sqrt{d_k}$, $\partial_K = \tilde{S}'^\top Q/\sqrt{d_k}$ |
+| Gradient ของบล็อก | $\partial\_V = A^\top G$, $\partial\_Q = \tilde{S}'K/\sqrt{d\_k}$, $\partial\_K = \tilde{S}'^\top Q/\sqrt{d\_k}$ |
 
-**ตัวเลขอ้างอิงจากตัวอย่าง $n=3$, $d_{\text{model}}=4$, $d_k=2$:**
+**ตัวเลขอ้างอิงจากตัวอย่าง $n=3$, $d\_{\text{model}}=4$, $d\_k=2$:**
 
 $$
 A = \begin{bmatrix}
-0.1636 & 0.1636 & 0.6728 \\
-0.7679 & 0.1867 & 0.0454 \\
+0.1636 & 0.1636 & 0.6728 \\\
+0.7679 & 0.1867 & 0.0454 \\\
 0.0454 & 0.7679 & 0.1867
 \end{bmatrix}
 \qquad
 O = \begin{bmatrix}
--0.5093 & 0.6728 \\
-0.1413 & -0.5358 \\
+-0.5093 & 0.6728 \\\
+0.1413 & -0.5358 \\\
 0.5812 & 0.9092
 \end{bmatrix}
 $$
@@ -923,7 +923,7 @@ $$
 **สิ่งที่ต้องจำไปไฟล์ถัดไป — คำถาม 2 ข้อที่ไฟล์นี้ยังไม่ตอบ:**
 
 1. attention หัวเดียวถูกบังคับให้ใช้ **การแจกแจงน้ำหนักชุดเดียว** — แต่ความสัมพันธ์ทางภาษามีหลายชนิดพร้อมกัน (ไวยากรณ์ / ความหมาย / การอ้างอิง) จะให้โมเดลมองหลายมุมพร้อมกันได้อย่างไร → [ไฟล์ 06](06-multi-head-attention.md)
-2. สมการนี้ไม่รู้จักลำดับเลย ($\text{Attention}(PX) = P\,\text{Attention}(X)$) จะฉีดข้อมูลตำแหน่งเข้าไปอย่างไรโดยไม่ทำลายคุณสมบัติอื่น → [ไฟล์ 07](07-positional-encoding.md)
+2. สมการนี้ไม่รู้จักลำดับเลย ($\text{Attention}(PX) = P\\,\text{Attention}(X)$) จะฉีดข้อมูลตำแหน่งเข้าไปอย่างไรโดยไม่ทำลายคุณสมบัติอื่น → [ไฟล์ 07](07-positional-encoding.md)
 
 ---
 

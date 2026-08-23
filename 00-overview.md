@@ -80,8 +80,8 @@ timeline
 
 | รูปแบบ | ความหมาย | ตัวอย่าง |
 |---|---|---|
-| $a$ (ตัวเล็กเอียง) | scalar | $\alpha_{ij}$, $d_k$ |
-| $\mathbf{x}$ (ตัวเล็กหนา) | vector — โดยตกลงว่าเป็น **row vector** | $\mathbf{x}_i \in \mathbb{R}^{d}$ |
+| $a$ (ตัวเล็กเอียง) | scalar | $\alpha\_{ij}$, $d\_k$ |
+| $\mathbf{x}$ (ตัวเล็กหนา) | vector — โดยตกลงว่าเป็น **row vector** | $\mathbf{x}\_i \in \mathbb{R}^{d}$ |
 | $X$ (ตัวใหญ่) | matrix | $X \in \mathbb{R}^{n \times d}$ |
 | $X^\top$ | transpose | |
 | $X \odot Y$ | element-wise product (Hadamard) | ใช้ใน LSTM gates |
@@ -103,22 +103,22 @@ timeline
 |---|---|---|
 | $n$ | ความยาว sequence ฝั่ง source | ขึ้นกับข้อมูล |
 | $m$ | ความยาว sequence ฝั่ง target | ขึ้นกับข้อมูล |
-| $d_{\text{model}}$ | มิติของ residual stream (ท่อหลัก) | 512 |
+| $d\_{\text{model}}$ | มิติของ residual stream (ท่อหลัก) | 512 |
 | $H$ | จำนวน attention heads | 8 |
-| $d_k$ | มิติของ query/key ต่อหัว | 64 |
-| $d_v$ | มิติของ value ต่อหัว | 64 |
-| $d_{\text{ff}}$ | มิติชั้นในของ FFN | 2048 |
+| $d\_k$ | มิติของ query/key ต่อหัว | 64 |
+| $d\_v$ | มิติของ value ต่อหัว | 64 |
+| $d\_{\text{ff}}$ | มิติชั้นในของ FFN | 2048 |
 | $N$ | จำนวนเลเยอร์ (ต่อฝั่ง) | 6 |
 | $V$ | ขนาด vocabulary | ~37,000 |
 
-> ความสัมพันธ์ที่ต้องจำ: $d_k = d_v = d_{\text{model}} / H$ (ดูเหตุผลในไฟล์ 06)
+> ความสัมพันธ์ที่ต้องจำ: $d\_k = d\_v = d\_{\text{model}} / H$ (ดูเหตุผลในไฟล์ 06)
 
 ### 3.4 แถวคือโทเคน: ทำไมใช้ $X \in \mathbb{R}^{n \times d}$
 
 เอกสารนี้เขียนข้อมูลเป็น **row-major** คือ
 
 $$
-X = \begin{bmatrix} \mathbf{x}_1 \\ \mathbf{x}_2 \\ \vdots \\ \mathbf{x}_n \end{bmatrix} \in \mathbb{R}^{n \times d}
+X = \begin{bmatrix} \mathbf{x}\_1 \\\ \mathbf{x}\_2 \\\ \vdots \\\ \mathbf{x}\_n \end{bmatrix} \in \mathbb{R}^{n \times d}
 $$
 
 แถวที่ $i$ คือ embedding ของโทเคนที่ $i$
@@ -148,13 +148,13 @@ q = x @ W                    # (2, 5, 64)  ← ตรงกับสมการ
 ### Softmax — ทบทวนเร็ว
 
 $$
-\text{softmax}(\mathbf{z})_i = \frac{e^{z_i}}{\sum_{j} e^{z_j}}
+\text{softmax}(\mathbf{z})\_i = \frac{e^{z\_i}}{\sum\_{j} e^{z\_j}}
 $$
 
 คุณสมบัติที่จะใช้บ่อย:
 - ผลลัพธ์ทุกตัว ${>} 0$ และรวมกันได้ 1
 - **ไม่แปรตามการบวกค่าคงที่:** $\text{softmax}(\mathbf{z} + c) = \text{softmax}(\mathbf{z})$ → ใช้ลบ max เพื่อความเสถียรเชิงตัวเลข
-- **แปรตามการคูณสเกล:** คูณ $\mathbf{z}$ ด้วยเลขมาก ๆ ทำให้ผลลัพธ์เข้าใกล้ one-hot (นี่คือเหตุผลของ $\sqrt{d_k}$ ในไฟล์ 05)
+- **แปรตามการคูณสเกล:** คูณ $\mathbf{z}$ ด้วยเลขมาก ๆ ทำให้ผลลัพธ์เข้าใกล้ one-hot (นี่คือเหตุผลของ $\sqrt{d\_k}$ ในไฟล์ 05)
 
 ```python
 import numpy as np
@@ -176,41 +176,41 @@ print(softmax(np.array([1.0, 2.0, 3.0]) * 5))   # [0.000 0.007 0.993]  ← ค�
 **Seq2Seq ดั้งเดิม (ไฟล์ 01)**
 
 $$
-\mathbf{h}_t = \tanh(\mathbf{h}_{t-1}W_{hh} + \mathbf{x}_t W_{xh} + \mathbf{b}), \qquad \mathbf{c} = \mathbf{h}_n
+\mathbf{h}\_t = \tanh(\mathbf{h}\_{t-1}W\_{hh} + \mathbf{x}\_t W\_{xh} + \mathbf{b}), \qquad \mathbf{c} = \mathbf{h}\_n
 $$
 
 **Bahdanau Attention (ไฟล์ 03)**
 
 $$
-e_{tj} = \mathbf{v}^\top \tanh(\mathbf{s}_{t-1}W_s + \mathbf{h}_j W_h), \quad
-\alpha_{tj} = \frac{e^{e_{tj}}}{\sum_{j'} e^{e_{tj'}}}, \quad
-\mathbf{c}_t = \sum_j \alpha_{tj}\mathbf{h}_j
+e\_{tj} = \mathbf{v}^\top \tanh(\mathbf{s}\_{t-1}W\_s + \mathbf{h}\_j W\_h), \quad
+\alpha\_{tj} = \frac{e^{e\_{tj}}}{\sum\_{j'} e^{e\_{tj'}}}, \quad
+\mathbf{c}\_t = \sum\_j \alpha\_{tj}\mathbf{h}\_j
 $$
 
 **Scaled Dot-Product Attention (ไฟล์ 05)** ← แก่นกลาง
 
 $$
-\text{Attention}(Q,K,V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V
+\text{Attention}(Q,K,V) = \text{softmax}\\!\left(\frac{QK^\top}{\sqrt{d\_k}}\right)V
 $$
 
 **Multi-Head Attention (ไฟล์ 06)**
 
 $$
-\text{MultiHead}(X) = \left[\text{head}_1; \dots; \text{head}_H\right]W^O, \quad
-\text{head}_h = \text{Attention}(XW_h^Q, XW_h^K, XW_h^V)
+\text{MultiHead}(X) = \left[\text{head}\_1; \dots; \text{head}\_H\right]W^O, \quad
+\text{head}\_h = \text{Attention}(XW\_h^Q, XW\_h^K, XW\_h^V)
 $$
 
 **Positional Encoding (ไฟล์ 07)**
 
 $$
-PE_{(pos,\,2i)} = \sin\!\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right), \quad
-PE_{(pos,\,2i+1)} = \cos\!\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right)
+PE\_{(pos,\\,2i)} = \sin\\!\left(\frac{pos}{10000^{2i/d\_{\text{model}}}}\right), \quad
+PE\_{(pos,\\,2i+1)} = \cos\\!\left(\frac{pos}{10000^{2i/d\_{\text{model}}}}\right)
 $$
 
 **Feed-Forward + Residual (ไฟล์ 08)**
 
 $$
-\text{FFN}(\mathbf{x}) = \max(0,\ \mathbf{x}W_1 + \mathbf{b}_1)W_2 + \mathbf{b}_2, \qquad
+\text{FFN}(\mathbf{x}) = \max(0,\ \mathbf{x}W\_1 + \mathbf{b}\_1)W\_2 + \mathbf{b}\_2, \qquad
 \mathbf{y} = \mathbf{x} + \text{Sublayer}(\mathbf{x})
 $$
 
@@ -223,15 +223,15 @@ $$
 **Causal Mask (ไฟล์ 11)**
 
 $$
-M_{ij} = \begin{cases} 0 & j \le i \\ -\infty & j {>} i \end{cases}
+M\_{ij} = \begin{cases} 0 & j \le i \\\ -\infty & j {>} i \end{cases}
 \qquad
-\text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}} + M\right)V
+\text{softmax}\\!\left(\frac{QK^\top}{\sqrt{d\_k}} + M\right)V
 $$
 
 **Training Objective (ไฟล์ 12)**
 
 $$
-\mathcal{L} = -\frac{1}{m}\sum_{t=1}^{m} \log p(y_t^* \mid y^*_{{<}t}, \mathbf{x})
+\mathcal{L} = -\frac{1}{m}\sum\_{t=1}^{m} \log p(y\_t^\* \mid y^\*\_{{<}t}, \mathbf{x})
 $$
 
 ---

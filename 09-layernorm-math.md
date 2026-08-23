@@ -24,7 +24,7 @@
 | สเกลของ input แต่ละเลเยอร์เปลี่ยนไปมา | เลเยอร์ต้อง "ไล่ตาม" เป้าที่ขยับ — เรียนช้า |
 | ค่าบางมิติใหญ่มาก | อิ่มตัวใน $\tanh/\sigma$, ระเบิดใน softmax ของ attention |
 | gradient ต่างสเกลกันมากในแต่ละเลเยอร์ | learning rate เดียวใช้ได้ไม่ดีกับทุกเลเยอร์ |
-| residual บวกสะสม | $\text{Var}(\mathbf{x}_N) \approx \text{Var}(\mathbf{x}_0) + \sum_l \text{Var}(\text{Sublayer}_l)$ → โตแบบสะสม |
+| residual บวกสะสม | $\text{Var}(\mathbf{x}\_N) \approx \text{Var}(\mathbf{x}\_0) + \sum\_l \text{Var}(\text{Sublayer}\_l)$ → โตแบบสะสม |
 
 ชื่อดั้งเดิมของปัญหานี้คือ **internal covariate shift** (Ioffe & Szegedy, 2015) — "การแจกแจงของ input ที่เลเยอร์ชั้นในเห็น เปลี่ยนไปเรื่อย ๆ ระหว่างเทรน"
 
@@ -50,11 +50,11 @@
 
 ### 2.1 สมการ
 
-สำหรับเวกเตอร์ของ **token หนึ่งตัว** $\mathbf{x} \in \mathbb{R}^{1 \times d}$ (โดย $d = d_{\text{model}}$)
+สำหรับเวกเตอร์ของ **token หนึ่งตัว** $\mathbf{x} \in \mathbb{R}^{1 \times d}$ (โดย $d = d\_{\text{model}}$)
 
 $$
-\mu = \frac{1}{d}\sum_{u=1}^{d} x_u, \qquad
-\sigma^2 = \frac{1}{d}\sum_{u=1}^{d} (x_u - \mu)^2
+\mu = \frac{1}{d}\sum\_{u=1}^{d} x\_u, \qquad
+\sigma^2 = \frac{1}{d}\sum\_{u=1}^{d} (x\_u - \mu)^2
 $$
 
 $$
@@ -63,21 +63,21 @@ $$
 
 | สัญลักษณ์ | มิติ | ความหมาย |
 |---|---|---|
-| $\mathbf{x}$ | $\mathbb{R}^{1 \times d_{\text{model}}}$ | เวกเตอร์ของ token หนึ่งตำแหน่ง |
+| $\mathbf{x}$ | $\mathbb{R}^{1 \times d\_{\text{model}}}$ | เวกเตอร์ของ token หนึ่งตำแหน่ง |
 | $\mu$ | scalar | ค่าเฉลี่ย **ของ token นั้นตัวเดียว** ข้าม $d$ มิติ |
 | $\sigma^2$ | scalar | ความแปรปรวน (หารด้วย $d$ ไม่ใช่ $d-1$) |
 | $\epsilon$ | scalar | ค่าคงที่กันหารศูนย์ — ปกติ $10^{-5}$ |
-| $\boldsymbol{\gamma}$ | $\mathbb{R}^{1 \times d_{\text{model}}}$ | **พารามิเตอร์เรียนได้** — สเกลรายมิติ (init = $\mathbf{1}$) |
-| $\boldsymbol{\beta}$ | $\mathbb{R}^{1 \times d_{\text{model}}}$ | **พารามิเตอร์เรียนได้** — เลื่อนรายมิติ (init = $\mathbf{0}$) |
-| $\text{LN}(\mathbf{x})$ | $\mathbb{R}^{1 \times d_{\text{model}}}$ | output มิติเท่าเดิม |
+| $\boldsymbol{\gamma}$ | $\mathbb{R}^{1 \times d\_{\text{model}}}$ | **พารามิเตอร์เรียนได้** — สเกลรายมิติ (init = $\mathbf{1}$) |
+| $\boldsymbol{\beta}$ | $\mathbb{R}^{1 \times d\_{\text{model}}}$ | **พารามิเตอร์เรียนได้** — เลื่อนรายมิติ (init = $\mathbf{0}$) |
+| $\text{LN}(\mathbf{x})$ | $\mathbb{R}^{1 \times d\_{\text{model}}}$ | output มิติเท่าเดิม |
 
 > **จุดสำคัญ:** $\mu$ และ $\sigma^2$ เป็น **scalar ต่อหนึ่ง token** ไม่ใช่ต่อหนึ่ง batch ถ้า input เป็น $X \in \mathbb{R}^{n \times d}$ จะได้ $\mu, \sigma^2$ อย่างละ $n$ ค่า — token ละคู่ ไม่ยุ่งกันเลย
 >
-> จำนวนพารามิเตอร์ของ LayerNorm หนึ่งอัน = $2d_{\text{model}} = 1024$ ตัว — จิ๋วมากเทียบกับ 3.1M ของทั้งเลเยอร์ (ไฟล์ [08 §4.3](08-feedforward-and-residual.md))
+> จำนวนพารามิเตอร์ของ LayerNorm หนึ่งอัน = $2d\_{\text{model}} = 1024$ ตัว — จิ๋วมากเทียบกับ 3.1M ของทั้งเลเยอร์ (ไฟล์ [08 §4.3](08-feedforward-and-residual.md))
 
 ### 2.2 ทำไมหาสถิติตามแกน Feature ไม่ใช่แกน Batch
 
-tensor ใน Transformer มีสามแกน: $(B,\ n,\ d_{\text{model}})$ การเลือกว่าจะเฉลี่ยตามแกนไหนคือหัวใจของเรื่องนี้
+tensor ใน Transformer มีสามแกน: $(B,\ n,\ d\_{\text{model}})$ การเลือกว่าจะเฉลี่ยตามแกนไหนคือหัวใจของเรื่องนี้
 
 ```mermaid
 flowchart TD
@@ -134,14 +134,14 @@ $$
 
 | ประเด็น | **BatchNorm** | **LayerNorm** |
 |---|---|---|
-| แกนที่ normalize | ข้าม $(B, n)$ — ทีละ feature | ข้าม $d_{\text{model}}$ — ทีละ token |
-| จำนวนคู่ $(\mu,\sigma^2)$ | $d_{\text{model}}$ คู่ | $B \times n$ คู่ |
+| แกนที่ normalize | ข้าม $(B, n)$ — ทีละ feature | ข้าม $d\_{\text{model}}$ — ทีละ token |
+| จำนวนคู่ $(\mu,\sigma^2)$ | $d\_{\text{model}}$ คู่ | $B \times n$ คู่ |
 | ขึ้นกับ batch size | ✅ ใช่ — batch เล็กสถิติมั่ว | ❌ ไม่เลย |
 | ตัวอย่างอื่นใน batch มีผลกับผลลัพธ์ | ✅ ใช่ | ❌ ไม่ |
 | พฤติกรรมตอน inference | ต่างจากตอน train — ต้องใช้ **running mean/var** ที่สะสมไว้ | **เหมือนกันเป๊ะ** ไม่มีโหมด train/eval |
 | ลำดับยาวไม่เท่ากัน / padding | สถิติปนเปื้อน ต้อง mask เอง | ไม่มีปัญหา ทุก token คิดของตัวเอง |
 | batch size = 1 | ใช้ไม่ได้ (var = 0) | ใช้ได้ปกติ |
-| พารามิเตอร์ | $2d_{\text{model}}$ + buffer อีก $2d_{\text{model}}$ | $2d_{\text{model}}$ |
+| พารามิเตอร์ | $2d\_{\text{model}}$ + buffer อีก $2d\_{\text{model}}$ | $2d\_{\text{model}}$ |
 | เหมาะกับ | CNN / vision (ขนาด input คงที่) | NLP / sequence (ความยาวแปรผัน) |
 
 ### 3.2 ทำไม BatchNorm ใช้กับ NLP ได้ไม่ดี
@@ -161,7 +161,7 @@ $$
 BatchNorm ตอน inference ใช้ running statistics
 
 $$
-\mu_{\text{run}} \leftarrow (1-\alpha)\mu_{\text{run}} + \alpha\,\mu_{\text{batch}}
+\mu\_{\text{run}} \leftarrow (1-\alpha)\mu\_{\text{run}} + \alpha\\,\mu\_{\text{batch}}
 $$
 
 ถ้าการแจกแจงตอนใช้งานต่างจากตอนเทรน (ประโยคยาวกว่า โดเมนต่าง) สถิติที่สะสมไว้จะผิด — และ **ยิ่งเป็นเรื่องใหญ่ใน generation** ที่ decoder ผลิตทีละ token ด้วย batch size 1
@@ -233,33 +233,33 @@ flowchart TB
 ในสถาปัตยกรรมจริง Pre-LN ต้องเติม **LayerNorm ตัวสุดท้าย** หลัง stack ทั้งหมด เพราะไม่มีอะไรคุมสเกลของท่อเลย
 
 $$
-\text{Encoder}_{\text{Pre-LN}}(X) = \text{LN}_{\text{final}}\Big(\big(\text{block}_N \circ \cdots \circ \text{block}_1\big)(X)\Big)
+\text{Encoder}\_{\text{Pre-LN}}(X) = \text{LN}\_{\text{final}}\Big(\big(\text{block}\_N \circ \cdots \circ \text{block}\_1\big)(X)\Big)
 $$
 
 ### 4.2 การวิเคราะห์ขนาด Gradient
 
 กางเส้นทาง gradient ของทั้งสองแบบผ่าน $N$ ชั้น
 
-**Pre-LN** — ให้ $F_l = \text{Sublayer}_l \circ \text{LN}$
+**Pre-LN** — ให้ $F\_l = \text{Sublayer}\_l \circ \text{LN}$
 
 $$
-\mathbf{x}_N = \mathbf{x}_0 + \sum_{l=1}^{N} F_l(\mathbf{x}_{l-1})
+\mathbf{x}\_N = \mathbf{x}\_0 + \sum\_{l=1}^{N} F\_l(\mathbf{x}\_{l-1})
 \quad\Longrightarrow\quad
-\frac{\partial \mathbf{x}_N}{\partial \mathbf{x}_0} = \prod_{l=1}^{N}\left(I + \frac{\partial F_l}{\partial \mathbf{x}_{l-1}}\right)
+\frac{\partial \mathbf{x}\_N}{\partial \mathbf{x}\_0} = \prod\_{l=1}^{N}\left(I + \frac{\partial F\_l}{\partial \mathbf{x}\_{l-1}}\right)
 $$
 
-**Post-LN** — ให้ $J^{\text{LN}}_l$ คือ Jacobian ของ LayerNorm ชั้นที่ $l$
+**Post-LN** — ให้ $J^{\text{LN}}\_l$ คือ Jacobian ของ LayerNorm ชั้นที่ $l$
 
 $$
-\frac{\partial \mathbf{x}_N}{\partial \mathbf{x}_0} = \prod_{l=1}^{N} J^{\text{LN}}_l\left(I + \frac{\partial \text{Sublayer}_l}{\partial \mathbf{x}_{l-1}}\right)
+\frac{\partial \mathbf{x}\_N}{\partial \mathbf{x}\_0} = \prod\_{l=1}^{N} J^{\text{LN}}\_l\left(I + \frac{\partial \text{Sublayer}\_l}{\partial \mathbf{x}\_{l-1}}\right)
 $$
 
 **ผลลัพธ์ที่ต้องจำ:**
 
 | | มีพจน์ $I$ ล้วน ๆ ในผลคูณ | ผลของ $J^{\text{LN}}$ |
 |---|---|---|
-| Pre-LN | ✅ กระจายแล้วได้ $I + \sum_l \frac{\partial F_l}{\partial \mathbf{x}}+ \cdots$ | อยู่ใน **สาขาข้าง** เท่านั้น |
-| Post-LN | ❌ ทุกพจน์ถูกคูณด้วย $J^{\text{LN}}_l$ ครบทุกชั้น | อยู่บน **ท่อหลัก** ทุกชั้น |
+| Pre-LN | ✅ กระจายแล้วได้ $I + \sum\_l \frac{\partial F\_l}{\partial \mathbf{x}}+ \cdots$ | อยู่ใน **สาขาข้าง** เท่านั้น |
+| Post-LN | ❌ ทุกพจน์ถูกคูณด้วย $J^{\text{LN}}\_l$ ครบทุกชั้น | อยู่บน **ท่อหลัก** ทุกชั้น |
 
 Jacobian ของ LayerNorm มีตัวประกอบ $\frac{1}{\sqrt{\sigma^2+\epsilon}}$ อยู่ข้างหน้า — และใน Post-LN ค่า $\sigma$ ที่ใช้คือ std ของ $\mathbf{x} + \text{Sublayer}(\mathbf{x})$ ซึ่ง **ใหญ่กว่า** std ของ $\mathbf{x}$ เพราะบวกของใหม่เข้าไป ดังนั้น $J^{\text{LN}}$ จึง *หด* gradient ลงในทุกชั้น และปริมาณการหดขึ้นกับ input กับ init โดยตรง
 
@@ -278,7 +278,7 @@ Jacobian ของ LayerNorm มีตัวประกอบ $\frac{1}{\sqrt{\
 **warmup** คือการไต่ learning rate จาก ~0 ขึ้นไปช้า ๆ ในช่วงต้น เพื่อให้โมเดลได้ปรับตัวเข้าสู่ย่านที่สถิติของ LN นิ่งก่อน — สูตรของ Transformer ต้นฉบับคือ
 
 $$
-\text{lr}(s) = d_{\text{model}}^{-0.5}\cdot\min\left(s^{-0.5},\ s \cdot s_{\text{warmup}}^{-1.5}\right), \qquad s_{\text{warmup}} = 4000
+\text{lr}(s) = d\_{\text{model}}^{-0.5}\cdot\min\left(s^{-0.5},\ s \cdot s\_{\text{warmup}}^{-1.5}\right), \qquad s\_{\text{warmup}} = 4000
 $$
 
 Pre-LN ไม่ต้องพึ่ง warmup ในระดับเดียวกัน (ยังใช้อยู่เพื่อความปลอดภัย แต่ตัดออกก็มักไม่พัง)
@@ -316,7 +316,7 @@ RMSNorm (Zhang & Sennrich, 2019) ตั้งคำถามว่า *"ส่�
 
 $$
 \boxed{\ \text{RMSNorm}(\mathbf{x}) = \boldsymbol{\gamma} \odot \frac{\mathbf{x}}{\text{RMS}(\mathbf{x})}, \qquad
-\text{RMS}(\mathbf{x}) = \sqrt{\frac{1}{d}\sum_{u=1}^{d} x_u^2 + \epsilon}\ }
+\text{RMS}(\mathbf{x}) = \sqrt{\frac{1}{d}\sum\_{u=1}^{d} x\_u^2 + \epsilon}\ }
 $$
 
 | | LayerNorm | RMSNorm |
@@ -326,7 +326,7 @@ $$
 | พารามิเตอร์ | $\boldsymbol{\gamma}, \boldsymbol{\beta}$ → $2d$ | $\boldsymbol{\gamma}$ → $d$ |
 | การ reduce ข้อมูล | 2 รอบ (หา $\mu$ ก่อน แล้วหา $\sigma^2$) | **1 รอบ** |
 
-**เหตุผลด้านความเร็ว:** LayerNorm ต้องอ่านเวกเตอร์ 2 ครั้ง (ครั้งแรกหา $\mu$ ครั้งที่สองหา $\sigma^2$ ซึ่งต้องใช้ $\mu$) ส่วน RMSNorm สะสม $\sum x_u^2$ ได้รอบเดียวจบ — ในโมเดลใหญ่ที่ติดคอขวดที่ **memory bandwidth** ไม่ใช่การคูณ การลดรอบอ่านลงครึ่งหนึ่งให้ผลจริงราว 7–15% ต่อ normalization layer
+**เหตุผลด้านความเร็ว:** LayerNorm ต้องอ่านเวกเตอร์ 2 ครั้ง (ครั้งแรกหา $\mu$ ครั้งที่สองหา $\sigma^2$ ซึ่งต้องใช้ $\mu$) ส่วน RMSNorm สะสม $\sum x\_u^2$ ได้รอบเดียวจบ — ในโมเดลใหญ่ที่ติดคอขวดที่ **memory bandwidth** ไม่ใช่การคูณ การลดรอบอ่านลงครึ่งหนึ่งให้ผลจริงราว 7–15% ต่อ normalization layer
 
 > **หมายเหตุ:** ถ้า $\mu = 0$ อยู่แล้ว RMSNorm กับ LayerNorm จะเท่ากันเป๊ะ ในทางปฏิบัติ activation ของ Transformer มักมี mean ใกล้ 0 อยู่แล้ว การลบ mean จึงเปลี่ยนอะไรไม่มาก — LLaMA, Mistral, Gemma ใช้ RMSNorm ทั้งหมด
 
@@ -348,7 +348,7 @@ $$
 
 **ขั้นที่ 2 — ความแปรปรวน**
 
-| $u$ | $x_u$ | $x_u - \mu$ | $(x_u-\mu)^2$ |
+| $u$ | $x\_u$ | $x\_u - \mu$ | $(x\_u-\mu)^2$ |
 |---|---|---|---|
 | 1 | 2.0 | 0.75 | 0.5625 |
 | 2 | −1.0 | −2.25 | 5.0625 |
@@ -374,7 +374,7 @@ $$
 \boldsymbol{\gamma} = [1.2,\ 0.8,\ 1.0,\ 0.5], \qquad \boldsymbol{\beta} = [0.1,\ 0.0,\ -0.2,\ 0.3]
 $$
 
-| $u$ | $\hat{x}_u$ | $\gamma_u \hat{x}_u$ | $+\\,\beta_u$ | ผลลัพธ์ |
+| $u$ | $\hat{x}\_u$ | $\gamma\_u \hat{x}\_u$ | $+\\,\beta\_u$ | ผลลัพธ์ |
 |---|---|---|---|---|
 | 1 | 0.4472 | 0.5367 | +0.1 | **0.6367** |
 | 2 | −1.3416 | −1.0733 | +0.0 | **−1.0733** |
@@ -447,7 +447,7 @@ print(ln(x))          # tensor([ 0.6367, -1.0733, -0.6472,  0.9708]) ← ตร�
 เหตุผล: $\mu' = a\mu + b$ และ $\sigma' = |a|\sigma$ ดังนั้น
 
 $$
-\frac{(a x_u + b) - (a\mu + b)}{|a|\sigma} = \frac{a(x_u - \mu)}{|a|\sigma} = \frac{x_u-\mu}{\sigma}
+\frac{(a x\_u + b) - (a\mu + b)}{|a|\sigma} = \frac{a(x\_u - \mu)}{|a|\sigma} = \frac{x\_u-\mu}{\sigma}
 $$
 
 > **จุดสำคัญ:** LayerNorm **ไม่แปรตามการแปลงแบบ affine ของ input ทั้งเวกเตอร์** นี่คือเหตุผลที่มันคุมสเกลของ residual stream ได้ ไม่ว่าเลเยอร์ก่อนหน้าจะบวกอะไรเข้าไปแล้วทำให้ค่าโตแค่ไหน LayerNorm ก็รีเซ็ตสเกลกลับมาที่เดิมทุกครั้ง
@@ -474,16 +474,16 @@ print(np.round(ln_hat(0.01*x), 4))       # [ 0.4395 -1.3184 -0.4395  1.3184 ]  �
 
 ### 6.3 เทียบ Gradient ที่ไหลถึง Input: Pre-LN vs Post-LN
 
-**การทดลอง:** ซ้อน block $N = 1 \dots 12$ ชั้น ($d = 64$, sublayer = `ReLU(x @ W)` โดย $W \sim \mathcal{N}(0, 4/d)$, LayerNorm ไม่มี affine) ป้อน gradient $\mathbf{g}_{\text{out}}$ สุ่มที่ output แล้ววัด
+**การทดลอง:** ซ้อน block $N = 1 \dots 12$ ชั้น ($d = 64$, sublayer = `ReLU(x @ W)` โดย $W \sim \mathcal{N}(0, 4/d)$, LayerNorm ไม่มี affine) ป้อน gradient $\mathbf{g}\_{\text{out}}$ สุ่มที่ output แล้ววัด
 
 $$
-\rho_N = \frac{\|\partial L / \partial \mathbf{x}_{\text{input}}\|}{\|\mathbf{g}_{\text{out}}\|}
+\rho\_N = \frac{\\|\partial L / \partial \mathbf{x}\_{\text{input}}\\|}{\\|\mathbf{g}\_{\text{out}}\\|}
 = \text{"สัดส่วน gradient ที่เดินทางถึงชั้นล่างสุด"}
 $$
 
 รายงานค่า **median จาก 500 seed** พร้อม **coefficient of variation (CV)** ที่บอกความอ่อนไหวต่อการ init
 
-| $N$ | Post-LN $\rho_N$ | CV ของ Post-LN | Pre-LN $\rho_N$ | CV ของ Pre-LN | Post / Pre |
+| $N$ | Post-LN $\rho\_N$ | CV ของ Post-LN | Pre-LN $\rho\_N$ | CV ของ Pre-LN | Post / Pre |
 |---|---|---|---|---|---|
 | 1 | 1.0931 | 0.1783 | 1.7036 | 0.1271 | 0.6416 |
 | 2 | 1.2308 | 0.2188 | 2.2999 | 0.1713 | 0.5352 |
@@ -535,7 +535,7 @@ for N in range(1, 13):
 | สิ่งที่ได้ | สมการหลัก |
 |---|---|
 | Layer Normalization | $\text{LN}(\mathbf{x}) = \boldsymbol{\gamma}\odot\dfrac{\mathbf{x}-\mu}{\sqrt{\sigma^2+\epsilon}} + \boldsymbol{\beta}$ |
-| สถิติต่อ token | $\mu = \frac{1}{d}\sum_u x_u$, $\ \sigma^2 = \frac{1}{d}\sum_u (x_u-\mu)^2$ — scalar ต่อหนึ่ง token |
+| สถิติต่อ token | $\mu = \frac{1}{d}\sum\_u x\_u$, $\ \sigma^2 = \frac{1}{d}\sum\_u (x\_u-\mu)^2$ — scalar ต่อหนึ่ง token |
 | ทำไมแกน feature | ความยาวแปรผัน, padding, inference batch = 1, ตรงกับ residual stream |
 | บทบาท $\boldsymbol{\gamma},\boldsymbol{\beta}$ | คืนกำลังแทนค่าที่ normalize ริบไป — ตั้ง $\boldsymbol{\gamma}=\sqrt{\sigma^2+\epsilon},\boldsymbol{\beta}=\mu$ ก็ได้ identity |
 | ไม่แปรตาม affine | $\text{LN}(a\mathbf{x}+b) = \text{LN}(\mathbf{x})$ เมื่อ $\sigma^2 \gg \epsilon$ |
