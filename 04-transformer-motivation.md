@@ -298,7 +298,7 @@ $$
 \text{Attention}(PX) = P \cdot \text{Attention}(X) \qquad \text{สำหรับ permutation matrix } P \text{ ใด ๆ}
 $$
 
-แปลว่าโมเดลมองว่า `"หมากัดคน"` กับ `"คนกัดหมา"` เป็นสิ่งเดียวกัน — จะพิสูจน์ด้วยตัวเลขจริงใน [ไฟล์ 05 §4.1](05-self-attention-math.md)
+แปลว่าโมเดลมองว่า `"หมากัดคน"` กับ `"คนกัดหมา"` เป็นสิ่งเดียวกัน — จะพิสูจน์ด้วยตัวเลขจริงใน [ไฟล์ 05-4.1](05-self-attention-math.md)
 
 **ทางแก้:** ฉีดข้อมูลตำแหน่งเข้าไปใน embedding ตั้งแต่ต้น
 
@@ -363,14 +363,14 @@ flowchart TB
 
 | บล็อก | สมการหลัก | อธิบายใน |
 |---|---|---|
-| Input / Output Embedding | $X = E[\text{tokens}] \cdot \sqrt{d\_{\text{model}}}$ | [10 §1](10-encoder-full-pipeline.md) |
+| Input / Output Embedding | $X = E[\text{tokens}] \cdot \sqrt{d\_{\text{model}}}$ | [10-1](10-encoder-full-pipeline.md) |
 | Positional Encoding | $PE\_{(pos,2i)} = \sin(pos/10000^{2i/d})$ | [07](07-positional-encoding.md) |
 | Scaled Dot-Product Attention | $\text{softmax}(QK^\top/\sqrt{d\_k})V$ | [05](05-self-attention-math.md) ← **ไฟล์ถัดไป** |
 | Multi-Head Attention | $[\text{head}\_1;\dots;\text{head}\_H]W^O$ | [06](06-multi-head-attention.md) |
-| Masked Self-Attention | $\text{softmax}(QK^\top/\sqrt{d\_k} + M)V$ | [11 §2](11-decoder-masked-attention.md) |
-| Cross-Attention | $Q$ จาก decoder, $K,V$ จาก encoder | [11 §3](11-decoder-masked-attention.md) |
-| Position-wise FFN | $\max(0, \mathbf{x}W\_1+\mathbf{b}\_1)W\_2+\mathbf{b}\_2$ | [08 §1](08-feedforward-and-residual.md) |
-| Residual connection | $\mathbf{y} = \mathbf{x} + \text{Sublayer}(\mathbf{x})$ | [08 §2](08-feedforward-and-residual.md) |
+| Masked Self-Attention | $\text{softmax}(QK^\top/\sqrt{d\_k} + M)V$ | [11-2](11-decoder-masked-attention.md) |
+| Cross-Attention | $Q$ จาก decoder, $K,V$ จาก encoder | [11-3](11-decoder-masked-attention.md) |
+| Position-wise FFN | $\max(0, \mathbf{x}W\_1+\mathbf{b}\_1)W\_2+\mathbf{b}\_2$ | [08-1](08-feedforward-and-residual.md) |
+| Residual connection | $\mathbf{y} = \mathbf{x} + \text{Sublayer}(\mathbf{x})$ | [08-2](08-feedforward-and-residual.md) |
 | Layer Normalization | $\boldsymbol{\gamma}\odot\frac{\mathbf{x}-\mu}{\sqrt{\sigma^2+\epsilon}}+\boldsymbol{\beta}$ | [09](09-layernorm-math.md) |
 | Encoder เต็มรูปแบบ | ประกอบทุกอย่างข้างบน | [10](10-encoder-full-pipeline.md) |
 | Linear → Softmax + Loss | $\mathcal{L} = -\frac{1}{m}\sum\_t \log p(y\_t^\*\mid\cdot)$ | [12](12-training-objective-backprop.md) |

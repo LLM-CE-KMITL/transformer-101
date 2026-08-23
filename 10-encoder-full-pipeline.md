@@ -82,7 +82,7 @@ $$
 
 แต่มุมมอง one-hot **ไม่ไร้ประโยชน์** — มันบอกเราสองอย่าง:
 1. gradient ของ $E$ ที่แถว $v$ จะไม่เป็นศูนย์ก็ต่อเมื่อโทเคน $v$ ปรากฏใน batch → embedding เป็นเลเยอร์ที่ **sparse gradient**
-2. เพราะมันคือ linear layer จริง ๆ เราจึงเอามัน *ผูก* (tie) กับ output projection ได้ในไฟล์ [11 §5](11-decoder-masked-attention.md)
+2. เพราะมันคือ linear layer จริง ๆ เราจึงเอามัน *ผูก* (tie) กับ output projection ได้ในไฟล์ [11-5](11-decoder-masked-attention.md)
 
 ```python
 import torch, torch.nn as nn
@@ -236,8 +236,8 @@ $$
 | คุณภาพเมื่อเทรนสำเร็จ | มักดีกว่าเล็กน้อย | เสถียรกว่ามากที่ $N$ ใหญ่ |
 | ใช้ใน | เปเปอร์ต้นฉบับ, BERT | GPT-2/3, LLaMA, ViT |
 
-> **สัญชาตญาณ:** ใน Pre-LN เส้นทาง residual คือ $x\_N = x\_0 + \sum\_l F\_l(\cdot)$ — gradient ไหลกลับได้โดยไม่ผ่านอะไรเลย เหมือน cell state ของ LSTM ในไฟล์ [01 §3.2](01-seq2seq-rnn-basics.md) ส่วน Post-LN มี LN คั่นทุกก้าว จึงต้องอุ่นเครื่อง learning rate ก่อน
-> ไฟล์นี้ยึด **Post-LN** ตามเปเปอร์ เพื่อให้สมการตรงกับ [00 §6](00-overview.md)
+> **สัญชาตญาณ:** ใน Pre-LN เส้นทาง residual คือ $x\_N = x\_0 + \sum\_l F\_l(\cdot)$ — gradient ไหลกลับได้โดยไม่ผ่านอะไรเลย เหมือน cell state ของ LSTM ในไฟล์ [01-3.2](01-seq2seq-rnn-basics.md) ส่วน Post-LN มี LN คั่นทุกก้าว จึงต้องอุ่นเครื่อง learning rate ก่อน
+> ไฟล์นี้ยึด **Post-LN** ตามเปเปอร์ เพื่อให้สมการตรงกับ [00-6](00-overview.md)
 
 ---
 
@@ -601,7 +601,7 @@ $$
 | **ข้าว** | 1.2291 | -0.9383 | -1.0304 | 0.7396 |
 
 ทุกแถวมี mean $= 0.0000$ และ std $= 1.0000$ ตามที่ LN รับประกัน
-เมทริกซ์ $3 \times 4$ นี้คือ **memory** ที่ decoder จะดึงไปใช้เป็น $K$ และ $V$ ในไฟล์ [11 §3](11-decoder-masked-attention.md)
+เมทริกซ์ $3 \times 4$ นี้คือ **memory** ที่ decoder จะดึงไปใช้เป็น $K$ และ $V$ ในไฟล์ [11-3](11-decoder-masked-attention.md)
 
 ### 6.7 โค้ด NumPy ที่ผลิตตัวเลขข้างบนทั้งหมด
 

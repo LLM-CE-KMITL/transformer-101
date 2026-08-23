@@ -14,7 +14,7 @@
 
 ### 1.1 Maximum Likelihood → Cross-Entropy
 
-จากไฟล์ [01 §1.2](01-seq2seq-rnn-basics.md) เรารู้ว่าโมเดลประมาณค่า
+จากไฟล์ [01-1.2](01-seq2seq-rnn-basics.md) เรารู้ว่าโมเดลประมาณค่า
 
 $$
 p(\mathbf{y} \mid \mathbf{x}) = \prod\_{t=1}^{m} p(y\_t \mid y\_{{<}t}, \mathbf{x})
@@ -140,7 +140,7 @@ flowchart LR
 
 ### 2.2 ทำไมมันทำให้เทรนขนานได้
 
-เพราะทั้งลำดับ $y^\*\_1 \dots y^\*\_m$ **รู้ล่วงหน้าตั้งแต่ต้น** เราจึงป้อนทั้งแถวเข้า decoder ได้พร้อมกัน แล้วให้ **causal mask** (ไฟล์ [11 §2.4](11-decoder-masked-attention.md)) เป็นตัวรับประกันว่าตำแหน่ง $t$ มองไม่เห็นตำแหน่ง ${>}t$
+เพราะทั้งลำดับ $y^\*\_1 \dots y^\*\_m$ **รู้ล่วงหน้าตั้งแต่ต้น** เราจึงป้อนทั้งแถวเข้า decoder ได้พร้อมกัน แล้วให้ **causal mask** (ไฟล์ [11-2.4](11-decoder-masked-attention.md)) เป็นตัวรับประกันว่าตำแหน่ง $t$ มองไม่เห็นตำแหน่ง ${>}t$
 
 $$
 \text{softmax}\\!\left(\frac{QK^\top}{\sqrt{d\_k}} + M\right)V, \qquad
@@ -307,7 +307,7 @@ $$
 \boxed{\ \frac{\partial \mathbf{y}}{\partial \mathbf{x}} = I + \frac{\partial F}{\partial \mathbf{x}}\ }
 $$
 
-ซ้อน $N$ ชั้นจะได้ $\prod\_{l} \left(I + \partial F\_l/\partial \mathbf{x}\right)$ ซึ่งกางออกมามีพจน์ $I \cdot I \cdots I = I$ อยู่เสมอ — นี่คือ **เส้นทางลัด (identity path)** ที่ gradient ไหลจาก loss ถึงชั้นล่างสุดโดยไม่ถูกคูณอะไรเลย (โยงไฟล์ [08 §2.2](08-feedforward-and-residual.md))
+ซ้อน $N$ ชั้นจะได้ $\prod\_{l} \left(I + \partial F\_l/\partial \mathbf{x}\right)$ ซึ่งกางออกมามีพจน์ $I \cdot I \cdots I = I$ อยู่เสมอ — นี่คือ **เส้นทางลัด (identity path)** ที่ gradient ไหลจาก loss ถึงชั้นล่างสุดโดยไม่ถูกคูณอะไรเลย (โยงไฟล์ [08-2.2](08-feedforward-and-residual.md))
 
 **เดินตัวเลข** — $d = 3$, $F(\mathbf{x}) = \tanh(\mathbf{x}W)$ ที่ $W$ สเกลเล็ก
 
@@ -321,7 +321,7 @@ $$
 
 ### 3.4 ผ่าน Attention
 
-ต่อจากไฟล์ [05 §5](05-self-attention-math.md) ให้ $S = \frac{QK^\top}{\sqrt{d\_k}}$, $A = \text{softmax}(S)$ (ตามแถว), $O = AV$
+ต่อจากไฟล์ [05-5](05-self-attention-math.md) ให้ $S = \frac{QK^\top}{\sqrt{d\_k}}$, $A = \text{softmax}(S)$ (ตามแถว), $O = AV$
 
 | อนุพันธ์ | สูตร | มิติ |
 |---|---|---|
@@ -539,7 +539,7 @@ sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: noam_lr(max(s, 1)))
 | เหตุผล | กลไก |
 |---|---|
 | **Adam ยังไม่รู้จักภูมิประเทศ** | $\hat{\mathbf{v}}\_t$ คำนวณจาก gradient แค่ไม่กี่ตัวอย่าง → variance ของตัวประมาณสูงมาก ถ้า $\hat{\mathbf{v}}$ บังเอิญเล็ก ตัวหาร $\sqrt{\hat{\mathbf{v}}}$ จะเล็ก → ก้าวยักษ์ไปในทิศที่อาจผิด |
-| **Post-LN ขยาย gradient ที่ชั้นบน** | Transformer ดั้งเดิมวาง LayerNorm **หลัง** residual (ไฟล์ [09 §4.2](09-layernorm-math.md)) ทำให้ gradient ที่ชั้นบน ๆ ใหญ่กว่าชั้นล่างมากตอนเริ่มต้น — lr ใหญ่ตั้งแต่ step แรกจะทำให้ loss ระเบิด |
+| **Post-LN ขยาย gradient ที่ชั้นบน** | Transformer ดั้งเดิมวาง LayerNorm **หลัง** residual (ไฟล์ [09-4.2](09-layernorm-math.md)) ทำให้ gradient ที่ชั้นบน ๆ ใหญ่กว่าชั้นล่างมากตอนเริ่มต้น — lr ใหญ่ตั้งแต่ step แรกจะทำให้ loss ระเบิด |
 
 > **สัญชาตญาณ:** warmup คือ "ค่อย ๆ เหยียบคันเร่ง" ให้ Adam เก็บสถิติจนนิ่ง และให้ LayerNorm ปรับ $\gamma, \beta$ เข้าที่ก่อน แล้วจึงเร่งเต็ม
 > **ข้อสังเกตสำคัญ:** ถ้าเปลี่ยนไปใช้ **Pre-LN** (วาง LN ก่อน sublayer) ปัญหาข้อที่สองหายไปเกือบหมด → เทรนได้โดยแทบไม่ต้อง warmup เลย ซึ่งเป็นเหตุผลที่โมเดลสมัยใหม่เกือบทั้งหมดใช้ Pre-LN

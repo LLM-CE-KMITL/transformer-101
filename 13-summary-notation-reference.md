@@ -7,7 +7,7 @@
 
 ## 1. ตารางสัญลักษณ์ทั้งหมด
 
-> ทุกไฟล์ในชุดนี้ใช้ **row-major**: $X \in \mathbb{R}^{n \times d}$ แถวคือโทเคน, projection เขียนเป็น $XW$ (ดู [00 §3](00-overview.md))
+> ทุกไฟล์ในชุดนี้ใช้ **row-major**: $X \in \mathbb{R}^{n \times d}$ แถวคือโทเคน, projection เขียนเป็น $XW$ (ดู [00-3](00-overview.md))
 
 ### 1.1 มิติและค่าคงที่
 
@@ -21,9 +21,9 @@
 | $d\_{\text{ff}}$ | scalar (2048) | มิติชั้นในของ FFN | 08 |
 | $H$ | scalar (8) | จำนวน attention heads | 06 |
 | $N$ | scalar (6) | จำนวนเลเยอร์ต่อฝั่ง | 10, 11 |
-| $N\_{\text{params}}$ | scalar | จำนวนพารามิเตอร์ทั้งหมด (แยกจาก $N$ ชัดเจน) | 12 §5, 13 §3 |
+| $N\_{\text{params}}$ | scalar | จำนวนพารามิเตอร์ทั้งหมด (แยกจาก $N$ ชัดเจน) | 12-5, 13-3 |
 | $V$ | scalar (~37,000) | ขนาด vocabulary | 01, 11, 12 |
-| $B$ | scalar | batch size / beam width | 01 §5.4, 12 |
+| $B$ | scalar | batch size / beam width | 01-5.4, 12 |
 | $d\_h,\ d\_x$ | scalar | มิติ hidden / input ของ RNN | 01 |
 
 ### 1.2 ดัชนี
@@ -95,26 +95,26 @@ $$
 p(\mathbf{y}\mid\mathbf{x}) = \prod\_{t=1}^{m} p(y\_t \mid y\_{{<}t}, \mathbf{x})
 $$
 
-*[01 §1.2]*
+*[01-1.2]*
 
 $$
 \mathbf{h}\_t = \tanh(\mathbf{h}\_{t-1}W\_{hh} + \mathbf{x}\_t W\_{xh} + \mathbf{b}), \qquad \mathbf{c} = \mathbf{h}\_n
 $$
 
-*[01 §2.1, §5.1]*
+*[01-2.1, 01-5.1]*
 
 $$
 \mathbf{c}\_t = \mathbf{f}\_t \odot \mathbf{c}\_{t-1} + \mathbf{i}\_t\odot\tilde{\mathbf{c}}\_t,\qquad
 \mathbf{h}\_t = \mathbf{o}\_t\odot\tanh(\mathbf{c}\_t)
 $$
 
-*[01 §3.1]*
+*[01-3.1]*
 
 $$
 \mathbf{h}\_t = (1-\mathbf{z}\_t)\odot\mathbf{h}\_{t-1} + \mathbf{z}\_t\odot\tilde{\mathbf{h}}\_t
 $$
 
-*[01 §4.1 — GRU]*
+*[01-4.1 — GRU]*
 
 ### ข้อจำกัด — [ไฟล์ 02](02-seq2seq-limitations.md)
 
@@ -146,13 +146,13 @@ $$
 \boxed{\ \text{Attention}(Q,K,V) = \text{softmax}\\!\left(\frac{QK^\top}{\sqrt{d\_k}}\right)V\ }
 $$
 
-*[05 §2]*
+*[05-2]*
 
 $$
 \text{Var}(\mathbf{q}\cdot\mathbf{k}) = d\_k \ \Rightarrow\ \text{หารด้วย}\ \sqrt{d\_k}\ \text{เพื่อให้ variance กลับเป็น 1}
 $$
 
-*[05 §3]*
+*[05-3]*
 
 ### Multi-Head — [ไฟล์ 06](06-multi-head-attention.md)
 
@@ -161,13 +161,13 @@ $$
 \text{head}\_h = \text{Attention}(XW\_h^Q, XW\_h^K, XW\_h^V)
 $$
 
-*[06 §1]*
+*[06-1]*
 
 $$
 d\_k = d\_v = d\_{\text{model}}/H \ \Rightarrow\ \text{ต้นทุนรวมเท่าเดิมกับ single-head}
 $$
 
-*[06 §2]*
+*[06-2]*
 
 ### Positional Encoding — [ไฟล์ 07](07-positional-encoding.md)
 
@@ -176,7 +176,7 @@ PE\_{(pos,2i)} = \sin\\!\left(\frac{pos}{10000^{2i/d\_{\text{model}}}}\right),\q
 PE\_{(pos,2i+1)} = \cos\\!\left(\frac{pos}{10000^{2i/d\_{\text{model}}}}\right)
 $$
 
-*[07 §2]*
+*[07-2]*
 
 ### FFN + Residual — [ไฟล์ 08](08-feedforward-and-residual.md)
 
@@ -185,13 +185,13 @@ $$
 \mathbf{y} = \mathbf{x} + \text{Sublayer}(\mathbf{x})
 $$
 
-*[08 §1, §2]*
+*[08-1, 2]*
 
 $$
 \frac{\partial\mathbf{y}}{\partial\mathbf{x}} = I + \frac{\partial F}{\partial\mathbf{x}}
 $$
 
-*[08 §2.2 — เส้นทางลัดของ gradient]*
+*[08-2.2 — เส้นทางลัดของ gradient]*
 
 ### LayerNorm — [ไฟล์ 09](09-layernorm-math.md)
 
@@ -200,7 +200,7 @@ $$
 \qquad \mu = \frac1d\sum\_k x\_k,\quad \sigma^2 = \frac1d\sum\_k (x\_k-\mu)^2
 $$
 
-*[09 §1]*
+*[09-1]*
 
 ### Encoder — [ไฟล์ 10](10-encoder-full-pipeline.md)
 
@@ -209,7 +209,7 @@ Z^{(l)} = \text{LN}\\!\left(X^{(l-1)} + \text{MultiHead}(X^{(l-1)})\right),\qqua
 X^{(l)} = \text{LN}\\!\left(Z^{(l)} + \text{FFN}(Z^{(l)})\right)
 $$
 
-*[10 §2 — Post-LN]*
+*[10-2 — Post-LN]*
 
 ### Decoder + Masking — [ไฟล์ 11](11-decoder-masked-attention.md)
 
@@ -218,13 +218,13 @@ M\_{ij} = \begin{cases}0 & j\le i\\\ -\infty & j{>}i\end{cases},\qquad
 \text{softmax}\\!\left(\frac{QK^\top}{\sqrt{d\_k}}+M\right)V
 $$
 
-*[11 §2]*
+*[11-2]*
 
 $$
 \text{CrossAttn} = \text{Attention}(X\_{\text{dec}}W^Q,\ X\_{\text{enc}}W^K,\ X\_{\text{enc}}W^V)
 $$
 
-*[11 §3]*
+*[11-3]*
 
 ### Training — [ไฟล์ 12](12-training-objective-backprop.md)
 
@@ -233,25 +233,25 @@ $$
 \text{PPL} = \exp(\mathcal{L})
 $$
 
-*[12 §1]*
+*[12-1]*
 
 $$
 \frac{\partial\mathcal{L}}{\partial\mathbf{z}} = \mathbf{p}-\mathbf{y}^{\text{onehot}}
 $$
 
-*[12 §3.1]*
+*[12-3.1]*
 
 $$
 \eta\_t = d\_{\text{model}}^{-0.5}\cdot\min\\!\left(t^{-0.5},\ t\cdot\text{warmup}^{-1.5}\right)
 $$
 
-*[12 §4.2]*
+*[12-4.2]*
 
 $$
 \text{FLOPs} \approx 6\\,N\_{\text{params}}\times\\#\text{tokens}
 $$
 
-*[12 §5]*
+*[12-5]*
 
 ---
 
@@ -313,7 +313,7 @@ $$
 > 2. **LayerNorm แทบไม่กินพารามิเตอร์เลย** (30,720 จาก 63 ล้าน = 0.05%) แต่ขาดไม่ได้ในการเทรน
 > 3. **โมเดลใหญ่ขึ้น 2× ในมิติ → พารามิเตอร์ของบล็อกโต 4×** เพราะทุกอย่างเป็น $O(d^2)$ ส่วน embedding โตแค่ 2× → สัดส่วน embedding จึงลดจาก 30% เหลือ 18%
 
-**ตัวเลขในตารางไม่ตรง 65M/213M เป๊ะ ๆ** — ส่วนต่างมาจากวิธีนับ (มี/ไม่มี bias, final LN, ขนาด vocabulary จริงหลัง BPE ซึ่งเปเปอร์ระบุแค่ "ประมาณ 37,000") รุ่น big ต่างประมาณ 0.5% ส่วนรุ่น base ต่างประมาณ 3% — ตัวเลขชุดนี้ใช้เหมือนกันทุกไฟล์ในเอกสาร (ไฟล์ [08 §4](08-feedforward-and-residual.md), [10 §7](10-encoder-full-pipeline.md), [11 §5](11-decoder-masked-attention.md))
+**ตัวเลขในตารางไม่ตรง 65M/213M เป๊ะ ๆ** — ส่วนต่างมาจากวิธีนับ (มี/ไม่มี bias, final LN, ขนาด vocabulary จริงหลัง BPE ซึ่งเปเปอร์ระบุแค่ "ประมาณ 37,000") รุ่น big ต่างประมาณ 0.5% ส่วนรุ่น base ต่างประมาณ 3% — ตัวเลขชุดนี้ใช้เหมือนกันทุกไฟล์ในเอกสาร (ไฟล์ [08-4](08-feedforward-and-residual.md), [10-7](10-encoder-full-pipeline.md), [11-5](11-decoder-masked-attention.md))
 
 ```python
 def count(d, ff, H, N, V=37000):
@@ -360,13 +360,13 @@ for d, ff, H in [(512, 2048, 8), (1024, 4096, 16)]:
 |---|---|---|---|
 | คอขวด context vector เดียว | $\mathbf{c} = \mathbf{h}\_n \in \mathbb{R}^{d\_h}$ ขนาดคงที่ไม่ว่า $n$ เท่าไร | ให้ทุกตำแหน่งเข้าถึง representation ของทุกตำแหน่ง | [02](02-seq2seq-limitations.md) → [03](03-attention-mechanism-origin.md), [05](05-self-attention-math.md) |
 | ข้อมูลระยะไกลจางหาย | เส้นทาง gradient ยาว $O(n)$ ก้าว คูณกันจนหด | ระยะทางระหว่างสองตำแหน่งเหลือ $O(1)$ | [02](02-seq2seq-limitations.md) → [04](04-transformer-motivation.md), [05](05-self-attention-math.md) |
-| ขนานไม่ได้ตามแกนเวลา | $\mathbf{h}\_t$ ต้องรอ $\mathbf{h}\_{t-1}$ | ทิ้ง recurrence ทั้งหมด → เหลือ matmul ก้อนเดียว | [04](04-transformer-motivation.md), [12 §2.2](12-training-objective-backprop.md) |
+| ขนานไม่ได้ตามแกนเวลา | $\mathbf{h}\_t$ ต้องรอ $\mathbf{h}\_{t-1}$ | ทิ้ง recurrence ทั้งหมด → เหลือ matmul ก้อนเดียว | [04](04-transformer-motivation.md), [12-2.2](12-training-objective-backprop.md) |
 | จับความสัมพันธ์ได้แบบเดียวต่อชั้น | attention เดี่ยวให้ subspace เดียว | แยกเป็น $H$ หัวใน subspace ต่าง ๆ | [06](06-multi-head-attention.md) |
 | (ผลข้างเคียงใหม่) attention ไม่รู้ลำดับ | $\text{softmax}(QK^\top)$ ไม่แปรตามการสลับแถว (permutation-equivariant) | บวก positional encoding เข้าไปที่ input | [07](07-positional-encoding.md) |
 | (ผลข้างเคียงใหม่) attention เป็นเชิงเส้นล้วน | $AV$ คือ convex combination → ไม่มี nonlinearity ต่อตำแหน่ง | ใส่ FFN 2 ชั้นหลัง attention ทุกบล็อก | [08](08-feedforward-and-residual.md) |
-| (ผลข้างเคียงใหม่) โมเดลลึก 12+ ชั้น เทรนยาก | gradient หด/ระเบิดเมื่อซ้อนชั้น | residual ($I + \partial F$) + LayerNorm | [08 §2](08-feedforward-and-residual.md), [09](09-layernorm-math.md) |
-| (ผลข้างเคียงใหม่) decoder แอบดูอนาคตได้ | self-attention เห็นทั้งลำดับ | causal mask $-\infty$ บนสามเหลี่ยมบน | [11 §2](11-decoder-masked-attention.md) |
-| (ผลข้างเคียงใหม่) Post-LN ระเบิดตอนเริ่มเทรน | gradient ที่ชั้นบนใหญ่กว่าชั้นล่างมาก | warmup 4000 steps + Adam $\beta\_2=0.98$ | [12 §4.3](12-training-objective-backprop.md) |
+| (ผลข้างเคียงใหม่) โมเดลลึก 12+ ชั้น เทรนยาก | gradient หด/ระเบิดเมื่อซ้อนชั้น | residual ($I + \partial F$) + LayerNorm | [08-2](08-feedforward-and-residual.md), [09](09-layernorm-math.md) |
+| (ผลข้างเคียงใหม่) decoder แอบดูอนาคตได้ | self-attention เห็นทั้งลำดับ | causal mask $-\infty$ บนสามเหลี่ยมบน | [11-2](11-decoder-masked-attention.md) |
+| (ผลข้างเคียงใหม่) Post-LN ระเบิดตอนเริ่มเทรน | gradient ที่ชั้นบนใหญ่กว่าชั้นล่างมาก | warmup 4000 steps + Adam $\beta\_2=0.98$ | [12-4.3](12-training-objective-backprop.md) |
 | (ต้นทุนที่ยอมจ่าย) $O(n^2)$ memory | attention matrix $A \in \mathbb{R}^{n\times n}$ | ยอมรับ — แลกกับ $O(1)$ path length | [04](04-transformer-motivation.md), [05](05-self-attention-math.md) |
 
 ```mermaid
@@ -428,21 +428,21 @@ flowchart LR
 
 <details><summary>เฉลย</summary>
 
-เพราะขนาดของมัน **คงที่** ไม่ว่า input จะยาว 5 หรือ 100 คำ ปริมาณข้อมูลที่ต้องเก็บโตตาม $n$ แต่ความจุไม่โตตาม → เมื่อ $n$ ใหญ่ ข้อมูลถูกบีบจนสูญเสีย หลักฐานเชิงประจักษ์: BLEU ตกฮวบเมื่อประโยคยาวขึ้น และเคล็ดกลับลำดับ input ของ Sutskever ช่วยได้จริง (ไฟล์ [01 §5.1](01-seq2seq-rnn-basics.md), [02](02-seq2seq-limitations.md))
+เพราะขนาดของมัน **คงที่** ไม่ว่า input จะยาว 5 หรือ 100 คำ ปริมาณข้อมูลที่ต้องเก็บโตตาม $n$ แต่ความจุไม่โตตาม → เมื่อ $n$ ใหญ่ ข้อมูลถูกบีบจนสูญเสีย หลักฐานเชิงประจักษ์: BLEU ตกฮวบเมื่อประโยคยาวขึ้น และเคล็ดกลับลำดับ input ของ Sutskever ช่วยได้จริง (ไฟล์ [01-5.1](01-seq2seq-rnn-basics.md), [02](02-seq2seq-limitations.md))
 </details>
 
 **2.** ทำไมต้องหารด้วย $\sqrt{d\_k}$ ไม่ใช่ $d\_k$ หรือ $\sqrt[3]{d\_k}$
 
 <details><summary>เฉลย</summary>
 
-ถ้า $q\_i, k\_i$ อิสระ mean 0 variance 1 แล้ว $\mathbf{q}\cdot\mathbf{k} = \sum\_{i=1}^{d\_k} q\_ik\_i$ เป็นผลรวมของ $d\_k$ พจน์อิสระ → $\text{Var} = d\_k$ → **ส่วนเบี่ยงเบนมาตรฐาน** $=\sqrt{d\_k}$ เราต้องการหารด้วย std ไม่ใช่ variance เพื่อให้ variance กลับเป็น 1 พอดี ถ้าไม่หาร softmax จะอิ่มตัวและ gradient หายไป (ไฟล์ [05 §3](05-self-attention-math.md))
+ถ้า $q\_i, k\_i$ อิสระ mean 0 variance 1 แล้ว $\mathbf{q}\cdot\mathbf{k} = \sum\_{i=1}^{d\_k} q\_ik\_i$ เป็นผลรวมของ $d\_k$ พจน์อิสระ → $\text{Var} = d\_k$ → **ส่วนเบี่ยงเบนมาตรฐาน** $=\sqrt{d\_k}$ เราต้องการหารด้วย std ไม่ใช่ variance เพื่อให้ variance กลับเป็น 1 พอดี ถ้าไม่หาร softmax จะอิ่มตัวและ gradient หายไป (ไฟล์ [05-3](05-self-attention-math.md))
 </details>
 
 **3.** Multi-head ที่ $H=8$, $d\_k=64$ ใช้พารามิเตอร์มากกว่า single-head ที่ $d\_k=512$ เท่าไร
 
 <details><summary>เฉลย</summary>
 
-**เท่ากันพอดี** เพราะ $H \cdot d\_{\text{model}} \cdot d\_k = 8 \times 512 \times 64 = 512 \times 512$ นี่คือเหตุผลที่ตั้ง $d\_k = d\_{\text{model}}/H$ — เพื่อให้ multi-head "ฟรี" เมื่อเทียบกับ single-head (ไฟล์ [06 §2](06-multi-head-attention.md))
+**เท่ากันพอดี** เพราะ $H \cdot d\_{\text{model}} \cdot d\_k = 8 \times 512 \times 64 = 512 \times 512$ นี่คือเหตุผลที่ตั้ง $d\_k = d\_{\text{model}}/H$ — เพื่อให้ multi-head "ฟรี" เมื่อเทียบกับ single-head (ไฟล์ [06-2](06-multi-head-attention.md))
 </details>
 
 **4.** ทำไม positional encoding ใช้ $\sin/\cos$ หลายความถี่ แทนที่จะใส่เลขตำแหน่งตรง ๆ
@@ -456,7 +456,7 @@ flowchart LR
 
 <details><summary>เฉลย</summary>
 
-เสีย **nonlinearity ต่อตำแหน่ง** — $AV$ เป็นเพียง convex combination ของ value vectors (เชิงเส้นเมื่อ $A$ ถูกตรึง) การซ้อนหลายชั้นจึงยุบเป็นการแปลงเชิงเส้นเดียวโดยประมาณ FFN คือที่ที่ ReLU อยู่ และเป็นที่เก็บ "ความรู้" ส่วนใหญ่ (~40% ของพารามิเตอร์) (ไฟล์ [08 §1](08-feedforward-and-residual.md), [13 §3.2](13-summary-notation-reference.md))
+เสีย **nonlinearity ต่อตำแหน่ง** — $AV$ เป็นเพียง convex combination ของ value vectors (เชิงเส้นเมื่อ $A$ ถูกตรึง) การซ้อนหลายชั้นจึงยุบเป็นการแปลงเชิงเส้นเดียวโดยประมาณ FFN คือที่ที่ ReLU อยู่ และเป็นที่เก็บ "ความรู้" ส่วนใหญ่ (~40% ของพารามิเตอร์) (ไฟล์ [08-1](08-feedforward-and-residual.md), [13-3.2](13-summary-notation-reference.md))
 </details>
 
 **6.** LayerNorm ต่างจาก BatchNorm อย่างไร และทำไม NLP ถึงเลือก LayerNorm
@@ -470,28 +470,28 @@ BatchNorm normalize ตามแกน **batch** (ต้องมีสถิต
 
 <details><summary>เฉลย</summary>
 
-เพราะ $\text{LN}(\mathbf{x}+c\mathbf{1}) = \text{LN}(\mathbf{x})$ — การเลื่อน $\mathbf{x}$ ไปในทิศ $\mathbf{1}$ ไม่เปลี่ยน output เลย ดังนั้นอนุพันธ์ทิศทางในทิศนั้นต้องเป็น 0 ซึ่งก็คือ $\sum\_k \partial\mathcal{L}/\partial x\_k = 0$ พอดี ทำนองเดียวกัน $\text{LN}(a\mathbf{x})=\text{LN}(\mathbf{x})$ ให้ $\langle \partial\mathcal{L}/\partial\mathbf{x}, \hat{\mathbf{x}}\rangle = 0$ (ไฟล์ [12 §3.2](12-training-objective-backprop.md))
+เพราะ $\text{LN}(\mathbf{x}+c\mathbf{1}) = \text{LN}(\mathbf{x})$ — การเลื่อน $\mathbf{x}$ ไปในทิศ $\mathbf{1}$ ไม่เปลี่ยน output เลย ดังนั้นอนุพันธ์ทิศทางในทิศนั้นต้องเป็น 0 ซึ่งก็คือ $\sum\_k \partial\mathcal{L}/\partial x\_k = 0$ พอดี ทำนองเดียวกัน $\text{LN}(a\mathbf{x})=\text{LN}(\mathbf{x})$ ให้ $\langle \partial\mathcal{L}/\partial\mathbf{x}, \hat{\mathbf{x}}\rangle = 0$ (ไฟล์ [12-3.2](12-training-objective-backprop.md))
 </details>
 
 **8.** causal mask ใช้ $-\infty$ ไม่ใช่ 0 — ถ้าใช้ 0 จะเกิดอะไร
 
 <details><summary>เฉลย</summary>
 
-mask ถูกบวกเข้ากับ **คะแนนก่อน softmax** ไม่ใช่คูณกับ attention weight ถ้าบวก 0 ก็คือไม่ทำอะไรเลย ต้องบวก $-\infty$ เพื่อให้ $e^{-\infty}=0$ → attention weight เป็นศูนย์ *และ* ตัวส่วนของ softmax ยัง normalize เฉพาะตำแหน่งที่มองเห็นได้ (ในโค้ดจริงใช้ `-1e9` หรือ `-inf` ตาม dtype) (ไฟล์ [11 §2](11-decoder-masked-attention.md))
+mask ถูกบวกเข้ากับ **คะแนนก่อน softmax** ไม่ใช่คูณกับ attention weight ถ้าบวก 0 ก็คือไม่ทำอะไรเลย ต้องบวก $-\infty$ เพื่อให้ $e^{-\infty}=0$ → attention weight เป็นศูนย์ *และ* ตัวส่วนของ softmax ยัง normalize เฉพาะตำแหน่งที่มองเห็นได้ (ในโค้ดจริงใช้ `-1e9` หรือ `-inf` ตาม dtype) (ไฟล์ [11-2](11-decoder-masked-attention.md))
 </details>
 
 **9.** teacher forcing ทำให้เทรนขนานได้อย่างไร ทั้งที่ decoder ยัง autoregressive
 
 <details><summary>เฉลย</summary>
 
-เพราะเฉลยทั้งลำดับรู้ล่วงหน้า จึงป้อนเข้าไปพร้อมกันได้ การพึ่งพาแบบ autoregressive ถูกลดจาก "การพึ่งพาเชิงคำนวณ" (ต้องรอผลก่อนหน้า) เหลือแค่ "การพึ่งพาเชิงการมองเห็น" ซึ่ง causal mask จัดการได้ในการคูณเมทริกซ์ครั้งเดียว — ต่างจาก RNN ที่ $\mathbf{s}\_t$ ต้องรอ $\mathbf{s}\_{t-1}$ จริง ๆ (ไฟล์ [12 §2.2](12-training-objective-backprop.md))
+เพราะเฉลยทั้งลำดับรู้ล่วงหน้า จึงป้อนเข้าไปพร้อมกันได้ การพึ่งพาแบบ autoregressive ถูกลดจาก "การพึ่งพาเชิงคำนวณ" (ต้องรอผลก่อนหน้า) เหลือแค่ "การพึ่งพาเชิงการมองเห็น" ซึ่ง causal mask จัดการได้ในการคูณเมทริกซ์ครั้งเดียว — ต่างจาก RNN ที่ $\mathbf{s}\_t$ ต้องรอ $\mathbf{s}\_{t-1}$ จริง ๆ (ไฟล์ [12-2.2](12-training-objective-backprop.md))
 </details>
 
 **10.** $\partial\mathcal{L}/\partial\mathbf{z} = \mathbf{p} - \mathbf{y}^{\text{onehot}}$ — ทำไมมันเรียบง่ายขนาดนี้
 
 <details><summary>เฉลย</summary>
 
-เพราะ Jacobian ของ softmax (ซึ่งยุ่งมาก) หักล้างกับอนุพันธ์ของ $\log$ (ซึ่งเป็น $1/p$) พอดี ผลลัพธ์ที่ได้คือ "ทำนายลบด้วยความจริง" ตรง ๆ นี่คือเหตุผลที่ทุก library รวม softmax กับ cross-entropy เป็นฟังก์ชันเดียว — ทั้งเสถียรกว่าและเร็วกว่า ตัวอย่างจริง: $\mathbf{z}=[2, 1, 0.1, -0.5]$ เฉลยตัวที่ 2 → $\mathbf{p}=[0.6252, 0.2300, 0.0935, 0.0513]$ → gradient $=[0.6252, -0.7700, 0.0935, 0.0513]$ (ไฟล์ [12 §3.1](12-training-objective-backprop.md))
+เพราะ Jacobian ของ softmax (ซึ่งยุ่งมาก) หักล้างกับอนุพันธ์ของ $\log$ (ซึ่งเป็น $1/p$) พอดี ผลลัพธ์ที่ได้คือ "ทำนายลบด้วยความจริง" ตรง ๆ นี่คือเหตุผลที่ทุก library รวม softmax กับ cross-entropy เป็นฟังก์ชันเดียว — ทั้งเสถียรกว่าและเร็วกว่า ตัวอย่างจริง: $\mathbf{z}=[2, 1, 0.1, -0.5]$ เฉลยตัวที่ 2 → $\mathbf{p}=[0.6252, 0.2300, 0.0935, 0.0513]$ → gradient $=[0.6252, -0.7700, 0.0935, 0.0513]$ (ไฟล์ [12-3.1](12-training-objective-backprop.md))
 </details>
 
 **11.** ทำไม learning rate schedule ต้องมี warmup และจุดสูงสุดอยู่ที่ไหน
@@ -500,28 +500,28 @@ mask ถูกบวกเข้ากับ **คะแนนก่อน softm
 
 สองเหตุผล: (ก) ตัวประมาณ $\hat{\mathbf{v}}\_t$ ของ Adam ยังผันผวนมากในช่วงต้น → ตัวหารเล็กผิดปกติทำให้ก้าวยักษ์ (ข) Post-LN ทำให้ gradient ที่ชั้นบนใหญ่กว่าชั้นล่างมาก
 จุดสูงสุดอยู่ที่ $t = \text{warmup} = 4000$ พอดี (เป็นจุดที่สองพจน์ใน $\min$ เท่ากัน) มีค่า $(512\times4000)^{-0.5} = 6.987712\times10^{-4}$
-ถ้าเปลี่ยนเป็น **Pre-LN** ปัญหา (ข) หายไป → เกือบไม่ต้อง warmup (ไฟล์ [12 §4.2–4.3](12-training-objective-backprop.md))
+ถ้าเปลี่ยนเป็น **Pre-LN** ปัญหา (ข) หายไป → เกือบไม่ต้อง warmup (ไฟล์ [12-4.2–4.3](12-training-objective-backprop.md))
 </details>
 
 **12.** label smoothing ทำให้ perplexity **แย่ลง** แต่ยังใช้ — ทำไม
 
 <details><summary>เฉลย</summary>
 
-perplexity วัด $-\log p\_{y^\*}$ ตรง ๆ ซึ่งเราตั้งใจห้ามไม่ให้เข้าใกล้ 0 (เป้าหมาย optimal คือ $p\_{y^\*}=0.925$ ไม่ใช่ 1.0) → PPL แย่ลงโดยนิยาม แต่ **BLEU ดีขึ้น** เพราะโมเดล calibrate ดีกว่า ไม่ overconfident และ beam search ได้ตัวเลือกสำรองที่สมเหตุสมผล ตัวเลขจริงจากไฟล์ 12: $\mathcal{L}$ 1.4697 → 1.5047, PPL 4.3479 → 4.5028, แต่ $\\|\text{grad}\\|$ ลดจาก 0.9976 → 0.9212 (ไฟล์ [12 §1.3, §3.1](12-training-objective-backprop.md))
+perplexity วัด $-\log p\_{y^\*}$ ตรง ๆ ซึ่งเราตั้งใจห้ามไม่ให้เข้าใกล้ 0 (เป้าหมาย optimal คือ $p\_{y^\*}=0.925$ ไม่ใช่ 1.0) → PPL แย่ลงโดยนิยาม แต่ **BLEU ดีขึ้น** เพราะโมเดล calibrate ดีกว่า ไม่ overconfident และ beam search ได้ตัวเลือกสำรองที่สมเหตุสมผล ตัวเลขจริงจากไฟล์ 12: $\mathcal{L}$ 1.4697 → 1.5047, PPL 4.3479 → 4.5028, แต่ $\\|\text{grad}\\|$ ลดจาก 0.9976 → 0.9212 (ไฟล์ [12-1.3, 12-3.1](12-training-objective-backprop.md))
 </details>
 
 **13.** ในสูตร $\text{FLOPs}\approx 6N\_{\text{params}}$ ต่อ token เลข 6 มาจากไหน
 
 <details><summary>เฉลย</summary>
 
-forward $= 2N\_{\text{params}}$ (คูณ 1 + บวก 1 ต่อพารามิเตอร์) และ backward $= 4N\_{\text{params}}$ เพราะทุกเมทริกซ์ต้องทำสองงาน: คำนวณ $\partial\mathcal{L}/\partial\mathbf{x}$ ส่งลงชั้นล่าง และคำนวณ $\partial\mathcal{L}/\partial W$ เพื่ออัปเดตตัวเอง → $2+4=6$ ตัวอย่าง: 65M params บน 1B tokens $= 3.9000\times10^{17}$ FLOPs (ไฟล์ [12 §5](12-training-objective-backprop.md))
+forward $= 2N\_{\text{params}}$ (คูณ 1 + บวก 1 ต่อพารามิเตอร์) และ backward $= 4N\_{\text{params}}$ เพราะทุกเมทริกซ์ต้องทำสองงาน: คำนวณ $\partial\mathcal{L}/\partial\mathbf{x}$ ส่งลงชั้นล่าง และคำนวณ $\partial\mathcal{L}/\partial W$ เพื่ออัปเดตตัวเอง → $2+4=6$ ตัวอย่าง: 65M params บน 1B tokens $= 3.9000\times10^{17}$ FLOPs (ไฟล์ [12-5](12-training-objective-backprop.md))
 </details>
 
 **14.** ทำไมพารามิเตอร์ของ Transformer-big มากกว่า base ประมาณ 3.4 เท่า ทั้งที่ $d\_{\text{model}}$ โตแค่ 2 เท่า
 
 <details><summary>เฉลย</summary>
 
-บล็อกทั้งหมดเป็น $O(d^2)$ — attention $4d^2$ และ FFN $2d\cdot d\_{\text{ff}} = 4d^2$ (เพราะ $d\_{\text{ff}}=4d$) → โตเป็น **4 เท่า** แต่ embedding เป็น $O(Vd)$ → โตแค่ 2 เท่า ค่าเฉลี่ยถ่วงน้ำหนักจึงได้ $214.17/63.05 = 3.40$ เท่า (ไฟล์ [13 §3.2](13-summary-notation-reference.md))
+บล็อกทั้งหมดเป็น $O(d^2)$ — attention $4d^2$ และ FFN $2d\cdot d\_{\text{ff}} = 4d^2$ (เพราะ $d\_{\text{ff}}=4d$) → โตเป็น **4 เท่า** แต่ embedding เป็น $O(Vd)$ → โตแค่ 2 เท่า ค่าเฉลี่ยถ่วงน้ำหนักจึงได้ $214.17/63.05 = 3.40$ เท่า (ไฟล์ [13-3.2](13-summary-notation-reference.md))
 </details>
 
 **15.** gradient ที่ไหลย้อนถึง embedding table มีลักษณะพิเศษอย่างไร
@@ -529,7 +529,7 @@ forward $= 2N\_{\text{params}}$ (คูณ 1 + บวก 1 ต่อพารา
 <details><summary>เฉลย</summary>
 
 เป็น **sparse** — เฉพาะแถวของโทเคนที่ปรากฏใน batch เท่านั้นที่ไม่เป็นศูนย์ และถ้าโทเคนซ้ำ gradient จะบวกสะสมลงแถวเดียวกัน (id ปรากฏ 2 ครั้ง → gradient เป็น 2 เท่า) ผลตามมา: คำหายากได้ update น้อยมาก → เหตุผลหนึ่งที่ต้องใช้ subword/BPE
-**ข้อยกเว้น:** เมื่อใช้ weight tying แถวเดียวกันยังได้ gradient แบบ dense จาก output head ด้วย เพราะ softmax แตะทุกคำใน vocabulary (ไฟล์ [12 §3.5](12-training-objective-backprop.md))
+**ข้อยกเว้น:** เมื่อใช้ weight tying แถวเดียวกันยังได้ gradient แบบ dense จาก output head ด้วย เพราะ softmax แตะทุกคำใน vocabulary (ไฟล์ [12-3.5](12-training-objective-backprop.md))
 </details>
 
 **16.** residual connection ช่วยเรื่อง gradient อย่างไรในเชิงตัวเลข
@@ -537,7 +537,7 @@ forward $= 2N\_{\text{params}}$ (คูณ 1 + บวก 1 ต่อพารา
 <details><summary>เฉลย</summary>
 
 $\partial\mathbf{y}/\partial\mathbf{x} = I + \partial F/\partial\mathbf{x}$ — เมื่อซ้อน $N$ ชั้น การกางผลคูณจะมีพจน์ $I\cdot I\cdots I = I$ อยู่เสมอ → มี "ทางด่วน" ที่ gradient ผ่านโดยไม่ถูกคูณอะไรเลย
-ตัวอย่างจริงจากไฟล์ 12: ถ้า $\\|\partial F/\partial\mathbf{x}\\|\_2 = 0.2011$ การซ้อน 6 ชั้นแบบไม่มี residual ให้ตัวคูณ $\approx 6.61\times10^{-5}$ (หายเกลี้ยง) แต่มี residual แล้ว singular values ของ $I+\partial F/\partial\mathbf{x}$ อยู่ที่ $[1.1053, 0.9534, 0.8665]$ — เกาะรอบ 1 (ไฟล์ [08 §2.2](08-feedforward-and-residual.md), [12 §3.3](12-training-objective-backprop.md))
+ตัวอย่างจริงจากไฟล์ 12: ถ้า $\\|\partial F/\partial\mathbf{x}\\|\_2 = 0.2011$ การซ้อน 6 ชั้นแบบไม่มี residual ให้ตัวคูณ $\approx 6.61\times10^{-5}$ (หายเกลี้ยง) แต่มี residual แล้ว singular values ของ $I+\partial F/\partial\mathbf{x}$ อยู่ที่ $[1.1053, 0.9534, 0.8665]$ — เกาะรอบ 1 (ไฟล์ [08-2.2](08-feedforward-and-residual.md), [12-3.3](12-training-objective-backprop.md))
 </details>
 
 ---
@@ -557,8 +557,8 @@ $\partial\mathbf{y}/\partial\mathbf{x} = I + \partial F/\partial\mathbf{x}$ — 
 | 2016 | Deep Residual Learning — He et al. | [arXiv:1512.03385](https://arxiv.org/abs/1512.03385) | residual connection (ไฟล์ 08) |
 | **2017** | **Attention Is All You Need — Vaswani et al.** | **[arXiv:1706.03762](https://arxiv.org/abs/1706.03762)** | **เปเปอร์หลักของเอกสารชุดนี้** |
 | 2018 | BERT — Devlin et al. | [arXiv:1810.04805](https://arxiv.org/abs/1810.04805) | encoder-only + pre-training |
-| 2020 | On Layer Normalization in the Transformer Architecture — Xiong et al. | [arXiv:2002.04745](https://arxiv.org/abs/2002.04745) | Pre-LN vs Post-LN และเรื่อง warmup (ไฟล์ 12 §4.3) |
-| 2020 | Scaling Laws for Neural Language Models — Kaplan et al. | [arXiv:2001.08361](https://arxiv.org/abs/2001.08361) | ที่มาของสูตร $C \approx 6N\_{\text{params}}D$ (ไฟล์ 12 §5) |
+| 2020 | On Layer Normalization in the Transformer Architecture — Xiong et al. | [arXiv:2002.04745](https://arxiv.org/abs/2002.04745) | Pre-LN vs Post-LN และเรื่อง warmup (ไฟล์ 12-4.3) |
+| 2020 | Scaling Laws for Neural Language Models — Kaplan et al. | [arXiv:2001.08361](https://arxiv.org/abs/2001.08361) | ที่มาของสูตร $C \approx 6N\_{\text{params}}D$ (ไฟล์ 12-5) |
 | 2022 | Training Compute-Optimal LLMs (Chinchilla) — Hoffmann et al. | [arXiv:2203.15556](https://arxiv.org/abs/2203.15556) | อัตราส่วน params : tokens ที่เหมาะสม |
 
 ### 6.2 บล็อกและโค้ดคลาสสิก

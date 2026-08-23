@@ -278,7 +278,7 @@ print({t: f"{v:.4e}" for t, v in jac_norm(W_b, Ts, True).items()})
 
 ### 2.4 ทำไม LSTM ช่วยได้แต่ไม่หมด
 
-ไฟล์ 01 §3.2 บอกว่า LSTM เปิดทางลัดให้ gradient ผ่าน cell state
+ไฟล์ 01-3.2 บอกว่า LSTM เปิดทางลัดให้ gradient ผ่าน cell state
 
 $$
 \frac{\partial \mathbf{c}\_t}{\partial \mathbf{c}\_{t-1}} = \text{diag}(\mathbf{f}\_t)
@@ -471,7 +471,7 @@ $$
 | # | ข้อจำกัดของ Seq2Seq | เงื่อนไขที่ต้องทำให้ได้ | สิ่งที่ Transformer ทำ | อธิบายในไฟล์ |
 |---|---|---|---|---|
 | 1 | $\mathbf{c} = \mathbf{h}\_n$ มิติคงที่ → คอขวด | context ต้องโตตาม $n$ และ **เปลี่ยนได้ตามขั้น** | ไม่บีบเลย — เก็บ $K, V$ ทุกตำแหน่ง แล้วคำนวณ $\mathbf{c}\_i$ ใหม่ทุก query | [03](03-attention-mechanism-origin.md), [05](05-self-attention-math.md) |
-| 2 | $\prod J\_t$ ทำ gradient หาย/ระเบิด | ตัดความยาวของผลคูณ Jacobian ให้ไม่ขึ้นกับ $n$ | attention ตรง ๆ + **residual connection** เปิดทางลัด $\partial/\partial \mathbf{x} = I + \dots$ | [08 §2](08-feedforward-and-residual.md), [12](12-training-objective-backprop.md) |
+| 2 | $\prod J\_t$ ทำ gradient หาย/ระเบิด | ตัดความยาวของผลคูณ Jacobian ให้ไม่ขึ้นกับ $n$ | attention ตรง ๆ + **residual connection** เปิดทางลัด $\partial/\partial \mathbf{x} = I + \dots$ | [08-2](08-feedforward-and-residual.md), [12](12-training-objective-backprop.md) |
 | 3 | $\mathbf{h}\_t \leftarrow \mathbf{h}\_{t-1}$ → ขนานไม่ได้ | sequential ops ต้องเป็น $O(1)$ | ทิ้ง recurrence ทั้งหมด → ทุกตำแหน่งคำนวณพร้อมกันเป็น GEMM ก้อนเดียว | [04](04-transformer-motivation.md), [05](05-self-attention-math.md) |
 | 4 | path length $O(n)$ | path length ต้องเป็น $O(1)$ | $QK^\top$ เชื่อมทุกคู่ $(i,j)$ ในก้าวเดียว | [05](05-self-attention-math.md) |
 

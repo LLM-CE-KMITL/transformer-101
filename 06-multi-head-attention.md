@@ -286,7 +286,7 @@ flowchart TD
     style J fill:#ffe6cc,stroke:#d79b00,stroke-width:3px
 ```
 
-> **จุดสำคัญ:** `reshape` ตอนขาออก **คือ** ตัวดำเนินการ concat $[\text{head}\_1; \dots; \text{head}\_H]$ ในสมการ — ไม่มีการ copy ข้อมูลจริง แค่ตีความ memory layout ใหม่ นี่คือเหตุผลที่สมการกับโค้ดหน้าตาเหมือนกันเป๊ะเมื่อใช้ convention row-major ตาม [00 §3.4](00-overview.md)
+> **จุดสำคัญ:** `reshape` ตอนขาออก **คือ** ตัวดำเนินการ concat $[\text{head}\_1; \dots; \text{head}\_H]$ ในสมการ — ไม่มีการ copy ข้อมูลจริง แค่ตีความ memory layout ใหม่ นี่คือเหตุผลที่สมการกับโค้ดหน้าตาเหมือนกันเป๊ะเมื่อใช้ convention row-major ตาม [00-3.4](00-overview.md)
 
 ```python
 import numpy as np

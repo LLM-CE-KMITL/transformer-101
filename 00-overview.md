@@ -268,14 +268,14 @@ flowchart BT
 
 | บล็อก | อธิบายในไฟล์ |
 |---|---|
-| Input/Output Embedding | 10 §1 |
+| Input/Output Embedding | 10-1 |
 | Positional Encoding | 07 |
 | Multi-Head Self-Attention | 05, 06 |
-| Masked Self-Attention | 11 §2 |
-| Cross-Attention | 11 §3 |
-| Add & Norm | 08 §2, 09 |
-| Feed Forward | 08 §1 |
-| Linear → Softmax | 11 §5, 12 §1 |
+| Masked Self-Attention | 11-2 |
+| Cross-Attention | 11-3 |
+| Add & Norm | 08-2, 09 |
+| Feed Forward | 08-1 |
+| Linear → Softmax | 11-5, 12-1 |
 
 ---
 

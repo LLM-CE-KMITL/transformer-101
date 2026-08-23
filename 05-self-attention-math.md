@@ -12,7 +12,7 @@
 
 ### 1.1 ทำไมต้องแยกบทบาท 3 อย่าง
 
-ใน [ไฟล์ 03 §4](03-attention-mechanism-origin.md) เราได้ข้อสรุปว่า attention คือ **ค่าเฉลี่ยถ่วงน้ำหนัก**
+ใน [ไฟล์ 03-4](03-attention-mechanism-origin.md) เราได้ข้อสรุปว่า attention คือ **ค่าเฉลี่ยถ่วงน้ำหนัก**
 
 $$
 \mathbf{c}\_t = \sum\_{j=1}^{n} \alpha\_{tj}\\,\mathbf{h}\_j, \qquad \sum\_j \alpha\_{tj} = 1
@@ -43,7 +43,7 @@ Transformer จึงแยกบทบาทออกเป็น **3 บทบ
 > ถ้าใช้เวกเตอร์เดียวทำทั้งสามอย่าง คุณจะไม่มีทางแยก "เกณฑ์การจับคู่" ออกจาก "เนื้อหาที่จะส่ง" ได้
 
 **คำว่า self ใน self-attention** หมายถึง $Q, K, V$ **มาจากลำดับเดียวกัน** คือ $X$ ตัวเดียว
-ต่างจาก cross-attention ในไฟล์ [11 §3](11-decoder-masked-attention.md) ที่ $Q$ มาจาก decoder ส่วน $K,V$ มาจาก encoder
+ต่างจาก cross-attention ในไฟล์ [11-3](11-decoder-masked-attention.md) ที่ $Q$ มาจาก decoder ส่วน $K,V$ มาจาก encoder
 
 ### 1.2 การฉาย: $Q = XW^Q$, $K = XW^K$, $V = XW^V$
 
@@ -51,7 +51,7 @@ $$
 \boxed{\ Q = XW^Q, \qquad K = XW^K, \qquad V = XW^V\ }
 $$
 
-ตารางมิติทุกตัว (ตามข้อตกลง row-major ใน [00 §3.4](00-overview.md))
+ตารางมิติทุกตัว (ตามข้อตกลง row-major ใน [00-3.4](00-overview.md))
 
 | สัญลักษณ์ | มิติ | ความหมาย | เรียนรู้ได้ไหม |
 |---|---|---|---|
@@ -68,7 +68,7 @@ $$
 
 > **จุดสำคัญ 3 ข้อจากตารางนี้:**
 > 1. $Q$ กับ $K$ **ต้อง** มีมิติเท่ากัน ($d\_k$) เพราะต้อง dot product กัน — แต่ $V$ ไม่จำเป็น ($d\_v$ อิสระ)
-> 2. มิติ $n$ ไม่ปรากฏใน $W$ เลย → **โมเดลรับความยาวเท่าไรก็ได้** ด้วยพารามิเตอร์ชุดเดียว (เหมือน weight sharing ของ RNN ใน [01 §2.2](01-seq2seq-rnn-basics.md) แต่ได้มาฟรีกว่า)
+> 2. มิติ $n$ ไม่ปรากฏใน $W$ เลย → **โมเดลรับความยาวเท่าไรก็ได้** ด้วยพารามิเตอร์ชุดเดียว (เหมือน weight sharing ของ RNN ใน [01-2.2](01-seq2seq-rnn-basics.md) แต่ได้มาฟรีกว่า)
 > 3. ใน Transformer-base: $d\_{\text{model}}=512$, $H=8$, $d\_k=d\_v=512/8=64$
 
 ```mermaid
@@ -582,7 +582,7 @@ print(float((out_mine - out_torch).abs().max()))           # 5.96e-08  ← ต�
 ```
 
 > **หมายเหตุ:** `F.scaled_dot_product_attention` หารด้วย $\sqrt{d\_k}$ ให้อัตโนมัติ และไม่คืนเมทริกซ์ $A$ ออกมา
-> (เพราะ backend อย่าง FlashAttention ไม่ได้สร้าง $A$ ทั้งก้อนขึ้นมาจริง ๆ — ดู [04 §4.1](04-transformer-motivation.md))
+> (เพราะ backend อย่าง FlashAttention ไม่ได้สร้าง $A$ ทั้งก้อนขึ้นมาจริง ๆ — ดู [04-4.1](04-transformer-motivation.md))
 > ถ้าต้องการดู attention map เพื่อ visualize ต้องเขียนเวอร์ชันของตัวเอง
 
 ---
@@ -660,7 +660,7 @@ $$
 รายละเอียดใน [ไฟล์ 07](07-positional-encoding.md)
 
 > **จุดสำคัญ:** permutation equivariance ไม่ใช่ *บั๊ก* แต่เป็น *คุณสมบัติเชิงโครงสร้าง* ที่เกิดจากการตัด recurrence ทิ้ง
-> มันคือ "ใบเรียกเก็บเงิน" ที่เราคุยกันใน [04 §4.2](04-transformer-motivation.md)
+> มันคือ "ใบเรียกเก็บเงิน" ที่เราคุยกันใน [04-4.2](04-transformer-motivation.md)
 
 ### 4.2 ทุกตำแหน่งเชื่อมถึงกันใน 1 ก้าว
 

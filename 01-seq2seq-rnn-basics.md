@@ -180,7 +180,7 @@ flowchart LR
     style c3 fill:#d5e8d4,stroke:#82b366
 ```
 
-> แต่ยังไม่พอ — ดูว่าทำไมใน [02 §2.4](02-seq2seq-limitations.md)
+> แต่ยังไม่พอ — ดูว่าทำไมใน [02-2.4](02-seq2seq-limitations.md)
 
 ### 3.3 ตัวอย่างคำนวณเชิงตัวเลข 1 Timestep
 

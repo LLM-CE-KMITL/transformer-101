@@ -12,7 +12,7 @@
 | ชิ้นส่วน | หน้าที่ | แก้ปัญหาอะไร |
 |---|---|---|
 | **Feed-Forward Network (FFN)** | ประมวลผลแบบ non-linear ภายในแต่ละ token | attention ไม่มีกำลังแปลงค่า |
-| **Residual Connection** | บวก input กลับเข้า output | gradient หายเมื่อซ้อนเลเยอร์ลึก (ไฟล์ [02 §2](02-seq2seq-limitations.md)) |
+| **Residual Connection** | บวก input กลับเข้า output | gradient หายเมื่อซ้อนเลเยอร์ลึก (ไฟล์ [02-2](02-seq2seq-limitations.md)) |
 
 ---
 
@@ -47,7 +47,7 @@ $$
 
 คำว่า *position-wise* หมายถึงสองอย่างพร้อมกัน:
 
-1. **แชร์น้ำหนักทุกตำแหน่ง** — $W\_1, W\_2$ ชุดเดียวถูกใช้กับทุก token ในลำดับ (เหมือนที่ RNN แชร์ $W\_{hh}$ ข้ามเวลาในไฟล์ [01 §2.2](01-seq2seq-rnn-basics.md))
+1. **แชร์น้ำหนักทุกตำแหน่ง** — $W\_1, W\_2$ ชุดเดียวถูกใช้กับทุก token ในลำดับ (เหมือนที่ RNN แชร์ $W\_{hh}$ ข้ามเวลาในไฟล์ [01-2.2](01-seq2seq-rnn-basics.md))
 2. **ไม่ผสมข้ามตำแหน่ง** — แถวที่ $i$ ของ output ขึ้นกับแถวที่ $i$ ของ input **เท่านั้น**
 
 $$
@@ -177,7 +177,7 @@ $$
 
 > **สัญชาตญาณของ GELU:** ReLU ตัดสินแบบแข็ง — "ถ้า $z{<}0$ ทิ้ง" ส่วน GELU ตัดสินแบบนุ่ม — "เก็บ $z$ ไว้ตามความน่าจะเป็นที่ $z$ จะมากกว่า noise มาตรฐาน" ผลคือกราฟเรียบ ไม่มีจุดหักที่ทำให้ gradient กระโดด
 >
-> **สัญชาตญาณของ SwiGLU:** เพิ่ม "ประตู" อีกทาง ($W\_g$) ที่คูณเข้ามาแบบ element-wise — โมเดลเลือกได้ว่าจะเปิดหรือปิดแต่ละหน่วยโดยดูจาก input เดียวกัน เป็นแนวคิดเดียวกับ gate ของ LSTM ในไฟล์ [01 §3](01-seq2seq-rnn-basics.md)
+> **สัญชาตญาณของ SwiGLU:** เพิ่ม "ประตู" อีกทาง ($W\_g$) ที่คูณเข้ามาแบบ element-wise — โมเดลเลือกได้ว่าจะเปิดหรือปิดแต่ละหน่วยโดยดูจาก input เดียวกัน เป็นแนวคิดเดียวกับ gate ของ LSTM ในไฟล์ [01-3](01-seq2seq-rnn-basics.md)
 
 ---
 
@@ -195,7 +195,7 @@ $$
 | $\text{Sublayer}(\mathbf{x})$ | $\mathbb{R}^{1 \times d\_{\text{model}}}$ | ผลลัพธ์ของ attention หรือ FFN |
 | $\mathbf{y}$ | $\mathbb{R}^{1 \times d\_{\text{model}}}$ | output |
 
-ใน Transformer ต้นฉบับ สมการเต็มของแต่ละ sublayer คือ (Post-LN — ดูไฟล์ [09 §4](09-layernorm-math.md))
+ใน Transformer ต้นฉบับ สมการเต็มของแต่ละ sublayer คือ (Post-LN — ดูไฟล์ [09-4](09-layernorm-math.md))
 
 $$
 \mathbf{y} = \text{LN}\big(\mathbf{x} + \text{Dropout}(\text{Sublayer}(\mathbf{x}))\big)
@@ -229,7 +229,7 @@ $$
 > **สัญชาตญาณ:** ไม่มี residual = gradient ต้องเดินผ่านทุกด่านและถูกหักภาษีทุกด่าน
 > มี residual = มี**ทางด่วนตรง**จาก loss ถึงทุกเลเยอร์ ที่ไม่ผ่านด่านไหนเลย ชั้นลึกแค่ไหนก็ได้รับสัญญาณเต็ม ๆ อย่างน้อยหนึ่งเส้นทาง
 
-**โยงกลับไฟล์ [02 §2](02-seq2seq-limitations.md):** ปัญหา vanishing gradient ของ RNN คือ $\prod\_t \frac{\partial \mathbf{h}\_t}{\partial \mathbf{h}\_{t-1}}$ หดตัวตามความยาวลำดับ LSTM แก้บางส่วนด้วย $\frac{\partial \mathbf{c}\_t}{\partial \mathbf{c}\_{t-1}} = \mathbf{f}\_t$ ซึ่งเป็นการคูณ (เข้าใกล้ 1 ถ้า gate เปิด) แต่ residual connection **ดีกว่านั้นอีกขั้น** เพราะเป็น $I$ เป๊ะ ๆ ไม่ใช่ค่าที่เรียนแล้วหวังว่าจะใกล้ 1
+**โยงกลับไฟล์ [02-2](02-seq2seq-limitations.md):** ปัญหา vanishing gradient ของ RNN คือ $\prod\_t \frac{\partial \mathbf{h}\_t}{\partial \mathbf{h}\_{t-1}}$ หดตัวตามความยาวลำดับ LSTM แก้บางส่วนด้วย $\frac{\partial \mathbf{c}\_t}{\partial \mathbf{c}\_{t-1}} = \mathbf{f}\_t$ ซึ่งเป็นการคูณ (เข้าใกล้ 1 ถ้า gate เปิด) แต่ residual connection **ดีกว่านั้นอีกขั้น** เพราะเป็น $I$ เป๊ะ ๆ ไม่ใช่ค่าที่เรียนแล้วหวังว่าจะใกล้ 1
 
 | | เส้นทาง gradient | รับประกันไหม |
 |---|---|---|
@@ -551,7 +551,7 @@ $$
 
 > $W^Q$ ทั้ง $H$ หัวรวมกันมีขนาด $d\_{\text{model}} \times H d\_k = 512 \times 512$ พอดี เพราะ $d\_k = d\_{\text{model}}/H$ (ไฟล์ [06](06-multi-head-attention.md)) จึงนับเป็น $d\_{\text{model}}^2$ ตัวเดียว ไม่ใช่ $H$ ตัว
 
-> **ข้อตกลงการนับ (ใช้เหมือนกันทั้งชุดเอกสาร):** projection ของ attention ($W^Q, W^K, W^V, W^O$) **ไม่มี bias** ตาม implementation มาตรฐาน ส่วน FFN และ LayerNorm มี — ดูตารางเต็มทั้ง base/big ที่ไฟล์ [13 §3.2](13-summary-notation-reference.md)
+> **ข้อตกลงการนับ (ใช้เหมือนกันทั้งชุดเอกสาร):** projection ของ attention ($W^Q, W^K, W^V, W^O$) **ไม่มี bias** ตาม implementation มาตรฐาน ส่วน FFN และ LayerNorm มี — ดูตารางเต็มทั้ง base/big ที่ไฟล์ [13-3.2](13-summary-notation-reference.md)
 
 | ส่วนประกอบ | สูตร | น้ำหนัก | bias | รวม |
 |---|---|---|---|---|

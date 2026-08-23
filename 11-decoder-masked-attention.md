@@ -12,7 +12,7 @@ Decoder ทำแบบนั้น**ไม่ได้** และข้อจ�
 
 ## 1. ทำไม Decoder ต่างจาก Encoder
 
-กลับไปที่ chain rule ในไฟล์ [01 §1.2](01-seq2seq-rnn-basics.md)
+กลับไปที่ chain rule ในไฟล์ [01-1.2](01-seq2seq-rnn-basics.md)
 
 $$
 p(\mathbf{y} \mid \mathbf{x}) = \prod\_{t=1}^{m} p(y\_t \mid y\_{{<}t},\ \mathbf{x})
@@ -299,7 +299,7 @@ $A\_{\text{cross}} = \text{softmax}(S\_{\text{cross}})$ — **normalize ตา�
 |---|---|---|---|
 | Decoder self-attention | **causal + pad ของ target** | $m \times m$ | ห้ามเห็นอนาคตของ target |
 | Cross-attention | **pad ของ source เท่านั้น** | $m \times n$ | source มีให้ครบตั้งแต่ต้น ไม่มี "อนาคต" ให้ห้าม |
-| Encoder self-attention | **pad ของ source เท่านั้น** | $n \times n$ | ไฟล์ [10 §5](10-encoder-full-pipeline.md) |
+| Encoder self-attention | **pad ของ source เท่านั้น** | $n \times n$ | ไฟล์ [10-5](10-encoder-full-pipeline.md) |
 
 > **จุดสำคัญที่คนพลาดบ่อย:** cross-attention **ไม่มี causal mask** — decoder ตำแหน่งที่ 1 มองเห็น source ได้ทั้งประโยครวมถึงคำสุดท้าย นี่ถูกต้องแล้ว เพราะ "ห้ามมองอนาคต" หมายถึงอนาคตของ *สิ่งที่กำลังสร้าง* ไม่ใช่ของ *สิ่งที่อ่านเข้ามา*
 > การเผลอใส่ causal mask ตรงนี้จะทำให้โมเดลแปลได้เฉพาะแบบเรียงคำตรง ๆ
@@ -430,7 +430,7 @@ $$
 - ถ้าผูก: gradient จากทั้งสองเส้นทางไปรวมกันที่เมทริกซ์เดียว → คำหายากได้สัญญาณมากขึ้นเท่าตัว
 - ผลเชิงเรขาคณิต: logit $= \mathbf{x}\_t \cdot \mathbf{e}\_v$ แปลว่า "ทำนายโทเคน $v$" $\equiv$ "ทำให้ hidden state ชี้ไปทางเดียวกับ embedding ของ $v$" ซึ่งบังคับให้ output space กับ embedding space เป็นปริภูมิเดียวกันโดยอัตโนมัติ
 
-> **ระวัง:** เมื่อผูกน้ำหนักแล้ว ตัวคูณ $\sqrt{d\_{\text{model}}}$ ในไฟล์ [10 §1.3](10-encoder-full-pipeline.md) มีผลต่อ *ขนาดของ logits* ด้วย — สองอย่างนี้ต้องปรับด้วยกันเสมอ
+> **ระวัง:** เมื่อผูกน้ำหนักแล้ว ตัวคูณ $\sqrt{d\_{\text{model}}}$ ในไฟล์ [10-1.3](10-encoder-full-pipeline.md) มีผลต่อ *ขนาดของ logits* ด้วย — สองอย่างนี้ต้องปรับด้วยกันเสมอ
 
 ```python
 import torch.nn as nn
@@ -577,7 +577,7 @@ $$
 \hat{y}\_t = \arg\max\_v\ p\_v
 $$
 
-**Beam Search** (จากไฟล์ [01 §5.4](01-seq2seq-rnn-basics.md)) — เก็บ $B$ เส้นทางที่ดีที่สุด ให้คะแนนด้วย log-prob สะสมหารด้วยความยาว
+**Beam Search** (จากไฟล์ [01-5.4](01-seq2seq-rnn-basics.md)) — เก็บ $B$ เส้นทางที่ดีที่สุด ให้คะแนนด้วย log-prob สะสมหารด้วยความยาว
 
 $$
 \text{score}(\mathbf{y}\_{\le t}) = \frac{1}{t^\alpha}\sum\_{t'=1}^{t}\log p(y\_{t'} \mid y\_{{<}t'}, \mathbf{x}), \qquad \alpha \approx 0.6
